@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sponsorship Application - {{ application.company_name }} - Experienciaas Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Header -->
+      <div class="mb-4">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'events:admin_dashboard' %}">Admin</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'events:admin_sponsorship_applications' %}">Sponsorship Applications</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ application.company_name }}</li>
+          </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h1 class="display-6 fw-bold mb-2">{{ application.company_name }}</h1>
+            <p class="text-muted mb-0">Sponsorship Application</p>
+          </div>
+          
+          <div class="d-flex gap-2">
+            {% if application.status == 'pending' %}
+              <form method="post" action="{% url 'events:admin_approve_sponsorship_application' application.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success" 
+                        onclick="return confirm('Approve this sponsorship application?')">
+                  <i class="fas fa-check me-2"></i>Approve
+                </button>
+              </form>
+              <form method="post" action="{% url 'events:admin_reject_sponsorship_application' application.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Reject this sponsorship application?')">
+                  <i class="fas fa-times me-2"></i>Reject
+                </button>
+              </form>
+            {% endif %}
+            
+            <a href="{% url 'events:admin_edit_sponsorship_application' application.pk %}" class="btn btn-outline-primary">
+              <i class="fas fa-edit me-2"></i>Edit Status
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Alert -->
+      <div class="alert {% if application.status == 'pending' %}alert-warning{% elif application.status == 'approved' %}alert-success{% elif application.status == 'rejected' %}alert-danger{% else %}alert-info{% endif %} mb-4">
+        <div class="d-flex align-items-center">
+          <i class="fas {% if application.status == 'pending' %}fa-clock{% elif application.status == 'approved' %}fa-check-circle{% elif application.status == 'rejected' %}fa-times-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+          <div>
+            <strong>Status: {{ application.get_status_display }}</strong>
+            {% if application.reviewed_at %}
+              <br><small>Reviewed on {{ application.reviewed_at|date:"F d, Y g:i A" }}{% if application.reviewed_by %} by {{ application.reviewed_by.name|default:application.reviewed_by.email }}{% endif %}</small>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+          <!-- Event Information -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Event Information</h5>
+              <div class="row">
+                <div class="col-md-8">
+                  <h6>{{ application.event.title }}</h6>
+                  <p class="text-muted mb-2">{{ application.event.description|truncatewords:30 }}</p>
+                  <div class="d-flex flex-wrap gap-3">
+                    <span><i class="fas fa-calendar me-1"></i>{{ application.event.start_date|date:"F d, Y" }}</span>
+                    <span><i class="fas fa-clock me-1"></i>{{ application.event.start_date|date:"g:i A" }}</span>
+                    <span><i class="fas fa-map-marker-alt me-1"></i>{{ application.event.city.name }}</span>
+                    <span><i class="fas fa-users me-1"></i>{{ application.event.attendees_count }} registered</span>
+                  </div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                  <div class="event-stats">
+                    <div class="mb-2">
+                      <strong>Sponsor Slots:</strong> {{ application.event.sponsors_count }}/{{ application.event.max_sponsors }}
+                    </div>
+                    <div class="mb-2">
+                      <strong>Available:</strong> {{ application.event.available_sponsor_slots }}
+                    </div>
+                    <a href="{% url 'events:admin_event_detail' application.event.pk %}" class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-eye me-1"></i>View Event
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Application Message -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Application Message</h5>
+              <div class="message-content">
+                {{ application.message|linebreaks }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Notes -->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Admin Notes</h5>
+              {% if application.admin_notes %}
+                <div class="admin-notes">
+                  {{ application.admin_notes|linebreaks }}
+                </div>
+              {% else %}
+                <p class="text-muted">No admin notes yet.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+          <!-- Company Information -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Company Information</h5>
+              <div class="company-info">
+                <div class="mb-3">
+                  <strong>Company Name:</strong>
+                  <div>{{ application.company_name }}</div>
+                </div>
+                
+                {% if application.company_website %}
+                  <div class="mb-3">
+                    <strong>Website:</strong>
+                    <div><a href="{{ application.company_website }}" target="_blank" rel="noopener">{{ application.company_website }}</a></div>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Information -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Contact Information</h5>
+              <div class="contact-info">
+                <div class="mb-3">
+                  <strong>Contact Person:</strong>
+                  <div>{{ application.contact_name }}</div>
+                </div>
+                
+                <div class="mb-3">
+                  <strong>Email:</strong>
+                  <div>
+                    <a href="mailto:{{ application.contact_email }}">{{ application.contact_email }}</a>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <strong>Phone:</strong>
+                  <div>
+                    <a href="tel:{{ application.contact_phone }}">{{ application.contact_phone }}</a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="d-grid">
+                <a href="mailto:{{ application.contact_email }}?subject=Sponsorship Application - {{ application.event.title }}" 
+                   class="btn btn-primary">
+                  <i class="fas fa-envelope me-2"></i>Send Email
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sponsorship Details -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Sponsorship Details</h5>
+              <div class="sponsorship-details">
+                <div class="mb-3">
+                  <strong>Proposed Tier:</strong>
+                  <div>
+                    <span class="badge bg-secondary">{{ application.get_proposed_tier_display }}</span>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <strong>Application Date:</strong>
+                  <div>{{ application.created_at|date:"F d, Y g:i A" }}</div>
+                </div>
+                
+                {% if application.updated_at != application.created_at %}
+                  <div class="mb-3">
+                    <strong>Last Updated:</strong>
+                    <div>{{ application.updated_at|date:"F d, Y g:i A" }}</div>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.message-content {
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  font-style: italic;
+}
+
+.admin-notes {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 1rem;
+  border-radius: 0.375rem;
+}
+
+.company-info, .contact-info, .sponsorship-details {
+  font-size: 0.9rem;
+}
+
+.event-stats {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.375rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.card-title {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+</style>
+{% endblock %}

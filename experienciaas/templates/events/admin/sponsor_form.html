@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  {% if object %}Edit Sponsor - {{ object.name }}{% else %}Create New Sponsor{% endif %} - Experienciaas Admin
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Header -->
+      <div class="mb-4">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'events:admin_dashboard' %}">Admin</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'events:admin_sponsors' %}">Sponsors</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {% if object %}Edit Sponsor{% else %}Create Sponsor{% endif %}
+            </li>
+          </ol>
+        </nav>
+        
+        <h1 class="display-6 fw-bold mb-3">
+          {% if object %}Edit Sponsor{% else %}Create New Sponsor{% endif %}
+        </h1>
+      </div>
+
+      <!-- Form -->
+      <div class="card">
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <!-- Company Information -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Company Information</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label">
+                      {{ form.name.label }} <span class="text-danger">*</span>
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                      <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.website.id_for_label }}" class="form-label">{{ form.website.label }}</label>
+                    {{ form.website }}
+                    {% if form.website.errors %}
+                      <div class="invalid-feedback d-block">{{ form.website.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                  <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                {% endif %}
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.logo.id_for_label }}" class="form-label">{{ form.logo.label }}</label>
+                {{ form.logo }}
+                {% if form.logo.errors %}
+                  <div class="invalid-feedback d-block">{{ form.logo.errors }}</div>
+                {% endif %}
+                {% if object and object.logo %}
+                  <div class="mt-2">
+                    <img src="{{ object.logo.url }}" alt="Current logo" class="img-thumbnail" style="max-width: 150px; max-height: 100px;">
+                    <small class="text-muted d-block">Current logo</small>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Contact Information</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.contact_email.id_for_label }}" class="form-label">
+                      {{ form.contact_email.label }} <span class="text-danger">*</span>
+                    </label>
+                    {{ form.contact_email }}
+                    {% if form.contact_email.errors %}
+                      <div class="invalid-feedback d-block">{{ form.contact_email.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.contact_phone.id_for_label }}" class="form-label">{{ form.contact_phone.label }}</label>
+                    {{ form.contact_phone }}
+                    {% if form.contact_phone.errors %}
+                      <div class="invalid-feedback d-block">{{ form.contact_phone.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Social Media</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.facebook_url.id_for_label }}" class="form-label">
+                      <i class="fab fa-facebook-f me-1"></i>{{ form.facebook_url.label }}
+                    </label>
+                    {{ form.facebook_url }}
+                    {% if form.facebook_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.facebook_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.twitter_url.id_for_label }}" class="form-label">
+                      <i class="fab fa-twitter me-1"></i>{{ form.twitter_url.label }}
+                    </label>
+                    {{ form.twitter_url }}
+                    {% if form.twitter_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.twitter_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.instagram_url.id_for_label }}" class="form-label">
+                      <i class="fab fa-instagram me-1"></i>{{ form.instagram_url.label }}
+                    </label>
+                    {{ form.instagram_url }}
+                    {% if form.instagram_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.instagram_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.linkedin_url.id_for_label }}" class="form-label">
+                      <i class="fab fa-linkedin-in me-1"></i>{{ form.linkedin_url.label }}
+                    </label>
+                    {{ form.linkedin_url }}
+                    {% if form.linkedin_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.linkedin_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Status</h5>
+              
+              <div class="form-check">
+                {{ form.is_approved }}
+                <label class="form-check-label" for="{{ form.is_approved.id_for_label }}">
+                  {{ form.is_approved.label }}
+                </label>
+                {% if form.is_approved.errors %}
+                  <div class="invalid-feedback d-block">{{ form.is_approved.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted d-block">Approved sponsors can be added to events</small>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'events:admin_sponsors' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Cancel
+              </a>
+              
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>
+                {% if object %}Update Sponsor{% else %}Create Sponsor{% endif %}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.form-section {
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 1.5rem;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.form-group .form-control,
+.form-group .form-select {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+}
+
+.form-group .form-control:focus,
+.form-group .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+</style>
+{% endblock %}

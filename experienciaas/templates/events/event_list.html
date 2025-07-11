@@ -1,0 +1,551 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Eventos - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/events.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid event-list-page">
+  <!-- Hero Section -->
+  <div class="hero-section text-white mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 400px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+    <!-- Elementos decorativos sutiles -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(255,255,255,0.06) 0%, transparent 50%); opacity: 0.7;"></div>
+    
+    <div class="container">
+      <div class="row align-items-center justify-content-center w-100">
+        <div class="col-lg-7 text-center text-lg-start">
+          <div class="hero-content" style="z-index: 2; position: relative;">
+            <h1 class="hero-title mb-4" style="font-size: 2.2rem; font-weight: 900; line-height: 1.1; text-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+              Crea momentos. Vive<br>
+              <span class="text-warning" style="background: linear-gradient(45deg, #ffd700, #ffed4e); -webkit-background-clip: text; 
+              -webkit-text-fill-color: transparent; background-clip: text; font-size: 3.2rem; display: block; margin-top: 0.2rem; font-weight: 900;">ExperienciaaS</span> 
+            </h1>
+
+            <!-- Desktop Search Bar (moved here) -->
+            <div class="d-none d-lg-block mt-4">
+              <form method="get" class="search-form">
+                <div class="input-group shadow-lg" style="border-radius: 25px; overflow: hidden; height: 60px; max-width: 500px;">
+                  <input type="text" name="search" class="form-control border-0" placeholder="Buscar experienciaas..." 
+                   value="{{ current_filters.search }}" style="padding: 20px 25px; font-size: 18px; background: white;">
+                  <button class="btn border-0" type="submit" style="padding: 20px 30px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; transition: all 0.3s ease;">
+                    <i class="fas fa-search" style="font-size: 20px;"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+                       
+            <!-- Mobile Search -->
+            <div class="d-lg-none mt-4">
+              <div class="px-2">
+                <form method="get" class="search-form">
+                  <div class="input-group shadow-lg" style="border-radius: 25px; overflow: hidden; height: 50px;">
+                    <input type="text" name="search" class="form-control border-0" placeholder="Buscar experienciaas..." 
+                     value="{{ current_filters.search }}" style="padding: 12px 18px; font-size: 15px; background: white;">
+                    <button class="btn btn-warning border-0" type="submit" style="padding: 12px 18px; background: linear-gradient(45deg, #ffd700, #ffed4e); min-width: 60px;">
+                      <i class="fas fa-search text-dark" style="font-size: 16px;"></i>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-5 text-center d-none d-lg-block">
+          <div class="hero-image-container" style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; height: 100%;">
+            <div class="image-wrapper" style="background: rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; backdrop-filter: blur(10px); box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+              <img src="{% static random_banner %}" alt="Experienciaas" 
+                   style="width: 100%; height: auto; max-width: 350px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2)); border-radius: 15px;">
+            </div>
+            
+            <!-- Elementos flotantes decorativos -->
+            <div class="floating-elements">
+              <div style="position: absolute; top: 20%; left: -10px; background: rgba(255,215,0,0.2); width: 60px; height: 60px; border-radius: 50%; animation: float 6s ease-in-out infinite;"></div>
+              <div style="position: absolute; bottom: 30%; right: -20px; background: rgba(255,255,255,0.1); width: 80px; height: 80px; border-radius: 50%; animation: float 8s ease-in-out infinite reverse;"></div>
+              <div style="position: absolute; top: 60%; left: 10%; background: rgba(255,215,0,0.15); width: 40px; height: 40px; border-radius: 50%; animation: float 7s ease-in-out infinite;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Access Bar -->
+  <a href="{% url 'users:organizers_list' %}" class="quick-access-bar mb-4 position-relative d-block text-decoration-none" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; padding: 20px; border-left: 4px solid #667eea; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.2)';" onmouseout="this.style.transform=''; this.style.boxShadow='';">
+    <div class="row align-items-center">
+      <div class="col-md-8 col-10">
+        <h5 class="mb-1" style="color: #2c3e50; font-weight: 600; margin: 0;">
+          <i class="fas fa-compass me-2" style="color: #667eea;"></i>Organizadores Destacados
+        </h5>
+        <p class="text-muted mb-0" style="font-size: 14px; margin-bottom: 10px;">Eventos de confianza organizados por expertos</p>
+      </div>
+      <div class="col-md-4 col-2 text-md-end d-none d-md-block">
+        <!-- Indicador visual desktop -->
+        <div class="btn" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; border-radius: 12px; padding: 10px 25px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); pointer-events: none;">
+          <i class="fas fa-users me-2"></i>Ver
+        </div>
+      </div>
+    </div>
+    <!-- Indicador visual móvil como pestaña lateral -->
+    <div class="d-md-none position-absolute" style="
+      top: 0; 
+      right: 0; 
+      bottom: 0;
+      width: 50px;
+      background: linear-gradient(45deg, #667eea, #764ba2); 
+      color: white; 
+      border: none; 
+      border-radius: 0 15px 15px 0; 
+      font-weight: 700; 
+      writing-mode: vertical-lr; 
+      text-orientation: mixed; 
+      font-size: 11px; 
+      letter-spacing: 1px; 
+      box-shadow: -2px 0 10px rgba(102, 126, 234, 0.3);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      pointer-events: none;
+    ">      
+      <span style="font-size: 20px; font-weight: 800;">Ver</span>
+    </div>
+  </a>
+
+  <!-- Filters Section -->
+  <div class="container">
+    <!-- Filtro toggle solo en móvil -->
+    <div class="d-md-none mb-3 text-center">
+      <button id="toggleFilterBtn" class="btn btn-outline-primary" style="border-radius: 12px; padding: 10px 25px; font-weight: 600;">
+        <i class="fas fa-sliders-h me-2"></i>Mostrar filtros
+      </button>
+    </div>
+    <!-- Overlay y filtro en móvil -->
+    <div id="filterOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(44,62,80,0.45); z-index:1050;"></div>
+    <div id="filterBar" class="filter-bar" style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px;">
+      <form method="get" class="filter-form">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="filter-label" style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; display: block;">Ciudad</label>
+            <select name="city" class="form-select" style="border-radius: 12px; padding: 12px 15px; border: 2px solid #e9ecef; transition: all 0.3s ease;">
+              <option value="">Todas las ciudades</option>
+              {% for city in cities %}
+                <option value="{{ city.slug }}" {% if current_filters.city == city.slug %}selected{% endif %}>
+                  {{ city.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="col-md-3">
+            <label class="filter-label" style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; display: block;">Categoría</label>
+            <select name="category" class="form-select" style="border-radius: 12px; padding: 12px 15px; border: 2px solid #e9ecef; transition: all 0.3s ease;">
+              <option value="">Todas las categorías</option>
+              {% for category in categories %}
+                <option value="{{ category.slug }}" {% if current_filters.category == category.slug %}selected{% endif %}>
+                  {{ category.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="col-md-3">
+            <label class="filter-label" style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; display: block;">Fecha</label>
+            <select name="date" class="form-select" style="border-radius: 12px; padding: 12px 15px; border: 2px solid #e9ecef; transition: all 0.3s ease;">
+              <option value="">Cualquier fecha</option>
+              <option value="today" {% if current_filters.date == 'today' %}selected{% endif %}>Hoy</option>
+              <option value="tomorrow" {% if current_filters.date == 'tomorrow' %}selected{% endif %}>Mañana</option>
+              <option value="this_week" {% if current_filters.date == 'this_week' %}selected{% endif %}>Esta semana</option>
+              <option value="this_month" {% if current_filters.date == 'this_month' %}selected{% endif %}>Este mes</option>
+            </select>
+          </div>
+          
+          <div class="col-md-3">
+            <label class="filter-label" style="font-weight: 600; color: #2c3e50; margin-bottom: 8px; display: block;">Ordenar por</label>
+            <select name="sort" class="form-select" style="border-radius: 12px; padding: 12px 15px; border: 2px solid #e9ecef; transition: all 0.3s ease;">
+              <option value="date" {% if current_filters.sort == 'date' %}selected{% endif %}>Fecha</option>
+              <option value="price" {% if current_filters.sort == 'price' %}selected{% endif %}>Precio</option>
+              <option value="name" {% if current_filters.sort == 'name' %}selected{% endif %}>Nombre</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="row mt-4">
+          <div class="col-12 text-center">
+            <button type="submit" class="btn me-3" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; border-radius: 12px; padding: 12px 30px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+              <i class="fas fa-filter me-2"></i>Filtrar
+            </button>
+            <a href="{% url 'events:list' %}" class="btn btn-outline-secondary me-3" style="border-radius: 12px; padding: 12px 30px; font-weight: 600; transition: all 0.3s ease;">
+              <i class="fas fa-times me-2"></i>Limpiar
+            </a>
+            <!-- Botón cerrar solo en móvil -->
+            <button type="button" id="closeFilterBtn" class="btn btn-link d-md-none mt-3" style="font-size:18px; color:#667eea; text-decoration:none; font-weight:700;">
+              <i class="fas fa-times me-2"></i>Cerrar filtros
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+
+    <!-- Results Info -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        {% if current_filters.search %}
+          <p class="text-muted">
+            Resultados para: <strong>"{{ current_filters.search }}"</strong>
+          </p>
+        {% endif %}
+      </div>
+      <div class="col-md-6 text-md-end">
+        <p class="text-muted mb-1">
+          {{ events|length }} evento{{ events|length|pluralize }} encontrado{{ events|length|pluralize }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Events Grid -->
+    {% if events %}
+      <div class="event-grid">
+        {% for event in events %}
+          <div class="event-card fade-in" style="position: relative; display: flex; flex-direction: column; min-height: 320px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-radius: 20px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); overflow: hidden; background: #fff;" onclick="window.location.href='{{ event.get_absolute_url }}';">
+            <div class="event-card-body" style="flex: 1; display: flex; flex-direction: column;">
+              <div class="position-relative">
+                {% if event.image %}
+                  <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image no-image-preview" style="height: 160px; width: 100%; object-fit: cover; border-radius: 0; user-select: none; pointer-events: none;">
+                {% else %}
+                  <img src="{{ MEDIA_URL }}events/default/general_event.png" alt="{{ event.title }}" class="event-image no-image-preview" style="height: 160px; width: 100%; object-fit: cover; border-radius: 0; user-select: none; pointer-events: none;">
+                {% endif %}
+                <!-- Badges -->
+                <div class="position-absolute top-0 start-0 p-2">
+                  {% if event.status == 'sold_out' %}
+                    <span class="badge bg-danger text-white" style="border-radius: 25px; padding: 6px 12px; font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);">
+                      <i class="fas fa-exclamation-circle me-1"></i>Agotado
+                    </span>
+                  {% endif %}
+                </div>
+                <div class="position-absolute top-0 end-0 p-2">
+                  {% if event.is_free %}
+                    <span class="badge badge-free" style="background: linear-gradient(45deg, #51CF66, #69DB7C); color: white; border-radius: 25px; padding: 6px 12px; font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(81, 207, 102, 0.4);">Gratis</span>
+                  {% elif event.price_type == 'donation' %}
+                    <span class="badge badge-donation" style="background: linear-gradient(45deg, #FF922B, #FFB84D); color: white; border-radius: 25px; padding: 6px 12px; font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 146, 43, 0.4);">Donación</span>
+                  {% else %}
+                    <span class="badge badge-paid" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; border-radius: 25px; padding: 6px 12px; font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">{{ event.formatted_price }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <div class="event-content" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 16px;">
+                <div>
+                  <div class="event-category text-primary mb-2" style="color: {{ event.category.color }}; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                    {% if event.category.icon %}
+                      <i class="{{ event.category.icon }} me-1"></i>
+                    {% endif %}
+                    {{ event.category.name }}
+                  </div>
+                  
+                  <h3 class="event-title mb-2" style="font-size: 16px; font-weight: 700; line-height: 1.3; color: #1A202C; margin: 0;">
+                    {{ event.title }}
+                  </h3>
+                  
+                  <div class="event-meta mb-2" style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <div class="event-meta-item" style="display: flex; align-items: center; font-size: 12px; color: #718096;">
+                      <i class="fas fa-calendar-alt me-1" style="color: #4299E1; width: 14px; font-size: 11px;"></i>
+                      <span>{{ event.start_date|date:"d M Y" }}</span>
+                    </div>
+                    <div class="event-meta-item" style="display: flex; align-items: center; font-size: 12px; color: #718096;">
+                      <i class="fas fa-clock me-1" style="color: #4299E1; width: 14px; font-size: 11px;"></i>
+                      <span>{{ event.start_date|date:"H:i" }}</span>
+                    </div>
+                    <div class="event-meta-item" style="display: flex; align-items: center; font-size: 12px; color: #718096;">
+                      <i class="fas fa-map-marker-alt me-1" style="color: #4299E1; width: 14px; font-size: 11px;"></i>
+                      <span>{{ event.city.name }}</span>
+                    </div>
+                    {% if event.organizer and event.organizer.slug %}
+                      <div class="event-meta-item organizer-link" style="display: flex; align-items: center; font-size: 12px; color: #667eea; cursor: pointer; transition: all 0.2s ease;" onclick="event.stopPropagation(); window.location.href='{% url 'users:organizer_profile' event.organizer.slug %}';">
+                        <i class="fas fa-user-tie me-1" style="color: #667eea; width: 14px; font-size: 11px;"></i>
+                        <span style="border-bottom: 1px dotted #667eea;">{{ event.organizer.company_name|default:event.organizer.get_full_name }}</span>
+                      </div>
+                    {% elif event.organizer %}
+                      <div class="event-meta-item" style="display: flex; align-items: center; font-size: 12px; color: #718096;">
+                        <i class="fas fa-user-tie me-1" style="color: #718096; width: 14px; font-size: 11px;"></i>
+                        <span>{{ event.organizer.company_name|default:event.organizer.get_full_name }}</span>
+                      </div>
+                    {% endif %}
+                  </div>
+                  
+                  {% if event.short_description %}
+                    <p class="card-text" style="flex: 1; font-size: 13px; color: #4A5568; line-height: 1.4; margin: 0;">{{ event.short_description|truncatewords:12 }}</p>
+                  {% endif %}
+                </div>
+                
+                <div class="mt-auto pt-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="event-price{% if event.is_free %} free{% endif %}" style="font-size: 16px; font-weight: 700; color: #2D3748;">
+                      {% if event.is_free %}
+                        <span style="color: #38A169;"><i class="fas fa-gift me-1" style="font-size: 14px;"></i>Gratis</span>
+                      {% elif event.price_type == 'donation' %}
+                        <span style="color: #D69E2E;"><i class="fas fa-heart me-1" style="font-size: 14px;"></i>Donación</span>
+                      {% else %}
+                        <span style="color: #3182CE;">{{ event.formatted_price }}</span>
+                      {% endif %}
+                    </div>
+                    
+                    {% if event.max_attendees %}
+                      <div>
+                        <small class="text-muted" style="font-size: 11px; color: #718096;">
+                          {% if event.remaining_tickets %}
+                            <i class="fas fa-users me-1" style="color: #38A169; font-size: 10px;"></i>{{ event.remaining_tickets }} cupo{{ event.remaining_tickets|pluralize }}
+                          {% else %}
+                            <i class="fas fa-exclamation-triangle me-1" style="color: #E53E3E; font-size: 10px;"></i>Sin cupos
+                          {% endif %}
+                        </small>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% if event.event_sponsors.all and event.event_sponsors.all|length > 0 %}
+            <div class="sponsor-carousel" style="height: 40px; overflow: hidden; position: relative; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 0 0 15px 15px; margin-top: auto;">
+              {% if event.event_sponsors.all|length == 1 %}
+                <!-- Un solo patrocinador: mostrar estático centrado -->
+                <div class="sponsor-single" style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%;">
+                  {% for event_sponsor in event.event_sponsors.all %}
+                    <div class="sponsor-item" style="display: flex; align-items: center; padding: 0 15px; white-space: nowrap; gap: 8px;">
+                      {% if event_sponsor.tier == 'platinum' %}
+                        <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #9CA3AF); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                          <i class="fas fa-crown" style="margin-right: 2px;"></i>Platinum
+                        </span>
+                      {% elif event_sponsor.tier == 'gold' %}
+                        <span class="sponsor-badge" style="background: linear-gradient(45deg, #FCD34D, #F59E0B); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                          <i class="fas fa-medal" style="margin-right: 2px;"></i>Gold
+                        </span>
+                      {% elif event_sponsor.tier == 'silver' %}
+                        <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #6B7280); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                          <i class="fas fa-award" style="margin-right: 2px;"></i>Silver
+                        </span>
+                      {% elif event_sponsor.tier == 'bronze' %}
+                        <span class="sponsor-badge" style="background: linear-gradient(45deg, #FBBF24, #D97706); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                          <i class="fas fa-certificate" style="margin-right: 2px;"></i>Bronze
+                        </span>
+                      {% else %}
+                        <span class="sponsor-badge" style="background: linear-gradient(45deg, #3B82F6, #1E40AF); color: white; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                          <i class="fas fa-handshake" style="margin-right: 2px;"></i>Partner
+                        </span>
+                      {% endif %}
+                      <span class="sponsor-name" style="font-size: 11px; color: #1F2937; font-weight: 600; text-shadow: 0 1px 2px rgba(255,255,255,0.8); overflow: hidden; text-overflow: ellipsis; max-width: 100px;">{{ event_sponsor.sponsor.name }}</span>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <!-- Múltiples patrocinadores: carrusel infinito seamless -->
+                <div class="sponsor-slider-wrapper" style="height: 100%; overflow: hidden; position: relative;">
+                  <div class="sponsor-slider-track" style="display: flex; align-items: center; height: 100%; width: fit-content;">
+                    <!-- Primera copia -->
+                    {% for event_sponsor in event.event_sponsors.all %}
+                      <div class="sponsor-item" style="display: flex; align-items: center; padding: 0 15px; white-space: nowrap; min-width: max-content; gap: 8px; flex-shrink: 0;">
+                        {% if event_sponsor.tier == 'platinum' %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #9CA3AF); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-crown" style="margin-right: 2px;"></i>Platinum
+                          </span>
+                        {% elif event_sponsor.tier == 'gold' %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #FCD34D, #F59E0B); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-medal" style="margin-right: 2px;"></i>Gold
+                          </span>
+                        {% elif event_sponsor.tier == 'silver' %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #6B7280); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-award" style="margin-right: 2px;"></i>Silver
+                          </span>
+                        {% elif event_sponsor.tier == 'bronze' %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #FBBF24, #D97706); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-certificate" style="margin-right: 2px;"></i>Bronze
+                          </span>
+                        {% else %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #3B82F6, #1E40AF); color: white; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-handshake" style="margin-right: 2px;"></i>Partner
+                          </span>
+                        {% endif %}
+                        <span class="sponsor-name" style="font-size: 11px; color: #1F2937; font-weight: 600; text-shadow: 0 1px 2px rgba(255,255,255,0.8); overflow: hidden; text-overflow: ellipsis; max-width: 100px;">{{ event_sponsor.sponsor.name }}</span>
+                      </div>
+                      <div class="sponsor-separator" style="width: 2px; height: 20px; background: linear-gradient(to bottom, transparent, #cbd5e0, transparent); margin: 0 10px; flex-shrink: 0;"></div>
+                    {% endfor %}
+                    
+                    <!-- Segunda copia para loop seamless -->
+                    {% for event_sponsor in event.event_sponsors.all %}
+                      <div class="sponsor-item" style="display: flex; align-items: center; padding: 0 15px; white-space: nowrap; min-width: max-content; gap: 8px; flex-shrink: 0;">
+                        {% if event_sponsor.tier == 'platinum' %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #9CA3AF); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-crown" style="margin-right: 2px;"></i>Platinum
+                          </span>
+                        {% elif event_sponsor.tier == 'gold' %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #FCD34D, #F59E0B); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-medal" style="margin-right: 2px;"></i>Gold
+                          </span>
+                        {% elif event_sponsor.tier == 'silver' %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #6B7280); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-award" style="margin-right: 2px;"></i>Silver
+                          </span>
+                        {% elif event_sponsor.tier == 'bronze' %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #FBBF24, #D97706); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-certificate" style="margin-right: 2px;"></i>Bronze
+                          </span>
+                        {% else %}
+                          <span class="sponsor-badge" style="background: linear-gradient(45deg, #3B82F6, #1E40AF); color: white; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                            <i class="fas fa-handshake" style="margin-right: 2px;"></i>Partner
+                          </span>
+                        {% endif %}
+                        <span class="sponsor-name" style="font-size: 11px; color: #1F2937; font-weight: 600; text-shadow: 0 1px 2px rgba(255,255,255,0.8); overflow: hidden; text-overflow: ellipsis; max-width: 100px;">{{ event_sponsor.sponsor.name }}</span>
+                      </div>
+                      <div class="sponsor-separator" style="width: 2px; height: 20px; background: linear-gradient(to bottom, transparent, #cbd5e0, transparent); margin: 0 10px; flex-shrink: 0;"></div>
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if is_paginated %}
+        <nav aria-label="Paginación de eventos" class="mt-4">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
+                  <i class="fas fa-angle-double-left"></i>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
+                  <i class="fas fa-angle-left"></i>
+                </a>
+              </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+                <li class="page-item active">
+                  <span class="page-link">{{ num }}</span>
+                </li>
+              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">{{ num }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
+                  <i class="fas fa-angle-right"></i>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
+                  <i class="fas fa-angle-double-right"></i>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      {% endif %}
+
+    {% else %}
+      <!-- No Events Found -->
+      <div class="text-center py-5">
+        <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+        <h3 class="text-muted">No se encontraron eventos</h3>
+        <p class="text-muted">Intenta cambiar los filtros o buscar con otros términos.</p>
+        <a href="{% url 'events:list' %}" class="btn btn-primary">
+          <i class="fas fa-refresh me-1"></i>Ver todos los eventos
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}
+
+{% block inline_javascript %}
+  <script src="{% static 'js/events.js' %}"></script>
+  <script>
+    // Mostrar/ocultar filtros en móvil con overlay y panel fullscreen
+    document.addEventListener('DOMContentLoaded', function() {
+      var filterBar = document.getElementById('filterBar');
+      var toggleBtn = document.getElementById('toggleFilterBtn');
+      var filterOverlay = document.getElementById('filterOverlay');
+      var closeBtn = document.getElementById('closeFilterBtn');
+      function isMobile() {
+        return window.innerWidth < 768;
+      }
+      function setMobileFilterStyle() {
+        if (isMobile()) {
+          filterBar.style.display = 'none';
+          filterBar.style.position = 'fixed';
+          filterBar.style.top = '0';
+          filterBar.style.left = '0';
+          filterBar.style.width = '100vw';
+          filterBar.style.height = '100vh';
+          filterBar.style.zIndex = '1100';
+          filterBar.style.overflowY = 'auto';
+          filterBar.style.marginBottom = '0';
+          filterBar.style.borderRadius = '0';
+          filterBar.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+          filterBar.style.padding = '30px 10px 10px 10px';
+        } else {
+          filterBar.style.display = '';
+          filterBar.style.position = '';
+          filterBar.style.top = '';
+          filterBar.style.left = '';
+          filterBar.style.width = '';
+          filterBar.style.height = '';
+          filterBar.style.zIndex = '';
+          filterBar.style.overflowY = '';
+          filterBar.style.marginBottom = '30px';
+          filterBar.style.borderRadius = '20px';
+          filterBar.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+          filterBar.style.padding = '30px';
+          if (filterOverlay) filterOverlay.style.display = 'none';
+        }
+      }
+      setMobileFilterStyle();
+      window.addEventListener('resize', setMobileFilterStyle);
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+          if (isMobile()) {
+            filterBar.style.display = '';
+            if (filterOverlay) filterOverlay.style.display = '';
+            toggleBtn.style.display = 'none';
+          }
+        });
+      }
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          if (isMobile()) {
+            filterBar.style.display = 'none';
+            if (filterOverlay) filterOverlay.style.display = 'none';
+            toggleBtn.style.display = '';
+          }
+        });
+      }
+      if (filterOverlay) {
+        filterOverlay.addEventListener('click', function() {
+          if (isMobile()) {
+            filterBar.style.display = 'none';
+            filterOverlay.style.display = 'none';
+            toggleBtn.style.display = '';
+          }
+        });
+      }
+    });
+  </script>
+{% endblock inline_javascript %}

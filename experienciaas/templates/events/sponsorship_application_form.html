@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Postularme como Patrocinador - {{ event.title }} - Experienciaas{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Header -->
+      <div class="mb-4">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'events:list' %}">Eventos</a></li>
+            <li class="breadcrumb-item"><a href="{{ event.get_absolute_url }}">{{ event.title|truncatewords:3 }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Postulación de Patrocinio</li>
+          </ol>
+        </nav>
+        
+        <h1 class="display-6 fw-bold mb-3">Postularme como Patrocinador</h1>
+        <div class="alert alert-info">
+          <h5 class="alert-heading">{{ event.title }}</h5>
+          <p class="mb-2">
+            <i class="fas fa-calendar me-2"></i>{{ event.start_date|date:"d F Y" }} - {{ event.start_date|date:"H:i" }}
+            <br>
+            <i class="fas fa-map-marker-alt me-2"></i>{{ event.venue_name }}, {{ event.city.name }}
+          </p>
+          <hr>
+          <p class="mb-0">
+            <strong>Espacios disponibles:</strong> {{ event.available_sponsor_slots }} de {{ event.max_sponsors }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Sponsorship Information -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4 class="card-title">¿Por qué patrocinar este evento?</h4>
+          <div class="row">
+            <div class="col-md-6">
+              <ul class="list-unstyled">
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Promociona tu marca</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Conecta con tu audiencia objetivo</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Visibilidad en materiales del evento</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul class="list-unstyled">
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Networking con otros patrocinadores</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Apoyo a la comunidad local</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Presencia en redes sociales</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Form -->
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title mb-4">Formulario de Postulación</h4>
+          
+          <form method="post">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <!-- Company Information -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Información de la Empresa</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_name.id_for_label }}" class="form-label">
+                      {{ form.company_name.label }} <span class="text-danger">*</span>
+                    </label>
+                    {{ form.company_name }}
+                    {% if form.company_name.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_name.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_website.id_for_label }}" class="form-label">
+                      {{ form.company_website.label }}
+                    </label>
+                    {{ form.company_website }}
+                    {% if form.company_website.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_website.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Información de Contacto</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.contact_name.id_for_label }}" class="form-label">
+                      {{ form.contact_name.label }} <span class="text-danger">*</span>
+                    </label>
+                    {{ form.contact_name }}
+                    {% if form.contact_name.errors %}
+                      <div class="invalid-feedback d-block">{{ form.contact_name.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.contact_email.id_for_label }}" class="form-label">
+                      {{ form.contact_email.label }} <span class="text-danger">*</span>
+                    </label>
+                    {{ form.contact_email }}
+                    {% if form.contact_email.errors %}
+                      <div class="invalid-feedback d-block">{{ form.contact_email.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.contact_phone.id_for_label }}" class="form-label">
+                  {{ form.contact_phone.label }} <span class="text-danger">*</span>
+                </label>
+                {{ form.contact_phone }}
+                {% if form.contact_phone.errors %}
+                  <div class="invalid-feedback d-block">{{ form.contact_phone.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Sponsorship Details -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Detalles del Patrocinio</h5>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.proposed_tier.id_for_label }}" class="form-label">
+                  {{ form.proposed_tier.label }}
+                  <button type="button" class="btn btn-link btn-sm p-0 ms-1" data-bs-toggle="modal" data-bs-target="#tierInfoModal">
+                    <i class="fas fa-info-circle text-info"></i>
+                  </button>
+                </label>
+                {{ form.proposed_tier }}
+                {% if form.proposed_tier.errors %}
+                  <div class="invalid-feedback d-block">{{ form.proposed_tier.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">
+                  Selecciona el nivel de patrocinio de tu interés. El organizador podrá ajustar esto según la disponibilidad y tu propuesta.
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#tierInfoModal">Ver detalles de cada nivel</a>
+                </small>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.message.id_for_label }}" class="form-label">
+                  {{ form.message.label }} <span class="text-danger">*</span>
+                </label>
+                {{ form.message }}
+                {% if form.message.errors %}
+                  <div class="invalid-feedback d-block">{{ form.message.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">
+                  Cuéntanos sobre tu empresa y por qué quieres patrocinar este evento. Incluye información sobre tu marca, productos/servicios, y cómo crees que puedes agregar valor al evento.
+                </small>
+              </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="alert alert-light border">
+              <h6 class="alert-heading">Información importante:</h6>
+              <ul class="mb-0 small">
+                <li>Esta es una postulación. El organizador revisará tu solicitud y se pondrá en contacto contigo.</li>
+                <li>La negociación de términos específicos y pagos se realizará directamente con el organizador.</li>
+                <li>Los espacios de patrocinio están sujetos a disponibilidad.</li>
+                <li>El organizador se reserva el derecho de aprobar o rechazar postulaciones según sus criterios.</li>
+              </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between">
+              <a href="{{ event.get_absolute_url }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Volver al Evento
+              </a>
+              
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-paper-plane me-2"></i>Enviar Postulación
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tier Information Modal -->
+<div class="modal fade" id="tierInfoModal" tabindex="-1" aria-labelledby="tierInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tierInfoModalLabel">
+          <i class="fas fa-star text-warning me-2"></i>
+          Niveles de Patrocinio
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <div class="tier-info-item mb-4">
+              <div class="d-flex align-items-center mb-2">
+                <i class="fas fa-gem text-secondary me-2"></i>
+                <h6 class="mb-0 text-secondary">Platinum - Platino</h6>
+              </div>
+              <div class="tier-description">
+                <p class="mb-2"><strong>Beneficios premium:</strong></p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success me-2"></i>Logo prominente en todos los materiales</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Menciones especiales durante el evento</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Stand preferencial y espacioso</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Oportunidad de presentación breve</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Inclusión en todas las comunicaciones</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="tier-info-item mb-4">
+              <div class="d-flex align-items-center mb-2">
+                <i class="fas fa-medal text-warning me-2"></i>
+                <h6 class="mb-0 text-warning">Gold - Oro</h6>
+              </div>
+              <div class="tier-description">
+                <p class="mb-2"><strong>Beneficios destacados:</strong></p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success me-2"></i>Logo destacado en materiales principales</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Menciones en redes sociales</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Buen espacio de stand</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Reconocimiento durante el evento</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="tier-info-item mb-4">
+              <div class="d-flex align-items-center mb-2">
+                <i class="fas fa-award text-muted me-2"></i>
+                <h6 class="mb-0 text-muted">Silver - Plata</h6>
+              </div>
+              <div class="tier-description">
+                <p class="mb-2"><strong>Beneficios equilibrados:</strong></p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success me-2"></i>Logo visible en materiales</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Menciones ocasionales</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Espacio de stand estándar</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Inclusión en agradecimientos</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="tier-info-item mb-4">
+              <div class="d-flex align-items-center mb-2">
+                <i class="fas fa-trophy text-secondary me-2"></i>
+                <h6 class="mb-0 text-secondary">Bronze - Bronce</h6>
+              </div>
+              <div class="tier-description">
+                <p class="mb-2"><strong>Beneficios básicos:</strong></p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success me-2"></i>Logo en materiales básicos</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Menciones básicas</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Espacio de stand pequeño</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Reconocimiento como patrocinador</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="tier-info-item mb-4">
+              <div class="d-flex align-items-center mb-2">
+                <i class="fas fa-handshake text-info me-2"></i>
+                <h6 class="mb-0 text-info">Partner - Colaborador</h6>
+              </div>
+              <div class="tier-description">
+                <p class="mb-2"><strong>Beneficios de colaboración:</strong></p>
+                <ul class="list-unstyled">
+                  <li><i class="fas fa-check text-success me-2"></i>Logo en materiales básicos</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Reconocimiento como colaborador</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Oportunidad de networking</li>
+                  <li><i class="fas fa-check text-success me-2"></i>Apoyo a la comunidad</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="text-muted small mb-0">
+          <i class="fas fa-info-circle me-1"></i>
+          Los beneficios específicos pueden variar según el evento y estarán sujetos a negociación con el organizador.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.form-section {
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 1.5rem;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.form-group .form-control,
+.form-group .form-select {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+}
+
+.form-group .form-control:focus,
+.form-group .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+.alert-light {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+.tier-info-item {
+  border-left: 4px solid #dee2e6;
+  padding-left: 1rem;
+}
+
+.tier-description ul {
+  margin-left: 1rem;
+}
+
+.tier-description li {
+  margin-bottom: 0.5rem;
+}
+</style>
+{% endblock %}

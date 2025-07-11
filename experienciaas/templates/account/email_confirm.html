@@ -1,0 +1,38 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n %}
+{% load account %}
+{% load allauth %}
+{% block head_title %}
+    Confirmar dirección de correo
+{% endblock head_title %}
+{% block content %}
+    {% element h1 %}
+        Confirmar dirección de correo
+    {% endelement %}
+    {% if confirmation %}
+        {% user_display confirmation.email_address.user as user_display %}
+        {% if can_confirm %}
+            <p>
+                Por favor confirma que <a href="mailto:{{ confirmation.email_address.email }}">{{ confirmation.email_address.email }}</a> es una dirección de correo válida para el usuario {{ user_display }}.
+            </p>
+            {% url 'account_confirm_email' confirmation.key as action_url %}
+            {% element form method="post" action=action_url %}
+                {% slot actions %}
+                    {% csrf_token %}
+                    {% element button type="submit" %}
+                        Confirmar
+                    {% endelement %}
+                {% endslot %}
+            {% endelement %}
+        {% else %}
+            <p>
+                No se puede confirmar {{ email }} porque ya está confirmada por otra cuenta.
+            </p>
+        {% endif %}
+    {% else %}
+        {% url 'account_email' as email_url %}
+        <p>
+            Este enlace de confirmación ha expirado o no es válido. Por favor <a href="{{ email_url }}">solicita un nuevo enlace de confirmación</a>.
+        </p>
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  {% if object %}
+    Editar Postulación de Patrocinio
+  {% else %}
+    Nueva Postulación de Patrocinio
+  {% endif %}
+  - Admin - Experienciaas
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="h3 fw-bold">
+            {% if object %}
+              <i class="fas fa-edit me-2"></i>
+              Editar Postulación de Patrocinio
+            {% else %}
+              <i class="fas fa-plus me-2"></i>
+              Nueva Postulación de Patrocinio
+            {% endif %}
+          </h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'events:admin_dashboard' %}">Admin</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'events:admin_sponsorship_applications' %}">Postulaciones de Patrocinio</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                {% if object %}Editar{% else %}Crear{% endif %}
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <a href="{% url 'events:admin_sponsorship_applications' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-arrow-left me-1"></i>
+          Volver a Lista
+        </a>
+      </div>
+
+      <!-- Application Info Card -->
+      {% if object %}
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fas fa-building me-2"></i>
+            {{ object.company_name }}
+          </h5>
+          <div class="row">
+            <div class="col-md-6">
+              <p class="mb-1">
+                <strong>Evento:</strong> {{ object.event.title }}
+              </p>
+              <p class="mb-1">
+                <strong>Contacto:</strong> {{ object.contact_name }}
+              </p>
+              <p class="mb-1">
+                <strong>Email:</strong> {{ object.contact_email }}
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="mb-1">
+                <strong>Teléfono:</strong> {{ object.contact_phone }}
+              </p>
+              <p class="mb-1">
+                <strong>Nivel Propuesto:</strong> 
+                <span class="badge bg-secondary">{{ object.get_proposed_tier_display }}</span>
+              </p>
+              <p class="mb-1">
+                <strong>Fecha de Postulación:</strong> {{ object.created_at|date:"d/m/Y H:i" }}
+              </p>
+            </div>
+          </div>
+          
+          {% if object.company_website %}
+          <div class="mt-2">
+            <strong>Sitio Web:</strong> 
+            <a href="{{ object.company_website }}" target="_blank">{{ object.company_website }}</a>
+          </div>
+          {% endif %}
+          
+          {% if object.message %}
+          <div class="mt-3">
+            <strong>Mensaje:</strong>
+            <p class="text-muted">{{ object.message }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Form -->
+      <div class="card">
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group mb-3">
+                  <label for="{{ form.status.id_for_label }}" class="form-label">
+                    {{ form.status.label }}
+                  </label>
+                  {{ form.status }}
+                  {% if form.status.errors %}
+                    <div class="invalid-feedback d-block">{{ form.status.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="{{ form.admin_notes.id_for_label }}" class="form-label">
+                {{ form.admin_notes.label }}
+              </label>
+              {{ form.admin_notes }}
+              {% if form.admin_notes.errors %}
+                <div class="invalid-feedback d-block">{{ form.admin_notes.errors }}</div>
+              {% endif %}
+              <small class="form-text text-muted">
+                Notas internas para el equipo organizador sobre esta postulación.
+              </small>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'events:admin_sponsorship_applications' %}" class="btn btn-secondary">
+                <i class="fas fa-times me-1"></i>
+                Cancelar
+              </a>
+              
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>
+                {% if object %}Actualizar{% else %}Crear{% endif %}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4">
+      <!-- Status History -->
+      {% if object %}
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="fas fa-history me-2"></i>
+            Historial de Estados
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="timeline">
+            <div class="timeline-item">
+              <div class="timeline-marker bg-info"></div>
+              <div class="timeline-content">
+                <h6>Postulación Creada</h6>
+                <p class="text-muted small">{{ object.created_at|date:"d/m/Y H:i" }}</p>
+              </div>
+            </div>
+            {% if object.reviewed_at %}
+            <div class="timeline-item">
+              <div class="timeline-marker bg-success"></div>
+              <div class="timeline-content">
+                <h6>Estado: {{ object.get_status_display }}</h6>
+                <p class="text-muted small">
+                  {{ object.reviewed_at|date:"d/m/Y H:i" }}
+                  {% if object.reviewed_by %}
+                    por {{ object.reviewed_by.get_full_name|default:object.reviewed_by.username }}
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Quick Actions -->
+      {% if object %}
+      <div class="card mt-4">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="fas fa-bolt me-2"></i>
+            Acciones Rápidas
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <form method="post" action="{% url 'events:admin_approve_sponsorship_application' object.pk %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success btn-sm w-100" 
+                      onclick="return confirm('¿Estás seguro de que quieres aprobar esta postulación?')">
+                <i class="fas fa-check me-1"></i>
+                Aprobar Postulación
+              </button>
+            </form>
+            
+            <form method="post" action="{% url 'events:admin_reject_sponsorship_application' object.pk %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger btn-sm w-100" 
+                      onclick="return confirm('¿Estás seguro de que quieres rechazar esta postulación?')">
+                <i class="fas fa-times me-1"></i>
+                Rechazar Postulación
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.form-group .form-control,
+.form-group .form-select {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+}
+
+.form-group .form-control:focus,
+.form-group .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #dee2e6;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -18px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  z-index: 1;
+}
+
+.timeline-content h6 {
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.timeline-content p {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,329 @@
+{% load static i18n compress%}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>
+      {% block title %}
+      Experienciaas - Tu ciudad, tu plan
+    {% endblock title %}
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+        content="Tu ciudad, tu plan. Descúbrelo en Experienciaas" />
+  <meta name="author"
+        content="JKamilo" />
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  {% block css %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+          integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+
+    <!-- Custom CSS -->
+    {% compress css %}
+      <link href="{% static 'css/project.css' %}" rel="stylesheet" />
+    {% endcompress %}
+  {% endblock css %}
+  
+  <!-- JavaScript -->
+  {% block javascript %}
+    <script>
+      // Fallback function if CDN fails
+      function loadBootstrapFallback() {
+        console.warn('Bootstrap CDN failed, trying alternative...');
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js';
+        script.onload = function() {
+          console.log('Bootstrap fallback loaded successfully');
+        };
+        script.onerror = function() {
+          console.error('Bootstrap fallback also failed, using manual implementation');
+          // Immediately initialize manual dropdowns
+          if (typeof initializeDropdownsManually === 'function') {
+            initializeDropdownsManually();
+          }
+        };
+        document.head.appendChild(script);
+      }
+    </script>
+    <!-- Bootstrap JS with fallback -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+            onload="console.log('Bootstrap CDN loaded successfully');"
+            onerror="loadBootstrapFallback();"></script>
+    
+    <!-- Custom JS -->
+    {% compress js %}
+      <script src="{% static 'js/project.js' %}"></script>
+    {% endcompress %}
+  {% endblock javascript %}
+</head>
+<body class="{% block bodyclass %}{% endblock bodyclass %}">
+  {% block body %}
+  <!-- Header -->
+  <header class="header-main">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand" href="{% url 'events:list' %}">
+          <span class="brand-text">ExperienciaaS</span>
+        </a>
+        
+        <!-- Mobile toggle button -->
+        <button class="navbar-toggler collapsed" type="button" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+                onclick="toggleMobileNav()">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Navigation Menu -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'events:my_events' %}">
+                  <i class="fas fa-ticket-alt me-1"></i>Mis Eventos
+                </a>
+              </li>
+              {% if request.user.is_staff %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" 
+                     data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-cogs me-1"></i>Admin
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{% url 'events:admin_dashboard' %}">
+                      <i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                    <li><a class="dropdown-item" href="{% url 'events:admin_events' %}">
+                      <i class="fas fa-calendar me-2"></i>Manage Events</a></li>
+                    <li><a class="dropdown-item" href="{% url 'events:admin_create_event' %}">
+                      <i class="fas fa-plus me-2"></i>Create Event</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'events:admin_sponsors' %}">
+                      <i class="fas fa-handshake me-2"></i>Sponsors</a></li>
+                    <li><a class="dropdown-item" href="{% url 'events:admin_sponsorship_applications' %}">
+                      <i class="fas fa-file-alt me-2"></i>Sponsor Applications</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'analytics:organizer_dashboard' %}">
+                      <i class="fas fa-chart-line me-2"></i>Analytics</a></li>
+                    {% if request.user.is_superuser %}
+                      <li><a class="dropdown-item" href="{% url 'analytics:platform_dashboard' %}">
+                        <i class="fas fa-chart-bar me-2"></i>Platform Analytics</a></li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                      <i class="fas fa-database me-2"></i>Django Admin</a></li>
+                  </ul>
+                </li>
+              {% endif %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-user-circle me-1"></i>{{ request.user.name|default:request.user.email }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="{% url 'users:detail' request.user.pk %}">
+                    <i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+                  {% if request.user.is_staff %}
+                    <li><a class="dropdown-item" href="{% url 'users:profile_update' %}">
+                      <i class="fas fa-edit me-2"></i>Perfil de Organizador</a></li>
+                  {% endif %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'account_logout' %}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                </ul>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account_login' %}">
+                  <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                </a>
+              </li>
+              {% if ACCOUNT_ALLOW_REGISTRATION %}
+                <li class="nav-item">
+                  <a class="btn btn-primary ms-2 px-3 py-2 rounded-pill" href="{% url 'account_signup' %}">
+                    <i class="fas fa-user-plus me-1"></i>Registrarse
+                  </a>
+                </li>
+              {% endif %}
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    {% if messages %}
+      <div class="container mt-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {% if message.tags == 'error' %}
+              <i class="fas fa-exclamation-circle me-2"></i>
+            {% elif message.tags == 'success' %}
+              <i class="fas fa-check-circle me-2"></i>
+            {% elif message.tags == 'info' %}
+              <i class="fas fa-info-circle me-2"></i>
+            {% elif message.tags == 'warning' %}
+              <i class="fas fa-exclamation-triangle me-2"></i>
+            {% endif %}
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block main %}
+      {% block content %}
+      {% endblock content %}
+    {% endblock main %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-main">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>Experienciaas</h5>
+          <p class="text-muted">Tu ciudad, tu plan. Descubre eventos increíbles cerca de ti.</p>
+        </div>
+        <div class="col-md-2">
+          <h6>Explorar</h6>
+          <ul class="list-unstyled">
+            <li><a href="{% url 'events:list' %}" class="text-muted">Eventos</a></li>
+            <li><a href="{% url 'about' %}" class="text-muted">Acerca de</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <h6>Soporte</h6>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-muted">Ayuda</a></li>
+            <li><a href="#" class="text-muted">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h6>Síguenos</h6>
+          <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p class="text-muted mb-0">&copy; 2025 Experienciaas. Todos los derechos reservados.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="#" class="text-muted me-3">Términos de Servicio</a>
+          <a href="#" class="text-muted">Política de Privacidad</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  {% endblock body %}
+
+  {% block modal %}
+  {% endblock modal %}
+  
+  <!-- Mobile navbar functionality -->
+  <script>
+    function toggleMobileNav() {
+      const navbarCollapse = document.getElementById('navbarNav');
+      const navbarToggler = document.querySelector('.navbar-toggler');
+      if (navbarCollapse && navbarToggler) {
+        if (navbarCollapse.classList.contains('show')) {
+          navbarCollapse.classList.remove('show');
+          navbarToggler.classList.add('collapsed');
+          navbarToggler.setAttribute('aria-expanded', 'false');
+        } else {
+          navbarCollapse.classList.add('show');
+          navbarToggler.classList.remove('collapsed');
+          navbarToggler.setAttribute('aria-expanded', 'true');
+        }
+      }
+    }
+
+    let dropdownsInitialized = false;
+
+    function initializeDropdowns() {
+      const dropdowns = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+      if (dropdownsInitialized || dropdowns.length === 0) return;
+      if (typeof bootstrap !== 'undefined') {
+        dropdowns.forEach(function(dropdown) {
+          try {
+            bootstrap.Dropdown.getOrCreateInstance(dropdown);
+          } catch (e) {
+            console.warn('Could not initialize Bootstrap dropdown:', e);
+          }
+        });
+        dropdownsInitialized = true;
+        console.log('Dropdowns initialized with Bootstrap');
+      } else {
+        dropdowns.forEach(function(dropdown) {
+          dropdown.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const menu = this.nextElementSibling;
+            if (menu && menu.classList.contains('dropdown-menu')) {
+              document.querySelectorAll('.dropdown-menu.show').forEach(function(openMenu) {
+                if (openMenu !== menu) openMenu.classList.remove('show');
+              });
+              menu.classList.toggle('show');
+            }
+          });
+        });
+        document.addEventListener('click', function(e) {
+          if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
+              menu.classList.remove('show');
+            });
+          }
+        });
+        dropdownsInitialized = true;
+        console.log('Dropdowns initialized manually');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeDropdowns();
+      // Auto-close navbar when clicking on nav links (not dropdowns)
+      const navLinks = document.querySelectorAll('.navbar-nav .nav-link:not(.dropdown-toggle)');
+      navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          const navbarCollapse = document.getElementById('navbarNav');
+          const navbarToggler = document.querySelector('.navbar-toggler');
+          if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+            navbarCollapse.classList.remove('show');
+            navbarToggler.classList.add('collapsed');
+            navbarToggler.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    });
+  </script>
+  {% block inline_javascript %}
+  {% endblock inline_javascript %}
+</body>
+</html>

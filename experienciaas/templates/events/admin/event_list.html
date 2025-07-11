@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Manage Events - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="admin-events">
+    <div class="admin-header">
+        <h1>Manage Events</h1>
+        <div class="admin-nav">
+            <a href="{% url 'events:admin_dashboard' %}" class="btn btn-secondary">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                    <polyline points="9,22 9,12 15,12 15,22"/>
+                </svg>
+                Dashboard
+            </a>
+            <a href="{% url 'events:admin_create_event' %}" class="btn btn-primary">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Create Event
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+        <form method="get" class="filters-form">
+            <div class="filter-group">
+                <input type="text" name="search" placeholder="Search events..." value="{{ request.GET.search }}" class="form-control">
+            </div>
+            
+            <div class="filter-group">
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>Draft</option>
+                    <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>Published</option>
+                    <option value="sold_out" {% if request.GET.status == 'sold_out' %}selected{% endif %}>Sold Out</option>
+                    <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <select name="category" class="form-control">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <select name="city" class="form-control">
+                    <option value="">All Cities</option>
+                    {% for city in cities %}
+                    <option value="{{ city.id }}" {% if request.GET.city == city.id|stringformat:"s" %}selected{% endif %}>
+                        {{ city.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <select name="price_type" class="form-control">
+                    <option value="">All Price Types</option>
+                    <option value="free" {% if request.GET.price_type == 'free' %}selected{% endif %}>Free</option>
+                    <option value="paid" {% if request.GET.price_type == 'paid' %}selected{% endif %}>Paid</option>
+                </select>
+            </div>
+            
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="{% url 'events:admin_events' %}" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bulk Actions -->
+    <div class="bulk-actions">
+        <form method="post" id="bulk-form">
+            {% csrf_token %}
+            <div class="bulk-controls">
+                <div class="bulk-select">
+                    <input type="checkbox" id="select-all" class="form-control">
+                    <label for="select-all">Select All</label>
+                </div>
+                <div class="bulk-action-group">
+                    <select name="action" class="form-control" id="bulk-action">
+                        <option value="">Choose Action</option>
+                        <option value="publish">Publish Selected</option>
+                        <option value="unpublish">Unpublish Selected</option>
+                        <option value="feature">Feature Selected</option>
+                        <option value="unfeature">Unfeature Selected</option>
+                        <option value="delete">Delete Selected</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary" disabled id="bulk-submit">Apply</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Events Table -->
+    <div class="events-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" class="select-all-checkbox">
+                    </th>
+                    <th>Event</th>
+                    <th>Category</th>
+                    <th>City</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Tickets</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="selected_events" value="{{ event.id }}" class="event-checkbox">
+                    </td>
+                    <td>
+                        <div class="event-info">
+                            <div class="event-image-small">
+                                {% if event.image %}
+                                    <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                                {% else %}
+                                    <div class="placeholder-image">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <path d="M21 15l-5-5L5 21"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="event-details">
+                                <h4>{{ event.title }}</h4>
+                                <p>{{ event.venue_name }}</p>
+                                {% if event.is_featured %}
+                                    <span class="featured-badge">Featured</span>
+                                {% endif %}
+                                {% if event.status == 'sold_out' %}
+                                    <span class="sold-out-badge">
+                                        <svg class="icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <path d="M15 9l-6 6M9 9l6 6"/>
+                                        </svg>
+                                        Sold Out
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="category-badge">{{ event.category.name }}</span>
+                    </td>
+                    <td>{{ event.city.name }}</td>
+                    <td>
+                        <div class="date-info">
+                            <strong>{{ event.start_date|date:"M d, Y" }}</strong>
+                            <small>{{ event.start_date|date:"g:i A" }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge status-{{ event.status }}">
+                            {{ event.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="ticket-count">{{ event.tickets.count }}</span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a href="{% url 'events:detail' event.slug %}" class="btn btn-sm" target="_blank" title="View Public">
+                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </a>
+                            <a href="{% url 'events:admin_event_detail' event.pk %}" class="btn btn-sm btn-primary" title="Admin Detail">
+                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                    <polyline points="10,9 9,9 8,9"/>
+                                </svg>
+                            </a>
+                            <a href="{% url 'events:admin_edit_event' event.pk %}" class="btn btn-sm btn-secondary" title="Edit">
+                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                                </svg>
+                            </a>
+                            <a href="{% url 'events:admin_delete_event' event.pk %}" class="btn btn-sm btn-danger" title="Delete"
+                               onclick="return confirm('Are you sure you want to delete this event?')">
+                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <polyline points="3,6 5,6 21,6"/>
+                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                    <line x1="10" y1="11" x2="10" y2="17"/>
+                                    <line x1="14" y1="11" x2="14" y2="17"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <div class="empty-message">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+                            </svg>
+                            <h3>No events found</h3>
+                            <p>Try adjusting your filters or create a new event.</p>
+                            <a href="{% url 'events:admin_create_event' %}" class="btn btn-primary">Create Event</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="pagination">
+        <div class="pagination-info">
+            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} events
+        </div>
+        <div class="pagination-controls">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}{% if request.GET.price_type %}&price_type={{ request.GET.price_type }}{% endif %}" class="btn btn-secondary">Previous</a>
+            {% endif %}
+            
+            <span class="page-numbers">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.city %}&city={{ request.GET.city }}{% endif %}{% if request.GET.price_type %}&price_type={{ request.GET.price_type }}{% endif %}" class="btn btn-secondary">Next</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Bulk actions functionality
+    const selectAllCheckbox = document.getElementById('select-all');
+    const eventCheckboxes = document.querySelectorAll('.event-checkbox');
+    const bulkActionSelect = document.getElementById('bulk-action');
+    const bulkSubmitBtn = document.getElementById('bulk-submit');
+    const bulkForm = document.getElementById('bulk-form');
+
+    // Select all functionality
+    selectAllCheckbox.addEventListener('change', function() {
+        eventCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateBulkActions();
+    });
+
+    // Individual checkbox functionality
+    eventCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checkedCount = document.querySelectorAll('.event-checkbox:checked').length;
+            selectAllCheckbox.checked = checkedCount === eventCheckboxes.length;
+            selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < eventCheckboxes.length;
+            updateBulkActions();
+        });
+    });
+
+    // Update bulk actions availability
+    function updateBulkActions() {
+        const checkedCount = document.querySelectorAll('.event-checkbox:checked').length;
+        bulkSubmitBtn.disabled = checkedCount === 0 || bulkActionSelect.value === '';
+    }
+
+    // Bulk action select change
+    bulkActionSelect.addEventListener('change', updateBulkActions);
+
+    // Bulk form submission
+    bulkForm.addEventListener('submit', function(e) {
+        const checkedCount = document.querySelectorAll('.event-checkbox:checked').length;
+        if (checkedCount === 0) {
+            e.preventDefault();
+            alert('Please select at least one event.');
+            return;
+        }
+
+        const action = bulkActionSelect.value;
+        if (action === 'delete') {
+            if (!confirm(`Are you sure you want to delete ${checkedCount} event(s)?`)) {
+                e.preventDefault();
+                return;
+            }
+        }
+
+        // Add selected events to form
+        const selectedEvents = Array.from(document.querySelectorAll('.event-checkbox:checked')).map(cb => cb.value);
+        selectedEvents.forEach(eventId => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'selected_events';
+            input.value = eventId;
+            this.appendChild(input);
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,566 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ organizer.user.name|default:organizer.user.email }} - Organizador - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    /* Animación para elementos flotantes */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Animación para las tarjetas de eventos */
+    .fade-in {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Hover effects para las tarjetas */
+    .event-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .event-card:hover .event-image {
+      transform: scale(1.05);
+    }
+
+    .event-image {
+      transition: transform 0.3s ease;
+    }
+
+    /* Animaciones del carrusel de patrocinadores */
+    .sponsor-slider-track {
+      animation: scroll 15s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .sponsor-carousel:hover .sponsor-slider-track {
+      animation-play-state: paused;
+    }
+
+    /* Estilos responsivos */
+    @media (max-width: 768px) {
+      .event-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .event-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="organizer-profile">
+  <!-- Cover Section -->
+  <div class="organizer-cover">
+    {% if organizer.cover_image %}
+      <img src="{{ organizer.cover_image.url }}" alt="Cover" class="cover-image">
+    {% else %}
+      <div class="cover-placeholder">
+        <i class="fas fa-image fa-3x text-muted"></i>
+      </div>
+    {% endif %}
+    
+    <!-- Profile Header -->
+    <div class="container">
+      <div class="profile-header">
+        <div class="row align-items-end">
+          <div class="col-md-8">
+            <div class="d-flex align-items-end">
+              <!-- Avatar -->
+              <div class="organizer-avatar">
+                {% if organizer.avatar %}
+                  <img src="{{ organizer.avatar.url }}" alt="{{ organizer.user.name|default:organizer.user.email }}" class="avatar-image">
+                {% else %}
+                  <div class="avatar-placeholder">
+                    <i class="fas fa-user fa-3x"></i>
+                  </div>
+                {% endif %}
+              </div>
+              
+              <!-- Basic Info -->
+              <div class="organizer-info ms-4">
+                <h1 class="organizer-name">{{ organizer.user.name|default:organizer.user.email }}</h1>
+                {% if organizer.location %}
+                  <p class="organizer-location">
+                    <i class="fas fa-map-marker-alt me-1"></i>{{ organizer.location }}
+                  </p>
+                {% endif %}
+                
+                <!-- Stats -->
+                <div class="organizer-stats">
+                  <span class="stat-item">
+                    <strong>{{ organizer.followers_count }}</strong>
+                    <small>Seguidore{{ organizer.followers_count|pluralize }}</small>
+                  </span>
+                  <span class="stat-item">
+                    <strong>{{ organizer.events_count }}</strong>
+                    <small>Evento{{ organizer.events_count|pluralize }}</small>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-4 text-md-end">
+            {% if user.is_authenticated and organizer.user != user %}
+              <button class="btn {% if is_following %}btn-outline-primary{% else %}btn-primary{% endif %} follow-btn" 
+                      data-slug="{{ organizer.slug }}">
+                <i class="fas {% if is_following %}fa-user-minus{% else %}fa-user-plus{% endif %} me-1"></i>
+                <span class="follow-text">{% if is_following %}Siguiendo{% else %}Seguir{% endif %}</span>
+              </button>
+            {% endif %}
+            
+            {% if organizer.allow_contact %}
+              <div class="contact-info mt-2">
+                {% if organizer.website %}
+                  <a href="{{ organizer.website }}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-globe me-1"></i>Sitio Web
+                  </a>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="container mt-4">
+    <div class="row">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        <!-- Bio -->
+        {% if organizer.bio %}
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title">Acerca de</h5>
+              <p class="card-text">{{ organizer.bio|linebreaks }}</p>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Events Section -->
+        <div class="events-section">
+          <!-- Event Type Tabs -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Eventos</h3>
+            
+            <div class="event-type-tabs">
+              <a href="?type=upcoming" class="tab-link {% if event_type == 'upcoming' %}active{% endif %}">
+                Próximos ({{ upcoming_count|floatformat:0 }})
+              </a>
+              <a href="?type=past" class="tab-link {% if event_type == 'past' %}active{% endif %}">
+                Pasados ({{ past_count|floatformat:0 }})
+              </a>
+            </div>
+          </div>
+
+          <!-- Events Grid -->
+          {% if events %}
+            <div class="event-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
+              {% for event in events %}
+                <div class="event-card fade-in" style="position: relative; display: flex; flex-direction: column; min-height: 320px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-radius: 20px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); overflow: hidden; background: #fff;" onclick="window.open('{{ event.get_absolute_url }}', '_blank');">
+                  <div class="event-card-body" style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="position-relative">
+                      {% if event.image %}
+                        <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image no-image-preview" style="height: 160px; width: 100%; object-fit: cover; border-radius: 0; user-select: none; pointer-events: none;">
+                      {% else %}
+                        <img src="{{ MEDIA_URL }}events/default/general_event.png" alt="{{ event.title }}" class="event-image no-image-preview" style="height: 160px; width: 100%; object-fit: cover; border-radius: 0; user-select: none; pointer-events: none;">
+                      {% endif %}
+                      <!-- Badges -->
+                      <div class="position-absolute top-0 start-0 p-2">
+                        {% if event.status == 'sold_out' %}
+                          <span class="badge bg-danger text-white" style="border-radius: 25px; padding: 6px 12px; font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);">
+                            <i class="fas fa-exclamation-circle me-1"></i>Agotado
+                          </span>
+                        {% endif %}
+                      </div>
+                      <div class="position-absolute top-0 end-0 p-2">
+                        {% if event.is_free %}
+                          <span class="badge badge-free" style="background: linear-gradient(45deg, #51CF66, #69DB7C); color: white; border-radius: 25px; padding: 6px 12px; font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(81, 207, 102, 0.4);">Gratis</span>
+                        {% elif event.price_type == 'donation' %}
+                          <span class="badge badge-donation" style="background: linear-gradient(45deg, #FF922B, #FFB84D); color: white; border-radius: 25px; padding: 6px 12px; font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(255, 146, 43, 0.4);">Donación</span>
+                        {% else %}
+                          <span class="badge badge-paid" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; border-radius: 25px; padding: 6px 12px; font-size: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">{{ event.formatted_price }}</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                    
+                    <div class="event-content" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 16px;">
+                      <div>
+                        <div class="event-category text-primary mb-2" style="color: {{ event.category.color }}; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                          {% if event.category.icon %}
+                            <i class="{{ event.category.icon }} me-1"></i>
+                          {% endif %}
+                          {{ event.category.name }}
+                        </div>
+                        
+                        <h3 class="event-title mb-2" style="font-size: 16px; font-weight: 700; line-height: 1.3; color: #1A202C; margin: 0;">
+                          {{ event.title }}
+                        </h3>
+                        
+                        <div class="event-meta mb-2" style="display: flex; flex-wrap: wrap; gap: 12px;">
+                          <div class="event-meta-item" style="display: flex; align-items: center; font-size: 12px; color: #718096;">
+                            <i class="fas fa-calendar-alt me-1" style="color: #4299E1; width: 14px; font-size: 11px;"></i>
+                            <span>{{ event.start_date|date:"d M Y" }}</span>
+                          </div>
+                          <div class="event-meta-item" style="display: flex; align-items: center; font-size: 12px; color: #718096;">
+                            <i class="fas fa-clock me-1" style="color: #4299E1; width: 14px; font-size: 11px;"></i>
+                            <span>{{ event.start_date|date:"H:i" }}</span>
+                          </div>
+                          <div class="event-meta-item" style="display: flex; align-items: center; font-size: 12px; color: #718096;">
+                            <i class="fas fa-map-marker-alt me-1" style="color: #4299E1; width: 14px; font-size: 11px;"></i>
+                            <span>{{ event.city.name }}</span>
+                          </div>
+                        </div>
+                        
+                        {% if event.short_description %}
+                          <p class="card-text" style="flex: 1; font-size: 13px; color: #4A5568; line-height: 1.4; margin: 0;">{{ event.short_description|truncatewords:12 }}</p>
+                        {% endif %}
+                      </div>
+                      
+                      <div class="mt-auto pt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div class="event-price{% if event.is_free %} free{% endif %}" style="font-size: 16px; font-weight: 700; color: #2D3748;">
+                            {% if event.is_free %}
+                              <span style="color: #38A169;"><i class="fas fa-gift me-1" style="font-size: 14px;"></i>Gratis</span>
+                            {% elif event.price_type == 'donation' %}
+                              <span style="color: #D69E2E;"><i class="fas fa-heart me-1" style="font-size: 14px;"></i>Donación</span>
+                            {% else %}
+                              <span style="color: #3182CE;">{{ event.formatted_price }}</span>
+                            {% endif %}
+                          </div>
+                          
+                          {% if event.max_attendees %}
+                            <div>
+                              <small class="text-muted" style="font-size: 11px; color: #718096;">
+                                {% if event.remaining_tickets %}
+                                  <i class="fas fa-users me-1" style="color: #38A169; font-size: 10px;"></i>{{ event.remaining_tickets }} cupo{{ event.remaining_tickets|pluralize }}
+                                {% else %}
+                                  <i class="fas fa-exclamation-triangle me-1" style="color: #E53E3E; font-size: 10px;"></i>Sin cupos
+                                {% endif %}
+                              </small>
+                            </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% if event.event_sponsors.all and event.event_sponsors.all|length > 0 %}
+                  <div class="sponsor-carousel" style="height: 40px; overflow: hidden; position: relative; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 0 0 15px 15px; margin-top: auto;">
+                    {% if event.event_sponsors.all|length == 1 %}
+                      <!-- Un solo patrocinador: mostrar estático centrado -->
+                      <div class="sponsor-single" style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%;">
+                        {% for event_sponsor in event.event_sponsors.all %}
+                          <div class="sponsor-item" style="display: flex; align-items: center; padding: 0 15px; white-space: nowrap; gap: 8px;">
+                            {% if event_sponsor.tier == 'platinum' %}
+                              <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #9CA3AF); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                <i class="fas fa-crown" style="margin-right: 2px;"></i>Platinum
+                              </span>
+                            {% elif event_sponsor.tier == 'gold' %}
+                              <span class="sponsor-badge" style="background: linear-gradient(45deg, #FCD34D, #F59E0B); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                <i class="fas fa-medal" style="margin-right: 2px;"></i>Gold
+                              </span>
+                            {% elif event_sponsor.tier == 'silver' %}
+                              <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #6B7280); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                <i class="fas fa-award" style="margin-right: 2px;"></i>Silver
+                              </span>
+                            {% elif event_sponsor.tier == 'bronze' %}
+                              <span class="sponsor-badge" style="background: linear-gradient(45deg, #FBBF24, #D97706); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                <i class="fas fa-certificate" style="margin-right: 2px;"></i>Bronze
+                              </span>
+                            {% else %}
+                              <span class="sponsor-badge" style="background: linear-gradient(45deg, #3B82F6, #1E40AF); color: white; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                <i class="fas fa-handshake" style="margin-right: 2px;"></i>Partner
+                              </span>
+                            {% endif %}
+                            <span class="sponsor-name" style="font-size: 11px; color: #1F2937; font-weight: 600; text-shadow: 0 1px 2px rgba(255,255,255,0.8); overflow: hidden; text-overflow: ellipsis; max-width: 100px;">{{ event_sponsor.sponsor.name }}</span>
+                          </div>
+                        {% endfor %}
+                      </div>
+                    {% else %}
+                      <!-- Múltiples patrocinadores: carrusel infinito seamless -->
+                      <div class="sponsor-slider-wrapper" style="height: 100%; overflow: hidden; position: relative;">
+                        <div class="sponsor-slider-track" style="display: flex; align-items: center; height: 100%; width: fit-content;">
+                          <!-- Primera copia -->
+                          {% for event_sponsor in event.event_sponsors.all %}
+                            <div class="sponsor-item" style="display: flex; align-items: center; padding: 0 15px; white-space: nowrap; min-width: max-content; gap: 8px; flex-shrink: 0;">
+                              {% if event_sponsor.tier == 'platinum' %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #9CA3AF); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-crown" style="margin-right: 2px;"></i>Platinum
+                                </span>
+                              {% elif event_sponsor.tier == 'gold' %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #FCD34D, #F59E0B); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-medal" style="margin-right: 2px;"></i>Gold
+                                </span>
+                              {% elif event_sponsor.tier == 'silver' %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #6B7280); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                    <i class="fas fa-award" style="margin-right: 2px;"></i>Silver
+                                  </span>
+                              {% elif event_sponsor.tier == 'bronze' %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #FBBF24, #D97706); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-certificate" style="margin-right: 2px;"></i>Bronze
+                                </span>
+                              {% else %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #3B82F6, #1E40AF); color: white; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-handshake" style="margin-right: 2px;"></i>Partner
+                                </span>
+                              {% endif %}
+                              <span class="sponsor-name" style="font-size: 11px; color: #1F2937; font-weight: 600; text-shadow: 0 1px 2px rgba(255,255,255,0.8); overflow: hidden; text-overflow: ellipsis; max-width: 100px;">{{ event_sponsor.sponsor.name }}</span>
+                            </div>
+                            <div class="sponsor-separator" style="width: 2px; height: 20px; background: linear-gradient(to bottom, transparent, #cbd5e0, transparent); margin: 0 10px; flex-shrink: 0;"></div>
+                          {% endfor %}
+                          
+                          <!-- Segunda copia para loop seamless -->
+                          {% for event_sponsor in event.event_sponsors.all %}
+                            <div class="sponsor-item" style="display: flex; align-items: center; padding: 0 15px; white-space: nowrap; min-width: max-content; gap: 8px; flex-shrink: 0;">
+                              {% if event_sponsor.tier == 'platinum' %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #9CA3AF); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-crown" style="margin-right: 2px;"></i>Platinum
+                                </span>
+                              {% elif event_sponsor.tier == 'gold' %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #FCD34D, #F59E0B); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-medal" style="margin-right: 2px;"></i>Gold
+                                </span>
+                              {% elif event_sponsor.tier == 'silver' %>
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #E5E7EB, #6B7280); color: #374151; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-award" style="margin-right: 2px;"></i>Silver
+                                </span>
+                              {% elif event_sponsor.tier == 'bronze' %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #FBBF24, #D97706); color: #92400E; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-certificate" style="margin-right: 2px;"></i>Bronze
+                                </span>
+                              {% else %}
+                                <span class="sponsor-badge" style="background: linear-gradient(45deg, #3B82F6, #1E40AF); color: white; padding: 3px 8px; border-radius: 12px; font-size: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); flex-shrink: 0;">
+                                  <i class="fas fa-handshake" style="margin-right: 2px;"></i>Partner
+                                </span>
+                              {% endif %}
+                              <span class="sponsor-name" style="font-size: 11px; color: #1F2937; font-weight: 600; text-shadow: 0 1px 2px rgba(255,255,255,0.8); overflow: hidden; text-overflow: ellipsis; max-width: 100px;">{{ event_sponsor.sponsor.name }}</span>
+                            </div>
+                            <div class="sponsor-separator" style="width: 2px; height: 20px; background: linear-gradient(to bottom, transparent, #cbd5e0, transparent); margin: 0 10px; flex-shrink: 0;"></div>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if events.has_other_pages %}
+              <nav aria-label="Events pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                  {% if events.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?type={{ event_type }}&page={{ events.previous_page_number }}">Anterior</a>
+                    </li>
+                  {% endif %}
+                  
+                  {% for num in events.paginator.page_range %}
+                    {% if events.number == num %}
+                      <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                      </li>
+                    {% elif num > events.number|add:'-3' and num < events.number|add:'3' %}
+                      <li class="page-item">
+                        <a class="page-link" href="?type={{ event_type }}&page={{ num }}">{{ num }}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                  
+                  {% if events.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="?type={{ event_type }}&page={{ events.next_page_number }}">Siguiente</a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </nav>
+            {% endif %}
+          {% else %}
+            <div class="no-events text-center py-5">
+              <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">
+                {% if event_type == 'past' %}
+                  No hay eventos pasados
+                {% else %}
+                  No hay eventos próximos
+                {% endif %}
+              </h5>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="organizer-sidebar">
+          <!-- Contact Info -->
+          {% if organizer.allow_contact %}
+            <div class="card mb-4">
+              <div class="card-body">
+                <h6 class="card-title">Contacto</h6>
+                
+                {% if organizer.website %}
+                  <a href="{{ organizer.website }}" target="_blank" class="contact-link">
+                    <i class="fas fa-globe me-2"></i>{{ organizer.website }}
+                  </a>
+                {% endif %}
+                
+                {% if organizer.phone %}
+                  <div class="contact-link">
+                    <i class="fas fa-phone me-2"></i>{{ organizer.phone }}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Social Media -->
+          {% if organizer.facebook_url or organizer.twitter_url or organizer.instagram_url or organizer.linkedin_url %}
+            <div class="card mb-4">
+              <div class="card-body">
+                <h6 class="card-title">Redes Sociales</h6>
+                <div class="social-links">
+                  {% if organizer.facebook_url %}
+                    <a href="{{ organizer.facebook_url }}" target="_blank" class="social-link facebook">
+                      <i class="fab fa-facebook-f"></i>
+                    </a>
+                  {% endif %}
+                  {% if organizer.twitter_url %}
+                    <a href="{{ organizer.twitter_url }}" target="_blank" class="social-link twitter">
+                      <i class="fab fa-twitter"></i>
+                    </a>
+                  {% endif %}
+                  {% if organizer.instagram_url %}
+                    <a href="{{ organizer.instagram_url }}" target="_blank" class="social-link instagram">
+                      <i class="fab fa-instagram"></i>
+                    </a>
+                  {% endif %}
+                  {% if organizer.linkedin_url %}
+                    <a href="{{ organizer.linkedin_url }}" target="_blank" class="social-link linkedin">
+                      <i class="fab fa-linkedin-in"></i>
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Quick Stats -->
+          <div class="card">
+            <div class="card-body">
+              <h6 class="card-title">Estadísticas</h6>
+              <div class="stats-list">
+                <div class="stat-row">
+                  <span class="stat-label">Seguidores</span>
+                  <span class="stat-value">{{ organizer.followers_count }}</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Total de Eventos</span>
+                  <span class="stat-value">{{ organizer.events_count }}</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Próximos</span>
+                  <span class="stat-value">{{ upcoming_count }}</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Completados</span>
+                  <span class="stat-value">{{ past_count }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Get CSRF token from meta tag
+function getCSRFToken() {
+  const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+  return csrfMeta ? csrfMeta.getAttribute('content') : '';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Follow/Unfollow functionality
+  const followBtn = document.querySelector('.follow-btn');
+  if (followBtn) {
+    followBtn.addEventListener('click', function() {
+      const slug = this.dataset.slug;
+      const followText = this.querySelector('.follow-text');
+      const followIcon = this.querySelector('i');
+      
+      fetch(`/users/organizer/${slug}/follow/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          if (data.action === 'followed') {
+            followText.textContent = 'Siguiendo';
+            followIcon.className = 'fas fa-user-minus me-1';
+            this.className = 'btn btn-outline-primary follow-btn';
+          } else {
+            followText.textContent = 'Seguir';
+            followIcon.className = 'fas fa-user-plus me-1';
+            this.className = 'btn btn-primary follow-btn';
+          }
+          
+          // Update followers count
+          const followersCount = document.querySelector('.organizer-stats .stat-item strong');
+          if (followersCount) {
+            followersCount.textContent = data.followers_count;
+          }
+        } else {
+          console.error('Error:', data.error);
+          alert(data.error || 'Error al procesar la solicitud');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al procesar la solicitud. Por favor, intenta de nuevo.');
+      });
+    });
+  }
+});
+</script>
+{% endblock %}

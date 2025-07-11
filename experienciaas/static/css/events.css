@@ -1,0 +1,2723 @@
+/* ================================
+   EVENT LIST STYLES
+   ================================ */
+
+/* Animación flotante para elementos decorativos */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Responsividad del título hero */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.8rem !important;
+  }
+  .hero-title .text-warning {
+    font-size: 2.5rem !important;
+  }
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+  .hero-section {
+    min-height: 420px !important; /* Aumentamos altura para acomodar búsqueda */
+    padding: 20px 0 !important;
+  }
+  
+  /* Mejoras para búsqueda móvil */
+  .hero-content {
+    padding: 0 10px;
+  }
+  
+  .d-lg-none .px-2 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  .d-lg-none .input-group {
+    width: 100%;
+    max-width: none !important;
+  }
+  
+  .d-lg-none .form-control {
+    font-size: 14px !important;
+    padding: 12px 15px !important;
+  }
+  
+  .d-lg-none .btn {
+    padding: 12px 15px !important;
+    min-width: 55px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 1.5rem !important;
+  }
+  .hero-title .text-warning {
+    font-size: 2.1rem !important;
+  }
+  .hero-subtitle {
+    font-size: 0.95rem !important;
+  }
+  .hero-section {
+    min-height: 400px !important;
+    padding: 15px 0 !important;
+  }
+  
+  /* Optimizaciones adicionales para pantallas muy pequeñas */
+  .hero-content {
+    padding: 0 5px;
+  }
+  
+  .d-lg-none .form-control {
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+  }
+  
+  .d-lg-none .btn {
+    padding: 10px 12px !important;
+    min-width: 50px !important;
+  }
+  
+  .d-lg-none .input-group {
+    height: 45px !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información */
+.event-meta-item i {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-meta-item i,
+.event-card:hover .event-meta-item i {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-meta-item i,
+.events-by-location .event-card:hover .event-meta-item i {
+  color: #3182CE !important;
+}
+
+/* Mejora en el precio */
+.event-price {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .event-price {
+  transform: scale(1.05);
+}
+
+/* Improved Event Price Styling for Main Event Grid */
+.event-grid .event-price {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2D3748 !important;
+  letter-spacing: -0.025em;
+}
+
+.event-grid .event-price i {
+  font-size: 0.85rem !important;
+  margin-right: 0.25rem !important;
+}
+
+.event-grid .event-price.free span {
+  color: #38A169 !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #D69E2E"] {
+  color: #D69E2E !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #3182CE"] {
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for event price */
+@media (max-width: 768px) {
+  .event-grid .event-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-grid .event-price {
+    font-size: 0.85rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsividad del título hero */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.8rem !important;
+  }
+  .hero-title .text-warning {
+    font-size: 2.5rem !important;
+  }
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+  .hero-section {
+    min-height: 420px !important; /* Aumentamos altura para acomodar búsqueda */
+    padding: 20px 0 !important;
+  }
+  
+  /* Mejoras para búsqueda móvil */
+  .hero-content {
+    padding: 0 10px;
+  }
+  
+  .d-lg-none .px-2 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  .d-lg-none .input-group {
+    width: 100%;
+    max-width: none !important;
+  }
+  
+  .d-lg-none .form-control {
+    font-size: 14px !important;
+    padding: 12px 15px !important;
+  }
+  
+  .d-lg-none .btn {
+    padding: 12px 15px !important;
+    min-width: 55px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 1.5rem !important;
+  }
+  .hero-title .text-warning {
+    font-size: 2.1rem !important;
+  }
+  .hero-subtitle {
+    font-size: 0.95rem !important;
+  }
+  .hero-section {
+    min-height: 400px !important;
+    padding: 15px 0 !important;
+  }
+  
+  /* Optimizaciones adicionales para pantallas muy pequeñas */
+  .hero-content {
+    padding: 0 5px;
+  }
+  
+  .d-lg-none .form-control {
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+  }
+  
+  .d-lg-none .btn {
+    padding: 10px 12px !important;
+    min-width: 50px !important;
+  }
+  
+  .d-lg-none .input-group {
+    height: 45px !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información */
+.event-meta-item i {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-meta-item i,
+.event-card:hover .event-meta-item i {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-meta-item i,
+.events-by-location .event-card:hover .event-meta-item i {
+  color: #3182CE !important;
+}
+
+/* Mejora en el precio */
+.event-price {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .event-price {
+  transform: scale(1.05);
+}
+
+/* Improved Event Price Styling for Main Event Grid */
+.event-grid .event-price {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2D3748 !important;
+  letter-spacing: -0.025em;
+}
+
+.event-grid .event-price i {
+  font-size: 0.85rem !important;
+  margin-right: 0.25rem !important;
+}
+
+.event-grid .event-price.free span {
+  color: #38A169 !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #D69E2E"] {
+  color: #D69E2E !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #3182CE"] {
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for event price */
+@media (max-width: 768px) {
+  .event-grid .event-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-grid .event-price {
+    font-size: 0.85rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsividad del título hero */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.8rem !important;
+  }
+  .hero-title .text-warning {
+    font-size: 2.5rem !important;
+  }
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+  .hero-section {
+    min-height: 420px !important; /* Aumentamos altura para acomodar búsqueda */
+    padding: 20px 0 !important;
+  }
+  
+  /* Mejoras para búsqueda móvil */
+  .hero-content {
+    padding: 0 10px;
+  }
+  
+  .d-lg-none .px-2 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  .d-lg-none .input-group {
+    width: 100%;
+    max-width: none !important;
+  }
+  
+  .d-lg-none .form-control {
+    font-size: 14px !important;
+    padding: 12px 15px !important;
+  }
+  
+  .d-lg-none .btn {
+    padding: 12px 15px !important;
+    min-width: 55px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 1.5rem !important;
+  }
+  .hero-title .text-warning {
+    font-size: 2.1rem !important;
+  }
+  .hero-subtitle {
+    font-size: 0.95rem !important;
+  }
+  .hero-section {
+    min-height: 400px !important;
+    padding: 15px 0 !important;
+  }
+  
+  /* Optimizaciones adicionales para pantallas muy pequeñas */
+  .hero-content {
+    padding: 0 5px;
+  }
+  
+  .d-lg-none .form-control {
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+  }
+  
+  .d-lg-none .btn {
+    padding: 10px 12px !important;
+    min-width: 50px !important;
+  }
+  
+  .d-lg-none .input-group {
+    height: 45px !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información */
+.event-meta-item i {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-meta-item i,
+.event-card:hover .event-meta-item i {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-meta-item i,
+.events-by-location .event-card:hover .event-meta-item i {
+  color: #3182CE !important;
+}
+
+/* Mejora en el precio */
+.event-price {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .event-price {
+  transform: scale(1.05);
+}
+
+/* Improved Event Price Styling for Main Event Grid */
+.event-grid .event-price {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2D3748 !important;
+  letter-spacing: -0.025em;
+}
+
+.event-grid .event-price i {
+  font-size: 0.85rem !important;
+  margin-right: 0.25rem !important;
+}
+
+.event-grid .event-price.free span {
+  color: #38A169 !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #D69E2E"] {
+  color: #D69E2E !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #3182CE"] {
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for event price */
+@media (max-width: 768px) {
+  .event-grid .event-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-grid .event-price {
+    font-size: 0.85rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información */
+.event-meta-item i {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-meta-item i,
+.event-card:hover .event-meta-item i {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-meta-item i,
+.events-by-location .event-card:hover .event-meta-item i {
+  color: #3182CE !important;
+}
+
+/* Mejora en el precio */
+.event-price {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .event-price {
+  transform: scale(1.05);
+}
+
+/* Improved Event Price Styling for Main Event Grid */
+.event-grid .event-price {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2D3748 !important;
+  letter-spacing: -0.025em;
+}
+
+.event-grid .event-price i {
+  font-size: 0.85rem !important;
+  margin-right: 0.25rem !important;
+}
+
+.event-grid .event-price.free span {
+  color: #38A169 !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #D69E2E"] {
+  color: #D69E2E !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #3182CE"] {
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for event price */
+@media (max-width: 768px) {
+  .event-grid .event-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-grid .event-price {
+    font-size: 0.85rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsividad del título hero */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.8rem !important;
+  }
+  .hero-title .text-warning {
+    font-size: 2.5rem !important;
+  }
+  .hero-subtitle {
+    font-size: 1rem !important;
+  }
+  .hero-section {
+    min-height: 420px !important; /* Aumentamos altura para acomodar búsqueda */
+    padding: 20px 0 !important;
+  }
+  
+  /* Mejoras para búsqueda móvil */
+  .hero-content {
+    padding: 0 10px;
+  }
+  
+  .d-lg-none .px-2 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  .d-lg-none .input-group {
+    width: 100%;
+    max-width: none !important;
+  }
+  
+  .d-lg-none .form-control {
+    font-size: 14px !important;
+    padding: 12px 15px !important;
+  }
+  
+  .d-lg-none .btn {
+    padding: 12px 15px !important;
+    min-width: 55px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 1.5rem !important;
+  }
+  .hero-title .text-warning {
+    font-size: 2.1rem !important;
+  }
+  .hero-subtitle {
+    font-size: 0.95rem !important;
+  }
+  .hero-section {
+    min-height: 400px !important;
+    padding: 15px 0 !important;
+  }
+  
+  /* Optimizaciones adicionales para pantallas muy pequeñas */
+  .hero-content {
+    padding: 0 5px;
+  }
+  
+  .d-lg-none .form-control {
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+  }
+  
+  .d-lg-none .btn {
+    padding: 10px 12px !important;
+    min-width: 50px !important;
+  }
+  
+  .d-lg-none .input-group {
+    height: 45px !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información */
+.event-meta-item i {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-meta-item i,
+.event-card:hover .event-meta-item i {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-meta-item i,
+.events-by-location .event-card:hover .event-meta-item i {
+  color: #3182CE !important;
+}
+
+/* Mejora en el precio */
+.event-price {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .event-price {
+  transform: scale(1.05);
+}
+
+/* Improved Event Price Styling for Main Event Grid */
+.event-grid .event-price {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2D3748 !important;
+  letter-spacing: -0.025em;
+}
+
+.event-grid .event-price i {
+  font-size: 0.85rem !important;
+  margin-right: 0.25rem !important;
+}
+
+.event-grid .event-price.free span {
+  color: #38A169 !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #D69E2E"] {
+  color: #D69E2E !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #3182CE"] {
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for event price */
+@media (max-width: 768px) {
+  .event-grid .event-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-grid .event-price {
+    font-size: 0.85rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información */
+.event-meta-item i {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-meta-item i,
+.event-card:hover .event-meta-item i {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-meta-item i,
+.events-by-location .event-card:hover .event-meta-item i {
+  color: #3182CE !important;
+}
+
+/* Mejora en el precio */
+.event-price {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .event-price {
+  transform: scale(1.05);
+}
+
+/* Improved Event Price Styling for Main Event Grid */
+.event-grid .event-price {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2D3748 !important;
+  letter-spacing: -0.025em;
+}
+
+.event-grid .event-price i {
+  font-size: 0.85rem !important;
+  margin-right: 0.25rem !important;
+}
+
+.event-grid .event-price.free span {
+  color: #38A169 !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #D69E2E"] {
+  color: #D69E2E !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #3182CE"] {
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for event price */
+@media (max-width: 768px) {
+  .event-grid .event-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-grid .event-price {
+    font-size: 0.85rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información */
+.event-meta-item i {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-meta-item i,
+.event-card:hover .event-meta-item i {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-meta-item i,
+.events-by-location .event-card:hover .event-meta-item i {
+  color: #3182CE !important;
+}
+
+/* Mejora en el precio */
+.event-price {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .event-price {
+  transform: scale(1.05);
+}
+
+/* Improved Event Price Styling for Main Event Grid */
+.event-grid .event-price {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2D3748 !important;
+  letter-spacing: -0.025em;
+}
+
+.event-grid .event-price i {
+  font-size: 0.85rem !important;
+  margin-right: 0.25rem !important;
+}
+
+.event-grid .event-price.free span {
+  color: #38A169 !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #D69E2E"] {
+  color: #D69E2E !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #3182CE"] {
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for event price */
+@media (max-width: 768px) {
+  .event-grid .event-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-grid .event-price {
+    font-size: 0.85rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información */
+.event-meta-item i {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-meta-item i,
+.event-card:hover .event-meta-item i {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-meta-item i,
+.events-by-location .event-card:hover .event-meta-item i {
+  color: #3182CE !important;
+}
+
+/* Mejora en el precio */
+.event-price {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover .event-price {
+  transform: scale(1.05);
+}
+
+/* Improved Event Price Styling for Main Event Grid */
+.event-grid .event-price {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: #2D3748 !important;
+  letter-spacing: -0.025em;
+}
+
+.event-grid .event-price i {
+  font-size: 0.85rem !important;
+  margin-right: 0.25rem !important;
+}
+
+.event-grid .event-price.free span {
+  color: #38A169 !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #D69E2E"] {
+  color: #D69E2E !important;
+  font-weight: 600;
+}
+
+.event-grid .event-price span[style*="color: #3182CE"] {
+  color: #3182CE !important;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for event price */
+@media (max-width: 768px) {
+  .event-grid .event-price {
+    font-size: 0.9rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .event-grid .event-price {
+    font-size: 0.85rem !important;
+  }
+  
+  .event-grid .event-price i {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Responsividad para búsqueda desktop en hero */
+@media (min-width: 992px) {
+  .hero-content .d-none.d-lg-block {
+    max-width: 500px;
+  }
+  
+  .hero-content .input-group {
+    margin: 0 auto;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section {
+    min-height: 380px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem !important;
+  }
+  
+  .hero-title .text-warning {
+    font-size: 2.8rem !important;
+  }
+}
+
+/* Mejoras generales para el input de búsqueda */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  outline: none;
+}
+
+.input-group .form-control {
+  z-index: 1;
+}
+
+.input-group .btn {
+  z-index: 2;
+}
+
+/* Efectos hover para botones de búsqueda */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+}
+
+/* Efectos hover para selectores */
+.form-select:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Efecto hover para la imagen del hero */
+.hero-image-container:hover .image-wrapper {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+}
+
+.image-wrapper {
+  transition: all 0.3s ease;
+}
+
+/* Animación del carrusel de sponsors */
+@keyframes slideInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-wrapper {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.sponsor-slider-track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  animation: slideInfinite 20s linear infinite;
+  will-change: transform;
+  width: fit-content;
+}
+
+.sponsor-carousel:hover .sponsor-slider-track {
+  animation-play-state: paused;
+}
+
+.sponsor-separator {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, #cbd5e0, transparent);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+.sponsor-name {
+  font-size: 11px;
+  color: #1F2937;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+.sponsor-badge {
+  transition: all 0.3s ease;
+}
+
+.sponsor-badge:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.sponsor-single .sponsor-badge:hover {
+  transform: scale(1.1);
+}
+
+/* Optimización para el carrusel infinito */
+.sponsor-set {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sponsor-item {
+  flex-shrink: 0;
+  min-width: max-content;
+}
+
+/* Efectos hover para las tarjetas */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+.event-card:active {
+  transform: translateY(-4px);
+}
+
+/* Efectos hover alternativos para páginas específicas */
+.events-by-category .event-card:hover,
+.events-by-location .event-card:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animación para badges */
+.badge {
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* Mejora en la tipografía */
+.event-title {
+  transition: color 0.3s ease;
+}
+
+/* Estilos por defecto para la página principal de eventos */
+.event-list-page .event-card:hover .event-title,
+.event-card:hover .event-title {
+  color: #667eea !important;
+}
+
+/* Estilos específicos para páginas de categoría y ubicación */
+.events-by-category .event-card:hover .event-title,
+.events-by-location .event-card:hover .event-title {
+  color: #2B6CB0 !important;
+}
+
+/* Efectos en meta información

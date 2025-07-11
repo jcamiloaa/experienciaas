@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}Analytics Dashboard - {{ organizer.user.name }}{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .analytics-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .metric-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      transform: translate(30px, -30px);
+    }
+    
+    .metric-card.revenue {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    
+    .metric-card.engagement {
+      background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+    }
+    
+    .metric-card.events {
+      background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+    }
+    
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .metric-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin: 20px 0;
+    }
+    
+    .event-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .event-item:last-child {
+      border-bottom: none;
+    }
+    
+    .event-stats {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .event-stat {
+      text-align: center;
+    }
+    
+    .event-stat-value {
+      font-weight: 600;
+      color: #4f46e5;
+    }
+    
+    .period-selector {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+    
+    .analytics-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 0;
+      margin-bottom: 40px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="analytics-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="mb-2">Analytics Dashboard</h1>
+        <p class="mb-0">Insights and metrics for {{ organizer.user.name|default:organizer.user.email }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h2>Performance Overview</h2>
+      <p class="text-muted">Track your events' performance and audience engagement</p>
+    </div>
+    <div class="col-md-6 text-md-end">
+      <select class="period-selector" id="periodSelector">
+        <option value="7">Last 7 days</option>
+        <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="365">Last year</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="analytics-card">
+        <h5 class="mb-3">
+          <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+        </h5>
+        <div class="row">
+          <div class="col-md-3">
+            <a href="{% url 'events:my_events' %}" class="btn btn-outline-primary w-100 mb-2">
+              <i class="fas fa-calendar me-2"></i>Mis Eventos
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a href="{% url 'events:admin_sponsors' %}" class="btn btn-outline-success w-100 mb-2">
+              <i class="fas fa-handshake me-2"></i>Gestionar Sponsors
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a href="{% url 'events:admin_sponsorship_applications' %}" class="btn btn-outline-warning w-100 mb-2">
+              <i class="fas fa-file-alt me-2"></i>Postulaciones
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a href="{% url 'events:admin_tickets' %}" class="btn btn-outline-info w-100 mb-2">
+              <i class="fas fa-ticket-alt me-2"></i>Tickets
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="row">
+    <div class="col-md-3">
+      <div class="metric-card events">
+        <div class="metric-value">{{ analytics.total_events }}</div>
+        <div class="metric-label">Total Events</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="metric-card engagement">
+        <div class="metric-value">{{ analytics.recent_event_views }}</div>
+        <div class="metric-label">Event Views</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="metric-card">
+        <div class="metric-value">{{ analytics.total_followers }}</div>
+        <div class="metric-label">Followers</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="metric-card revenue">
+        <div class="metric-value">${{ analytics.revenue|floatformat:0 }}</div>
+        <div class="metric-label">Revenue</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Views Chart -->
+    <div class="col-md-8">
+      <div class="analytics-card">
+        <h4 class="mb-3">Event Views Over Time</h4>
+        <div class="chart-container">
+          <canvas id="viewsChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="col-md-4">
+      <div class="analytics-card">
+        <h4 class="mb-3">Quick Stats</h4>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>Published Events</span>
+          <strong class="text-primary">{{ analytics.published_events }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>Upcoming Events</span>
+          <strong class="text-success">{{ analytics.upcoming_events }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>Profile Views</span>
+          <strong class="text-info">{{ analytics.profile_views }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>New Followers</span>
+          <strong class="text-warning">{{ analytics.new_followers }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <span>Tickets Sold</span>
+          <strong class="text-success">{{ analytics.tickets_sold }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Performing Events -->
+  <div class="row">
+    <div class="col-12">
+      <div class="analytics-card">
+        <h4 class="mb-3">Top Performing Events</h4>
+        {% if analytics.top_events %}
+          {% for event in analytics.top_events %}
+            <div class="event-item">
+              <div>
+                <h6 class="mb-1">{{ event.title }}</h6>
+                <small class="text-muted">{{ event.start_date|date:"M d, Y" }}</small>
+              </div>
+              <div class="event-stats">
+                <div class="event-stat">
+                  <div class="event-stat-value">{{ event.views_count }}</div>
+                  <small class="text-muted">Views</small>
+                </div>
+                <div class="event-stat">
+                  <div class="event-stat-value">{{ event.tickets_count }}</div>
+                  <small class="text-muted">Tickets</small>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted text-center py-4">No events data available yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Period selector
+      const periodSelector = document.getElementById('periodSelector');
+      periodSelector.addEventListener('change', function() {
+        const days = this.value;
+        window.location.href = `?days=${days}`;
+      });
+
+      // Prepare chart data
+      const dailyViewsData = {{ analytics.daily_views|safe }};
+      
+      if (dailyViewsData && dailyViewsData.length > 0) {
+        // Views Chart
+        const ctx = document.getElementById('viewsChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: dailyViewsData.map(item => {
+              const date = new Date(item.day);
+              return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }),
+            datasets: [{
+              label: 'Event Views',
+              data: dailyViewsData.map(item => item.views),
+              borderColor: '#667eea',
+              backgroundColor: 'rgba(102, 126, 234, 0.1)',
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: '#f1f5f9'
+                }
+              },
+              x: {
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+      } else {
+        document.getElementById('viewsChart').style.display = 'none';
+        const chartContainer = document.querySelector('.chart-container');
+        chartContainer.innerHTML = '<p class="text-muted text-center">No data available for the selected period.</p>';
+      }
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Ticket Management{% if event %} - {{ event.title }}{% elif current_event %} - {{ current_event }}{% endif %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="admin-tickets">
+    <div class="admin-header">
+        <h1>Ticket Management{% if event %} - {{ event.title }}{% endif %}</h1>
+        <div class="admin-nav">
+            <a href="{% url 'events:admin_dashboard' %}" class="btn btn-secondary">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                    <polyline points="9,22 9,12 15,12 15,22"/>
+                </svg>
+                Dashboard
+            </a>
+            <a href="{% url 'events:admin_events' %}" class="btn btn-secondary">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 11l3 3 8-8"/>
+                    <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.24 0 2.43.25 3.5.7"/>
+                </svg>
+                All Events
+            </a>
+            {% if event %}
+                <a href="{% url 'events:admin_event_detail' event.pk %}" class="btn btn-secondary">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    Back to Event
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+        <form method="get" class="filters-form">
+            {% if not event %}
+                <div class="filter-group">
+                    <label>Event</label>
+                    <input type="text" name="event" placeholder="Event slug..." value="{{ current_event }}" class="form-control">
+                </div>
+            {% else %}
+                <div class="filter-group">
+                    <label>Event</label>
+                    <div class="form-control disabled">{{ event.title }}</div>
+                </div>
+            {% endif %}
+            
+            <div class="filter-group">
+                <label>Status</label>
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="{% url 'events:admin_tickets' %}" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tickets Table -->
+    <div class="tickets-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Event</th>
+                    <th>Attendee</th>
+                    <th>Email</th>
+                    <th>Registration Date</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                    <td>
+                        <strong>#{{ ticket.id }}</strong>
+                    </td>
+                    <td>
+                        <div class="event-info">
+                            <h4>{{ ticket.event.title }}</h4>
+                            <p>{{ ticket.event.start_date|date:"M d, Y" }} • {{ ticket.event.city.name }}</p>
+                        </div>
+                    </td>
+                    <td>{{ ticket.user.name|default:ticket.user.email }}</td>
+                    <td>{{ ticket.user.email }}</td>
+                    <td>{{ ticket.created_at|date:"M d, Y g:i A" }}</td>
+                    <td>
+                        <span class="status-badge status-{{ ticket.status }}">
+                            {{ ticket.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if ticket.amount_paid %}
+                            ${{ ticket.amount_paid }}
+                        {% else %}
+                            Free
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a href="{% url 'events:detail' ticket.event.slug %}" class="btn btn-sm" target="_blank" title="View Event">
+                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                            </a>
+                            <a href="mailto:{{ ticket.user.email }}" class="btn btn-sm btn-primary" title="Email Attendee">
+                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                            </a>
+                            <button class="btn btn-sm btn-danger" title="Cancel Registration"
+                                    onclick="cancelTicket({{ ticket.id }})">
+                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <line x1="18" y1="6" x2="6" y2="18"/>
+                                    <line x1="6" y1="6" x2="18" y2="18"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <div class="empty-message">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M15 5v2M15 11v2M15 17v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 11-4 0V7a2 2 0 00-2-2H5z"/>
+                            </svg>
+                            <h3>No tickets found</h3>
+                            <p>Try adjusting your filters.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="pagination">
+        <div class="pagination-info">
+            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} tickets
+        </div>
+        <div class="pagination-controls">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if current_event %}&event={{ current_event }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}" class="btn btn-secondary">Previous</a>
+            {% endif %}
+            
+            <span class="page-numbers">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if current_event %}&event={{ current_event }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}" class="btn btn-secondary">Next</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function cancelTicket(ticketId) {
+    if (confirm('Are you sure you want to cancel this ticket registration?')) {
+        // Implementation for canceling ticket
+        // This would typically involve an AJAX call to a cancel endpoint
+        console.log('Cancel ticket:', ticketId);
+        alert('This feature would typically make an AJAX call to cancel the ticket.');
+    }
+}
+</script>
+{% endblock %}

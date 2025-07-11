@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sponsorship Applications - Experienciaas Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="display-6 fw-bold">Sponsorship Applications</h1>
+      <p class="text-muted">Manage sponsorship applications for events</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3">
+        <div class="col-md-3">
+          <label for="status" class="form-label">Status</label>
+          <select name="status" id="status" class="form-select">
+            <option value="">All Statuses</option>
+            <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="approved" {% if request.GET.status == 'approved' %}selected{% endif %}>Approved</option>
+            <option value="rejected" {% if request.GET.status == 'rejected' %}selected{% endif %}>Rejected</option>
+            <option value="contacted" {% if request.GET.status == 'contacted' %}selected{% endif %}>Contacted</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="event" class="form-label">Event</label>
+          <select name="event" id="event" class="form-select">
+            <option value="">All Events</option>
+            {% for event in events %}
+              <option value="{{ event.id }}" {% if request.GET.event == event.id|stringformat:"s" %}selected{% endif %}>
+                {{ event.title|truncatewords:5 }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary me-2">
+            <i class="fas fa-filter me-1"></i>Filter
+          </button>
+          <a href="{% url 'events:admin_sponsorship_applications' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-times me-1"></i>Clear
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Applications Table -->
+  <div class="card">
+    <div class="card-body">
+      {% if applications %}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Event</th>
+                <th>Contact</th>
+                <th>Tier</th>
+                <th>Status</th>
+                <th>Applied</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for application in applications %}
+                <tr>
+                  <td>
+                    <div>
+                      <strong>{{ application.company_name }}</strong>
+                      {% if application.company_website %}
+                        <br><a href="{{ application.company_website }}" target="_blank" class="small text-muted">
+                          <i class="fas fa-external-link-alt me-1"></i>{{ application.company_website }}
+                        </a>
+                      {% endif %}
+                    </div>
+                  </td>
+                  <td>
+                    <a href="{% url 'events:admin_event_detail' application.event.pk %}" class="text-decoration-none">
+                      {{ application.event.title|truncatewords:5 }}
+                    </a>
+                    <br><small class="text-muted">{{ application.event.start_date|date:"M d, Y" }}</small>
+                  </td>
+                  <td>
+                    <div class="contact-info">
+                      <div><strong>{{ application.contact_name }}</strong></div>
+                      <div class="small text-muted">{{ application.contact_email }}</div>
+                      {% if application.contact_phone %}
+                        <div class="small text-muted">{{ application.contact_phone }}</div>
+                      {% endif %}
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge bg-secondary">
+                      {{ application.get_proposed_tier_display }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge {% if application.status == 'pending' %}bg-warning{% elif application.status == 'approved' %}bg-success{% elif application.status == 'rejected' %}bg-danger{% else %}bg-info{% endif %}">
+                      {{ application.get_status_display }}
+                    </span>
+                  </td>
+                  <td>
+                    {{ application.created_at|date:"M d, Y" }}
+                    <br><small class="text-muted">{{ application.created_at|date:"g:i A" }}</small>
+                  </td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <a href="{% url 'events:admin_sponsorship_application_detail' application.pk %}" 
+                         class="btn btn-sm btn-outline-primary" title="View Details">
+                        <i class="fas fa-eye"></i>
+                      </a>
+                      
+                      {% if application.status == 'pending' %}
+                        <div class="btn-group" role="group">
+                          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                  data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-cog"></i>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li>
+                              <form method="post" action="{% url 'events:admin_approve_sponsorship_application' application.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-success" 
+                                        onclick="return confirm('Approve this sponsorship application?')">
+                                  <i class="fas fa-check me-2"></i>Approve
+                                </button>
+                              </form>
+                            </li>
+                            <li>
+                              <form method="post" action="{% url 'events:admin_reject_sponsorship_application' application.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger"
+                                        onclick="return confirm('Reject this sponsorship application?')">
+                                  <i class="fas fa-times me-2"></i>Reject
+                                </button>
+                              </form>
+                            </li>
+                          </ul>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+              {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page=1{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.event %}&event={{ request.GET.event }}{% endif %}">First</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.event %}&event={{ request.GET.event }}{% endif %}">Previous</a>
+                </li>
+              {% endif %}
+
+              <li class="page-item active">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+              </li>
+
+              {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.event %}&event={{ request.GET.event }}{% endif %}">Next</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.event %}&event={{ request.GET.event }}{% endif %}">Last</a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
+      {% else %}
+        <div class="text-center py-5">
+          <i class="fas fa-handshake fa-3x text-muted mb-3"></i>
+          <h5 class="text-muted">No sponsorship applications found</h5>
+          <p class="text-muted">Applications will appear here when companies apply to sponsor events.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.contact-info {
+  font-size: 0.875rem;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.badge {
+  font-size: 0.75rem;
+}
+
+.btn-group .dropdown-menu {
+  min-width: 120px;
+}
+</style>
+{% endblock %}

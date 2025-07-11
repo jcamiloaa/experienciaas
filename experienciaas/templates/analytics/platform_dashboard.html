@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}Platform Analytics Dashboard{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .analytics-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .metric-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      transform: translate(30px, -30px);
+    }
+    
+    .metric-card.users {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    
+    .metric-card.events {
+      background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);
+    }
+    
+    .metric-card.revenue {
+      background: linear-gradient(135deg, #fdbb2d 0%, #22c1c3 100%);
+    }
+    
+    .metric-card.tickets {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      color: #374151;
+    }
+    
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .metric-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .metric-change {
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin: 20px 0;
+    }
+    
+    .search-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .search-item:last-child {
+      border-bottom: none;
+    }
+    
+    .search-count {
+      background: #f1f5f9;
+      color: #374151;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .period-selector {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+    
+    .analytics-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 0;
+      margin-bottom: 40px;
+    }
+    
+    .admin-actions {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .admin-actions .btn {
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="analytics-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="mb-2">Platform Analytics Dashboard</h1>
+        <p class="mb-0">Comprehensive insights and metrics for Experienciaas platform</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  {% if request.user.is_superuser %}
+  <div class="admin-actions">
+    <h5 class="mb-3">Admin Actions</h5>
+    <a href="{% url 'admin:index' %}" class="btn btn-primary">
+      <i class="fas fa-cog me-2"></i>Django Admin
+    </a>
+    <a href="{% url 'admin:users_user_changelist' %}" class="btn btn-success">
+      <i class="fas fa-users me-2"></i>Manage Users
+    </a>
+    <a href="{% url 'admin:events_event_changelist' %}" class="btn btn-info">
+      <i class="fas fa-calendar me-2"></i>Manage Events
+    </a>
+    <a href="{% url 'admin:events_category_changelist' %}" class="btn btn-warning">
+      <i class="fas fa-tags me-2"></i>Manage Categories
+    </a>
+    <a href="{% url 'admin:events_city_changelist' %}" class="btn btn-secondary">
+      <i class="fas fa-map-marker-alt me-2"></i>Manage Cities
+    </a>
+  </div>
+  {% endif %}
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h2>Platform Overview</h2>
+      <p class="text-muted">Monitor platform performance and user engagement</p>
+    </div>
+    <div class="col-md-6 text-md-end">
+      <select class="period-selector" id="periodSelector">
+        <option value="7">Last 7 days</option>
+        <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="365">Last year</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="stats-grid">
+    <div class="metric-card events">
+      <div class="metric-value">{{ analytics.total_events }}</div>
+      <div class="metric-label">Total Events</div>
+      <div class="metric-change">+{{ analytics.new_events }} new</div>
+    </div>
+    <div class="metric-card users">
+      <div class="metric-value">{{ analytics.total_users }}</div>
+      <div class="metric-label">Total Users</div>
+      <div class="metric-change">+{{ analytics.new_users }} new</div>
+    </div>
+    <div class="metric-card tickets">
+      <div class="metric-value">{{ analytics.total_tickets }}</div>
+      <div class="metric-label">Total Tickets</div>
+      <div class="metric-change">+{{ analytics.new_tickets }} new</div>
+    </div>
+    <div class="metric-card revenue">
+      <div class="metric-value">${{ analytics.total_revenue|floatformat:0 }}</div>
+      <div class="metric-label">Total Revenue</div>
+      <div class="metric-change">+${{ analytics.new_revenue|floatformat:0 }} new</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Platform Growth Chart -->
+    <div class="col-md-8">
+      <div class="analytics-card">
+        <h4 class="mb-3">Platform Growth</h4>
+        <div class="chart-container">
+          <canvas id="growthChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Platform Stats -->
+    <div class="col-md-4">
+      <div class="analytics-card">
+        <h4 class="mb-3">Platform Stats</h4>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>Published Events</span>
+          <strong class="text-primary">{{ analytics.published_events }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>Staff Users</span>
+          <strong class="text-success">{{ analytics.staff_users }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>Total Organizers</span>
+          <strong class="text-info">{{ analytics.total_organizers }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>Public Organizers</span>
+          <strong class="text-warning">{{ analytics.public_organizers }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span>Confirmed Tickets</span>
+          <strong class="text-success">{{ analytics.confirmed_tickets }}</strong>
+        </div>
+        <div class="d-flex justify-content-between align-items-center">
+          <span>Total Views</span>
+          <strong class="text-info">{{ analytics.total_views }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Popular Searches -->
+    <div class="col-md-6">
+      <div class="analytics-card">
+        <h4 class="mb-3">Popular Searches</h4>
+        {% if analytics.popular_searches %}
+          {% for search in analytics.popular_searches %}
+            <div class="search-item">
+              <span>{{ search.query }}</span>
+              <span class="search-count">{{ search.count }}</span>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted text-center py-4">No search data available yet.</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Daily Stats -->
+    <div class="col-md-6">
+      <div class="analytics-card">
+        <h4 class="mb-3">Recent Daily Stats</h4>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Events</th>
+                <th>Users</th>
+                <th>Tickets</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for stat in recent_stats|slice:":7" %}
+                <tr>
+                  <td>{{ stat.date|date:"M d" }}</td>
+                  <td>{{ stat.new_events }}</td>
+                  <td>{{ stat.new_users }}</td>
+                  <td>{{ stat.new_tickets }}</td>
+                  <td>${{ stat.new_revenue|floatformat:0 }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Period selector
+      const periodSelector = document.getElementById('periodSelector');
+      periodSelector.addEventListener('change', function() {
+        const days = this.value;
+        window.location.href = `?days=${days}`;
+      });
+
+      // Prepare chart data from recent stats
+      const recentStats = {{ recent_stats|safe }};
+      
+      if (recentStats && recentStats.length > 0) {
+        // Growth Chart
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: recentStats.map(stat => {
+              const date = new Date(stat.date);
+              return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }),
+            datasets: [
+              {
+                label: 'New Events',
+                data: recentStats.map(stat => stat.new_events),
+                borderColor: '#fc466b',
+                backgroundColor: 'rgba(252, 70, 107, 0.1)',
+                tension: 0.4
+              },
+              {
+                label: 'New Users',
+                data: recentStats.map(stat => stat.new_users),
+                borderColor: '#11998e',
+                backgroundColor: 'rgba(17, 153, 142, 0.1)',
+                tension: 0.4
+              },
+              {
+                label: 'New Tickets',
+                data: recentStats.map(stat => stat.new_tickets),
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: '#f1f5f9'
+                }
+              },
+              x: {
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+      } else {
+        document.getElementById('growthChart').style.display = 'none';
+        const chartContainer = document.querySelector('.chart-container');
+        chartContainer.innerHTML = '<p class="text-muted text-center">No data available for the selected period.</p>';
+      }
+    });
+  </script>
+{% endblock %}

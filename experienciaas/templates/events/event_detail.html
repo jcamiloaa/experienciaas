@@ -1,0 +1,537 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ event.title }} - Experienciaas{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="py-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'events:list' %}">Eventos</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'events:by_category' event.category.slug %}">{{ event.category.name }}</a></li>
+      <li class="breadcrumb-item active">{{ event.title|truncatewords:5 }}</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+      <!-- Hero Image -->
+      <div class="position-relative mb-4">
+        {% if event.image %}
+          <img src="{{ event.image.url }}" alt="{{ event.title }}" class="img-fluid rounded-lg w-100" style="height: 400px; object-fit: cover;">
+        {% else %}
+          <img src="{{ MEDIA_URL }}events/default/general_event.png" alt="{{ event.title }}" class="img-fluid rounded-lg w-100" style="height: 400px; object-fit: cover;">
+        {% endif %}
+        
+        <!-- Overlay Badges -->
+        <div class="position-absolute top-0 start-0 p-3">
+          {% if event.is_featured %}
+            <span class="badge badge-featured fs-6">
+              <i class="fas fa-star me-1"></i>Evento Destacado
+            </span>
+          {% endif %}
+          {% if event.status == 'sold_out' %}
+            <span class="badge bg-danger text-white fs-6">
+              <i class="fas fa-exclamation-circle me-1"></i>Agotado
+            </span>
+          {% endif %}
+        </div>
+        
+        <div class="position-absolute top-0 end-0 p-3">
+          <span class="badge" style="background-color: {{ event.category.color }}; font-size: 0.9rem;">
+            {% if event.category.icon %}
+              <i class="{{ event.category.icon }} me-1"></i>
+            {% endif %}
+            {{ event.category.name }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Event Header -->
+      <div class="mb-4">
+        <h1 class="display-5 fw-bold mb-3">{{ event.title }}</h1>
+        
+        <!-- Event Meta -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6 col-md-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                <i class="fas fa-calendar-alt text-primary"></i>
+              </div>
+              <div>
+                <small class="text-muted d-block">Fecha</small>
+                <strong>{{ event.start_date|date:"d M Y" }}</strong>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6 col-md-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                <i class="fas fa-clock text-primary"></i>
+              </div>
+              <div>
+                <small class="text-muted d-block">Hora</small>
+                <strong>{{ event.start_date|date:"H:i" }}</strong>
+                {% if event.end_date %}
+                  <small class="text-muted d-block">hasta {{ event.end_date|date:"H:i" }}</small>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6 col-md-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                <i class="fas fa-map-marker-alt text-primary"></i>
+              </div>
+              <div>
+                <small class="text-muted d-block">Ubicación</small>
+                <strong>{{ event.city.name }}</strong>
+                <small class="text-muted d-block">{{ event.venue_name }}</small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-sm-6 col-md-3">
+            <div class="d-flex align-items-center">
+              <div class="bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+                <i class="fas fa-user text-primary"></i>
+              </div>
+              <div>
+                <small class="text-muted d-block">Organizador</small>
+                {% if event.organizer.is_staff and event.organizer.organizer_profile.is_public %}
+                  <a href="{{ event.organizer.organizer_profile.get_absolute_url }}" class="text-decoration-none">
+                    <strong>{{ event.organizer.name|default:event.organizer.email }}</strong>
+                  </a>
+                {% else %}
+                  <strong>{{ event.organizer.name|default:event.organizer.email }}</strong>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price and Capacity Info -->
+        <div class="row align-items-center mb-4">
+          <div class="col-md-6">
+            <div class="event-price-display">
+              {% if event.is_free %}
+                <h3 class="text-success mb-0">
+                  <i class="fas fa-gift me-2"></i>Evento Gratuito
+                </h3>
+              {% elif event.price_type == 'donation' %}
+                <h3 class="text-info mb-0">
+                  <i class="fas fa-heart me-2"></i>Donación Voluntaria
+                </h3>
+              {% else %}
+                <h3 class="text-primary mb-0">
+                  {{ event.formatted_price }}
+                </h3>
+                <small class="text-muted">por persona</small>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            {% if event.max_attendees %}
+              <div class="capacity-info">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span>Capacidad</span>
+                  <span><strong>{{ event.attendees_count }}/{{ event.max_attendees }}</strong></span>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar" style="width: {{ event.attendees_count|floatformat:0 }}{{ event.max_attendees|floatformat:0 }}%"></div>
+                </div>
+                {% if event.remaining_tickets %}
+                  <small class="text-success">{{ event.remaining_tickets }} cupo{{ event.remaining_tickets|pluralize }} disponible{{ event.remaining_tickets|pluralize }}</small>
+                {% else %}
+                  <small class="text-danger">Sin cupos disponibles</small>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Description -->
+      <div class="mb-5">
+        <h3 class="mb-3">Acerca del Evento</h3>
+        <div class="event-description">
+          {{ event.description|linebreaks }}
+        </div>
+      </div>
+
+      <!-- Event Sponsors -->
+      {% if event_sponsors %}
+        <div class="mb-5">
+          <h3 class="mb-3">Patrocinadores</h3>
+          <div class="row g-4">
+            {% for event_sponsor in event_sponsors %}
+              <div class="col-md-6 col-lg-4">
+                <div class="card h-100 sponsor-card">
+                  <div class="card-body text-center">
+                    {% if event_sponsor.sponsor.logo %}
+                      <img src="{{ event_sponsor.sponsor.logo.url }}" 
+                           alt="{{ event_sponsor.sponsor.name }}" 
+                           class="sponsor-logo mb-3"
+                           style="max-height: 80px; max-width: 100%; object-fit: contain;">
+                    {% else %}
+                      <div class="sponsor-placeholder mb-3">
+                        <i class="fas fa-building fa-3x text-muted"></i>
+                      </div>
+                    {% endif %}
+                    
+                    <h5 class="card-title">{{ event_sponsor.sponsor.name }}</h5>
+                    
+                    {% if event_sponsor.tier != 'partner' %}
+                      <span class="badge bg-{{ event_sponsor.tier|default:'secondary' }} mb-2">
+                        {{ event_sponsor.get_tier_display }}
+                      </span>
+                    {% endif %}
+                    
+                    {% if event_sponsor.description %}
+                      <p class="card-text text-muted small">{{ event_sponsor.description|truncatewords:15 }}</p>
+                    {% endif %}
+                    
+                    <div class="sponsor-links">
+                      {% if event_sponsor.sponsor.website %}
+                        <a href="{{ event_sponsor.sponsor.website }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-2">
+                          <i class="fas fa-globe me-1"></i>Web
+                        </a>
+                      {% endif %}
+                      
+                      {% if event_sponsor.sponsor.facebook_url %}
+                        <a href="{{ event_sponsor.sponsor.facebook_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fab fa-facebook-f"></i>
+                        </a>
+                      {% endif %}
+                      
+                      {% if event_sponsor.sponsor.twitter_url %}
+                        <a href="{{ event_sponsor.sponsor.twitter_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fab fa-twitter"></i>
+                        </a>
+                      {% endif %}
+                      
+                      {% if event_sponsor.sponsor.instagram_url %}
+                        <a href="{{ event_sponsor.sponsor.instagram_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fab fa-instagram"></i>
+                        </a>
+                      {% endif %}
+                      
+                      {% if event_sponsor.sponsor.linkedin_url %}
+                        <a href="{{ event_sponsor.sponsor.linkedin_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fab fa-linkedin-in"></i>
+                        </a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Sponsorship Application Call to Action -->
+      {% if event.sponsorship_available %}
+        <div class="mb-5">
+          <div class="card bg-light border-0">
+            <div class="card-body text-center py-4">
+              <h4 class="card-title text-primary">¿Quieres patrocinar este evento?</h4>
+              <p class="card-text">
+                Únete como patrocinador y promociona tu marca ante nuestra audiencia.
+                <br>
+                <small class="text-muted">
+                  Espacios disponibles: {{ event.available_sponsor_slots }} de {{ event.max_sponsors }}
+                </small>
+              </p>
+              <a href="{% url 'events:sponsor_apply' event.slug %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-handshake me-2"></i>Postularme como Patrocinador
+              </a>
+            </div>
+          </div>
+        </div>
+      {% elif event.max_sponsors > 0 and not event.sponsorship_available %}
+        <div class="mb-5">
+          <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>
+            Las postulaciones para patrocinadores están cerradas o no hay espacios disponibles.
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Location Details -->
+      <div class="mb-5">
+        <h3 class="mb-3">Ubicación</h3>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ event.venue_name }}</h5>
+            <p class="card-text text-muted">{{ event.address }}</p>
+            
+            {% if event.latitude and event.longitude %}
+              <!-- Map placeholder - you can integrate with Google Maps or other mapping service -->
+              <div class="bg-light rounded p-4 text-center">
+                <i class="fas fa-map fa-2x text-muted mb-2"></i>
+                <p class="text-muted mb-0">Mapa interactivo disponible</p>
+                <small class="text-muted">Lat: {{ event.latitude }}, Lng: {{ event.longitude }}</small>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Events -->
+      {% if related_events %}
+        <div class="mb-5">
+          <h3 class="mb-3">Eventos Relacionados</h3>
+          <div class="row">
+            {% for related_event in related_events %}
+              <div class="col-md-6 mb-3">
+                <a href="{{ related_event.get_absolute_url }}" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+                  <div class="card h-100 hover-lift" style="cursor: pointer;">
+                    {% if related_event.image %}
+                      <img src="{{ related_event.image.url }}" class="card-img-top no-image-preview" style="height: 150px; object-fit: cover; pointer-events: none; user-select: none;" alt="{{ related_event.title }}">
+                    {% else %}
+                      <img src="{{ MEDIA_URL }}events/default/general_event.png" class="card-img-top no-image-preview" style="height: 150px; object-fit: cover; pointer-events: none; user-select: none;" alt="{{ related_event.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                      <h6 class="card-title">{{ related_event.title|truncatewords:8 }}</h6>
+                      <p class="card-text">
+                        <small class="text-muted">
+                          <i class="fas fa-calendar me-1"></i>{{ related_event.start_date|date:"d M Y" }}<br>
+                          <i class="fas fa-map-marker-alt me-1"></i>{{ related_event.city.name }}
+                        </small>
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <div class="sticky-top" style="top: 100px;">
+        <!-- Registration Card -->
+        <div class="card shadow-md mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Reservar Lugar</h5>
+            
+            {% if user_ticket %}
+              <!-- User already registered -->
+              <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>¡Ya estás registrado!</strong>
+                <br>
+                <small>Ticket #{{ user_ticket.ticket_number }}</small>
+              </div>
+              
+              <div class="d-grid">
+                <a href="{% url 'events:my_events' %}" class="btn btn-outline-primary">
+                  <i class="fas fa-ticket-alt me-1"></i>Ver Mis Eventos
+                </a>
+              </div>
+              
+            {% elif event.is_sold_out or not event.remaining_tickets %}
+              <!-- Event sold out -->
+              <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Evento Agotado</strong>
+                <br>
+                <small>No hay cupos disponibles</small>
+              </div>
+              
+            {% elif event.start_date <= now %}
+              <!-- Event has started -->
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Evento en Curso</strong>
+                <br>
+                <small>Las inscripciones han cerrado</small>
+              </div>
+              
+            {% else %}
+              <!-- Available for registration -->
+              {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'events:register' event.slug %}">
+                  {% csrf_token %}
+                  
+                  <div class="mb-3">
+                    <div class="event-price-summary p-3 bg-light rounded">
+                      {% if event.is_free %}
+                        <div class="d-flex justify-content-between">
+                          <span>Entrada:</span>
+                          <span class="fw-bold text-success">GRATIS</span>
+                        </div>
+                      {% else %}
+                        <div class="d-flex justify-content-between">
+                          <span>Precio:</span>
+                          <span class="fw-bold">{{ event.currency }} {{ event.price }}</span>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                      {% if event.is_free %}
+                        <i class="fas fa-gift me-1"></i>Registrarse Gratis
+                      {% else %}
+                        <i class="fas fa-shopping-cart me-1"></i>Reservar Lugar
+                      {% endif %}
+                    </button>
+                  </div>
+                </form>
+              {% else %}
+                <!-- User not authenticated -->
+                <p class="text-muted mb-3">Inicia sesión para registrarte en este evento</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'account_login' %}?next={{ request.path }}" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                  </a>
+                  <a href="{% url 'account_signup' %}?next={{ request.path }}" class="btn btn-outline-primary">
+                    <i class="fas fa-user-plus me-1"></i>Crear Cuenta
+                  </a>
+                </div>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Event Stats -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h6 class="card-title">Estadísticas del Evento</h6>
+            <div class="row text-center">
+              <div class="col-4">
+                <div class="stat-item">
+                  <i class="fas fa-eye text-muted"></i>
+                  <div class="fw-bold">{{ event.views }}</div>
+                  <small class="text-muted">Vistas</small>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-item">
+                  <i class="fas fa-users text-muted"></i>
+                  <div class="fw-bold">{{ event.attendees_count }}</div>
+                  <small class="text-muted">Asistentes</small>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-item">
+                  <i class="fas fa-calendar-plus text-muted"></i>
+                  <div class="fw-bold">{{ event.created_at|timesince }}</div>
+                  <small class="text-muted">Publicado</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Share Event -->
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h6 class="card-title">Compartir Evento</h6>
+            <div class="d-flex gap-2">
+              <a href="#" class="btn btn-outline-primary flex-fill" onclick="shareOnFacebook()">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#" class="btn btn-outline-primary flex-fill" onclick="shareOnTwitter()">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="btn btn-outline-primary flex-fill" onclick="shareOnWhatsApp()">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+              <a href="#" class="btn btn-outline-primary flex-fill" onclick="copyLink()">
+                <i class="fas fa-link"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+<style>
+/* Sponsor styles */
+.sponsor-card {
+  transition: transform 0.2s;
+  border: 1px solid #e3e6f0;
+}
+
+.sponsor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.sponsor-logo {
+  filter: grayscale(20%);
+  transition: filter 0.3s;
+}
+
+.sponsor-card:hover .sponsor-logo {
+  filter: grayscale(0%);
+}
+
+.sponsor-placeholder {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.sponsor-links a {
+  margin: 2px;
+}
+
+.bg-platinum { background-color: #e5e7eb !important; }
+.bg-gold { background-color: #fbbf24 !important; }
+.bg-silver { background-color: #d1d5db !important; }
+.bg-bronze { background-color: #a78bfa !important; }
+.bg-partner { background-color: #3b82f6 !important; }
+</style>
+
+{% block inline_javascript %}
+<script>
+  function shareOnFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+  }
+
+  function shareOnTwitter() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent('{{ event.title }} - Experienciaas');
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+  }
+
+  function shareOnWhatsApp() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent('{{ event.title }} - Experienciaas');
+    window.open(`https://wa.me/?text=${text} ${url}`, '_blank');
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      // Show success message
+      const btn = event.target.closest('a');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-check"></i>';
+      setTimeout(() => {
+        btn.innerHTML = originalHTML;
+      }, 1000);
+    });
+  }
+</script>
+{% endblock inline_javascript %}

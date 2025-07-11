@@ -1,0 +1,494 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if object %}Edit Event{% else %}Create Event{% endif %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="admin-form">
+    <div class="admin-header">
+        <h1>{% if object %}Edit Event{% else %}Create Event{% endif %}</h1>
+        <div class="admin-nav">
+            <a href="{% url 'events:admin_dashboard' %}" class="btn btn-secondary">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                    <polyline points="9,22 9,12 15,12 15,22"/>
+                </svg>
+                Dashboard
+            </a>
+            <a href="{% url 'events:admin_events' %}" class="btn btn-secondary">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 11l3 3 8-8"/>
+                    <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.24 0 2.43.25 3.5.7"/>
+                </svg>
+                All Events
+            </a>
+            {% if object %}
+            <a href="{% url 'events:detail' object.slug %}" class="btn btn-primary" target="_blank">
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+                View Public
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="event-form">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="form-sections">
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h2>Basic Information</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="field-errors">{{ form.title.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.short_description.id_for_label }}">{{ form.short_description.label }}</label>
+                        {{ form.short_description }}
+                        {% if form.short_description.errors %}
+                            <div class="field-errors">{{ form.short_description.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="field-errors">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="field-errors">{{ form.category.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group half">
+                        <label for="{{ form.status.id_for_label }}">{{ form.status.label }}</label>
+                        {{ form.status }}
+                        {% if form.status.errors %}
+                            <div class="field-errors">{{ form.status.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                            <div class="field-errors">{{ form.image.errors }}</div>
+                        {% endif %}
+                        {% if object.image %}
+                            <div class="current-image">
+                                <img src="{{ object.image.url }}" alt="Current image" style="max-width: 200px; max-height: 150px;">
+                                <p>Current image</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group checkbox">
+                        {{ form.is_featured }}
+                        <label for="{{ form.is_featured.id_for_label }}">{{ form.is_featured.label }}</label>
+                        {% if form.is_featured.errors %}
+                            <div class="field-errors">{{ form.is_featured.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date & Time -->
+            <div class="form-section">
+                <h2>Date & Time</h2>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.start_date.id_for_label }}">{{ form.start_date.label }}</label>
+                        {{ form.start_date }}
+                        {% if form.start_date.errors %}
+                            <div class="field-errors">{{ form.start_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group half">
+                        <label for="{{ form.end_date.id_for_label }}">{{ form.end_date.label }}</label>
+                        {{ form.end_date }}
+                        {% if form.end_date.errors %}
+                            <div class="field-errors">{{ form.end_date.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="form-section">
+                <h2>Location</h2>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
+                        {{ form.city }}
+                        {% if form.city.errors %}
+                            <div class="field-errors">{{ form.city.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group half">
+                        <label for="{{ form.venue_name.id_for_label }}">{{ form.venue_name.label }}</label>
+                        {{ form.venue_name }}
+                        {% if form.venue_name.errors %}
+                            <div class="field-errors">{{ form.venue_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                            <div class="field-errors">{{ form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.latitude.id_for_label }}">{{ form.latitude.label }}</label>
+                        {{ form.latitude }}
+                        {% if form.latitude.errors %}
+                            <div class="field-errors">{{ form.latitude.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group half">
+                        <label for="{{ form.longitude.id_for_label }}">{{ form.longitude.label }}</label>
+                        {{ form.longitude }}
+                        {% if form.longitude.errors %}
+                            <div class="field-errors">{{ form.longitude.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="form-section">
+                <h2>Pricing</h2>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.price_type.id_for_label }}">{{ form.price_type.label }}</label>
+                        {{ form.price_type }}
+                        {% if form.price_type.errors %}
+                            <div class="field-errors">{{ form.price_type.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group half">
+                        <label for="{{ form.currency.id_for_label }}">{{ form.currency.label }}</label>
+                        {{ form.currency }}
+                        {% if form.currency.errors %}
+                            <div class="field-errors">{{ form.currency.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
+                        <div class="input-group">
+                            <span class="input-prefix" id="currency-symbol">$</span>
+                            {{ form.price }}
+                        </div>
+                        {% if form.price.errors %}
+                            <div class="field-errors">{{ form.price.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Capacity -->
+            <div class="form-section">
+                <h2>Capacity</h2>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.max_attendees.id_for_label }}">{{ form.max_attendees.label }}</label>
+                        {{ form.max_attendees }}
+                        {% if form.max_attendees.errors %}
+                            <div class="field-errors">{{ form.max_attendees.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group half">
+                        <div class="capacity-info">
+                            {% if object %}
+                                <div class="stat">
+                                    <strong>{{ object.tickets.count }}</strong>
+                                    <span>Registered</span>
+                                </div>
+                                <div class="stat">
+                                    <strong>{{ object.available_spots }}</strong>
+                                    <span>Available</span>
+                                </div>
+                            {% else %}
+                                <p>Capacity info will be available after creating the event.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sponsorship -->
+            <div class="form-section">
+                <h2>Sponsorship</h2>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.max_sponsors.id_for_label }}">{{ form.max_sponsors.label }}</label>
+                        {{ form.max_sponsors }}
+                        {% if form.max_sponsors.errors %}
+                            <div class="field-errors">{{ form.max_sponsors.errors }}</div>
+                        {% endif %}
+                        <div class="field-help">
+                            Set to 0 to disable sponsorships for this event
+                        </div>
+                    </div>
+                    <div class="form-group half">
+                        <div class="sponsor-info">
+                            {% if object %}
+                                <div class="stat">
+                                    <strong>{{ object.sponsors_count }}</strong>
+                                    <span>Current Sponsors</span>
+                                </div>
+                                <div class="stat">
+                                    <strong>{{ object.available_sponsor_slots }}</strong>
+                                    <span>Available Slots</span>
+                                </div>
+                                <div class="stat">
+                                    <strong>{{ object.pending_applications_count }}</strong>
+                                    <span>Pending Applications</span>
+                                </div>
+                            {% else %}
+                                <p>Sponsorship info will be available after creating the event.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="checkbox-wrapper">
+                            {{ form.sponsorship_open }}
+                            <label for="{{ form.sponsorship_open.id_for_label }}">{{ form.sponsorship_open.label }}</label>
+                            {% if form.sponsorship_open.errors %}
+                                <div class="field-errors">{{ form.sponsorship_open.errors }}</div>
+                            {% endif %}
+                            <div class="field-help">
+                                Allow new sponsorship applications to be submitted
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if object and object.max_sponsors > 0 %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="sponsor-actions">
+                            <a href="{% url 'events:admin_add_event_sponsor' object.pk %}" class="btn btn-primary">
+                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                                Add Sponsor
+                            </a>
+                            <a href="{% url 'events:admin_sponsorship_applications' %}?event={{ object.pk }}" class="btn btn-secondary">
+                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                    <polyline points="10,9 9,9 8,9"/>
+                                </svg>
+                                View Applications
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <div class="form-actions-left">
+                {% if object %}
+                    <a href="{% url 'events:admin_delete_event' object.pk %}" class="btn btn-danger"
+                       onclick="return confirm('Are you sure you want to delete this event?')">
+                        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="3,6 5,6 21,6"/>
+                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                            <line x1="10" y1="11" x2="10" y2="17"/>
+                            <line x1="14" y1="11" x2="14" y2="17"/>
+                        </svg>
+                        Delete Event
+                    </a>
+                {% endif %}
+            </div>
+            <div class="form-actions-right">
+                <a href="{% url 'events:admin_events' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" name="save_and_continue" class="btn btn-secondary">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                        <polyline points="17,21 17,13 7,13 7,21"/>
+                        <polyline points="7,3 7,8 15,8"/>
+                    </svg>
+                    Save & Continue
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                        <polyline points="17,21 17,13 7,13 7,21"/>
+                        <polyline points="7,3 7,8 15,8"/>
+                    </svg>
+                    {% if object %}Update Event{% else %}Create Event{% endif %}
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Currency symbols mapping
+    const currencySymbols = {
+        'USD': '$',
+        'EUR': '€',
+        'COP': '$',
+        'GBP': '£',
+        'CAD': 'C$',
+        'AUD': 'A$',
+        'MXN': '$',
+        'BRL': 'R$',
+        'ARS': '$',
+        'CLP': '$',
+        'PEN': 'S/',
+        'UYU': '$U',
+        'JPY': '¥',
+        'CNY': '¥',
+        'CHF': 'CHF',
+        'SEK': 'kr',
+        'NOK': 'kr',
+        'DKK': 'kr'
+    };
+
+    // Currency change handler
+    const currencySelect = document.getElementById('id_currency');
+    const currencySymbol = document.getElementById('currency-symbol');
+    
+    function updateCurrencySymbol() {
+        if (currencySelect && currencySymbol) {
+            const selectedCurrency = currencySelect.value;
+            const symbol = currencySymbols[selectedCurrency] || '$';
+            currencySymbol.textContent = symbol;
+        }
+    }
+    
+    if (currencySelect) {
+        currencySelect.addEventListener('change', updateCurrencySymbol);
+        updateCurrencySymbol(); // Initial call
+    }
+
+    // Price type change handler
+    const priceTypeSelect = document.getElementById('id_price_type');
+    const priceField = document.getElementById('id_price');
+    const currencyField = document.getElementById('id_currency');
+    
+    function togglePriceField() {
+        if (priceTypeSelect.value === 'free') {
+            priceField.value = '0.00';
+            priceField.disabled = true;
+            priceField.closest('.form-group').style.opacity = '0.6';
+            if (currencyField) {
+                currencyField.value = '';
+                currencyField.disabled = true;
+                currencyField.closest('.form-group').style.opacity = '0.6';
+            }
+        } else {
+            priceField.disabled = false;
+            priceField.closest('.form-group').style.opacity = '1';
+            if (currencyField) {
+                if (!currencyField.value) {
+                    currencyField.value = 'USD';  // Set default currency
+                }
+                currencyField.disabled = false;
+                currencyField.closest('.form-group').style.opacity = '1';
+            }
+            if (priceField.value === '0.00') {
+                priceField.value = '';
+            }
+        }
+    }
+    
+    if (priceTypeSelect) {
+        priceTypeSelect.addEventListener('change', togglePriceField);
+        togglePriceField(); // Initial call
+    }
+
+    // Auto-generate slug from title
+    const titleField = document.getElementById('id_title');
+    const slugField = document.getElementById('id_slug');
+    
+    if (titleField && slugField && !slugField.value) {
+        titleField.addEventListener('input', function() {
+            const slug = this.value
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            slugField.value = slug;
+        });
+    }
+
+    // Image preview
+    const imageInput = document.getElementById('id_image');
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let preview = document.querySelector('.image-preview');
+                    if (!preview) {
+                        preview = document.createElement('div');
+                        preview.className = 'image-preview';
+                        imageInput.parentNode.appendChild(preview);
+                    }
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 150px;"><p>New image preview</p>`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

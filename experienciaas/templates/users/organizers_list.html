@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Organizadores - Experienciaas{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h1 class="page-title">Organizadores</h1>
+        <p class="text-muted">Descubre a los organizadores de eventos más activos</p>
+      </div>
+
+      <div class="col-md-6">
+        <!-- Search Form -->
+        <form method="get" class="search-form">
+          <div class="input-group">
+            <input type="text" name="search" class="form-control" 
+                   placeholder="Buscar organizadores..." value="{{ search }}">
+            <button class="btn btn-primary" type="submit">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Info -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      {% if search %}
+        <p class="text-muted">
+          Resultados para: <strong>"{{ search }}"</strong>
+        </p>
+      {% endif %}
+    </div>
+    <div class="col-md-6 text-md-end">
+      <p class="text-muted">
+        {{ organizers|length }} organizador{{ organizers|length|pluralize:"es" }} encontrado{{ organizers|length|pluralize }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Organizers Grid -->
+  {% if organizers %}
+    <div class="organizers-grid">
+      {% for organizer in organizers %}
+        <div class="organizer-card">
+          <div class="organizer-card-header">
+            {% if organizer.cover_image %}
+              <img src="{{ organizer.cover_image.url }}" alt="Cover" class="cover-image">
+            {% else %}
+              <div class="cover-placeholder">
+                <i class="fas fa-image fa-2x text-muted"></i>
+              </div>
+            {% endif %}
+            
+            <!-- Avatar -->
+            <div class="organizer-avatar">
+              {% if organizer.avatar %}
+                <img src="{{ organizer.avatar.url }}" alt="{{ organizer.user.name|default:organizer.user.email }}" class="avatar-image">
+              {% else %}
+                <div class="avatar-placeholder">
+                  <i class="fas fa-user fa-2x"></i>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="organizer-card-body">
+            <h5 class="organizer-name">
+              <a href="{{ organizer.get_absolute_url }}" class="text-decoration-none">
+                {{ organizer.user.name|default:organizer.user.email }}
+              </a>
+            </h5>
+            
+            {% if organizer.location %}
+              <p class="organizer-location">
+                <i class="fas fa-map-marker-alt me-1"></i>{{ organizer.location }}
+              </p>
+            {% endif %}
+            
+            {% if organizer.bio %}
+              <p class="organizer-bio">
+                {{ organizer.bio|truncatewords:20 }}
+              </p>
+            {% endif %}
+            
+            <!-- Stats -->
+            <div class="organizer-stats">
+              <div class="stat-item">
+                <strong>{{ organizer.followers_count }}</strong>
+                <small>Seguidore{{ organizer.followers_count|pluralize }}</small>
+              </div>
+              <div class="stat-item">
+                <strong>{{ organizer.events_count }}</strong>
+                <small>Evento{{ organizer.events_count|pluralize }}</small>
+              </div>
+              <div class="stat-item">
+                <strong>{{ organizer.upcoming_events_count }}</strong>
+                <small>Próximo{{ organizer.upcoming_events_count|pluralize }}</small>
+              </div>
+            </div>
+            
+            <div class="organizer-actions">
+              <a href="{{ organizer.get_absolute_url }}" class="btn btn-primary btn-sm">
+                Ver Perfil
+              </a>
+              
+              {% if organizer.website %}
+                <a href="{{ organizer.website }}" target="_blank" class="btn btn-outline-secondary btn-sm">
+                  <i class="fas fa-globe"></i>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+      <nav aria-label="Organizers pagination" class="mt-5">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}page={{ page_obj.previous_page_number }}">Anterior</a>
+            </li>
+          {% endif %}
+          
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active">
+                <span class="page-link">{{ num }}</span>
+              </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}page={{ num }}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?{% if search %}search={{ search }}&{% endif %}page={{ page_obj.next_page_number }}">Siguiente</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="no-organizers text-center py-5">
+      <i class="fas fa-users fa-3x text-muted mb-3"></i>
+      <h5 class="text-muted">
+        {% if search %}
+          No se encontraron organizadores para "{{ search }}"
+        {% else %}
+          No hay organizadores disponibles
+        {% endif %}
+      </h5>
+      {% if search %}
+        <a href="{% url 'users:organizers_list' %}" class="btn btn-primary">Ver todos los organizadores</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

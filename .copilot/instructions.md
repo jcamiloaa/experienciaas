@@ -35,3 +35,7 @@ docker compose -f docker-compose.local.yml run --rm django python manage.py <com
 
 - No ejecutes comandos de Django directamente en el host, siempre usa el contenedor correspondiente.
 - Documenta cualquier comando especial que se agregue en este archivo.
+
+git add .
+git commit -m "Example Commit"
+git push -u origin main

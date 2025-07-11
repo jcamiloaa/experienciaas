@@ -16,6 +16,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 
 from experienciaas.users.models import User, OrganizerProfile, Follow
+from experienciaas.users.forms import UserUpdateForm
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -29,8 +30,8 @@ user_detail_view = UserDetailView.as_view()
 
 class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
-    fields = ["name"]
-    success_message = _("Information successfully updated")
+    form_class = UserUpdateForm
+    success_message = _("Información actualizada exitosamente")
 
     def get_success_url(self) -> str:
         assert self.request.user.is_authenticated  # type guard
@@ -48,7 +49,7 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
     permanent = False
 
     def get_redirect_url(self) -> str:
-        return reverse("users:detail", kwargs={"pk": self.request.user.pk})
+        return reverse("events:list")
 
 
 user_redirect_view = UserRedirectView.as_view()

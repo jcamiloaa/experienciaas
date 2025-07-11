@@ -1,1 +1,257 @@
-{% extends "allauth/layouts/entrance.html" %}
+{% load static i18n compress %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>
+      {% block title %}
+      {% block head_title %}Experienciaas{% endblock head_title %} - Tu ciudad, tu plan
+    {% endblock title %}
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tu ciudad, tu plan. Descúbrelo en Experienciaas" />
+  <meta name="author" content="JKamilo" />
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  {% block css %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+          integrity="sha512-t4GWSVZO1eC8BM339Xd7Uphw5s17a86tIZIj8qRxhnKub6WoyhnrxeCIMeAqBPgdZGlCcG2PrZjMc+Wr78+5Xg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+
+    <!-- Custom CSS -->
+    {% compress css %}
+      <link href="{% static 'css/project.css' %}" rel="stylesheet" />
+    {% endcompress %}
+    
+    <!-- Entrance specific styles -->
+    <style>
+      .entrance-body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Inter', sans-serif;
+      }
+      .entrance-container {
+        min-height: calc(100vh - 80px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+      }
+      .entrance-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        max-width: 450px;
+        width: 100%;
+        margin: 0 1rem;
+      }
+      .navbar {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .navbar-brand {
+        font-weight: 700;
+        color: #667eea !important;
+      }
+      .nav-link {
+        color: #2c3e50 !important;
+        font-weight: 500;
+      }
+      .btn-primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border: none;
+        font-weight: 600;
+      }
+    </style>
+  {% endblock css %}
+  
+  <!-- JavaScript -->
+  {% block javascript %}
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"
+            integrity="sha512-VK2zcvntEufaimc+efOYi622VN5ZacdnufnmX7zIhCPmjhKnOi9ZDMtg1/ug5l183f19gG1/cBstPO4y8Fm2AQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer">
+    </script>
+    
+    {% compress js %}
+      <script src="{% static 'js/project.js' %}"></script>
+    {% endcompress %}
+  {% endblock javascript %}
+</head>
+<body class="entrance-body {% block bodyclass %}{% endblock bodyclass %}">
+  {% block body %}
+  <!-- Header -->
+  <header class="header-main">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand" href="{% url 'events:list' %}">
+          <span class="brand-text">ExperienciaaS</span>
+        </a>
+        
+        <!-- Mobile toggle button -->
+        <button class="navbar-toggler collapsed" type="button" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+                onclick="toggleMobileNav()">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Navigation Menu -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'events:my_events' %}">
+                  <i class="fas fa-ticket-alt me-1"></i>Mis Eventos
+                </a>
+              </li>
+              {% if request.user.is_staff %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" 
+                     data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-cogs me-1"></i>Admin
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{% url 'events:admin_dashboard' %}">
+                      <i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                    <li><a class="dropdown-item" href="{% url 'events:admin_events' %}">
+                      <i class="fas fa-calendar me-2"></i>Manage Events</a></li>
+                    <li><a class="dropdown-item" href="{% url 'events:admin_create_event' %}">
+                      <i class="fas fa-plus me-2"></i>Create Event</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'events:admin_sponsors' %}">
+                      <i class="fas fa-handshake me-2"></i>Sponsors</a></li>
+                    <li><a class="dropdown-item" href="{% url 'events:admin_sponsorship_applications' %}">
+                      <i class="fas fa-file-alt me-2"></i>Sponsor Applications</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'analytics:organizer_dashboard' %}">
+                      <i class="fas fa-chart-line me-2"></i>Analytics</a></li>
+                    {% if request.user.is_superuser %}
+                      <li><a class="dropdown-item" href="{% url 'analytics:platform_dashboard' %}">
+                        <i class="fas fa-chart-bar me-2"></i>Platform Analytics</a></li>
+                    {% endif %}
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">
+                      <i class="fas fa-database me-2"></i>Django Admin</a></li>
+                  </ul>
+                </li>
+              {% endif %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-user-circle me-1"></i>{{ request.user.name|default:request.user.email }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="{% url 'users:detail' request.user.pk %}">
+                    <i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+                  {% if request.user.is_staff %}
+                    <li><a class="dropdown-item" href="{% url 'users:profile_update' %}">
+                      <i class="fas fa-edit me-2"></i>Perfil de Organizador</a></li>
+                  {% endif %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'account_logout' %}">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                </ul>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account_login' %}">
+                  <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                </a>
+              </li>
+              {% if ACCOUNT_ALLOW_REGISTRATION %}
+                <li class="nav-item">
+                  <a class="btn btn-primary ms-2 px-3 py-2 rounded-pill" href="{% url 'account_signup' %}">
+                    <i class="fas fa-user-plus me-1"></i>Registrarse
+                  </a>
+                </li>
+              {% endif %}
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content for Entrance Pages -->
+  <div class="entrance-container">
+    <div class="entrance-card">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+            {% if message.tags == 'error' %}
+              <i class="fas fa-exclamation-circle me-2"></i>
+            {% elif message.tags == 'success' %}
+              <i class="fas fa-check-circle me-2"></i>
+            {% elif message.tags == 'info' %}
+              <i class="fas fa-info-circle me-2"></i>
+            {% elif message.tags == 'warning' %}
+              <i class="fas fa-exclamation-triangle me-2"></i>
+            {% endif %}
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block main %}
+        {% block content %}
+        {% endblock content %}
+      {% endblock main %}
+    </div>
+  </div>
+  {% endblock body %}
+
+  <!-- Mobile navbar functionality -->
+  <script>
+    function toggleMobileNav() {
+      const navbarCollapse = document.getElementById('navbarNav');
+      const navbarToggler = document.querySelector('.navbar-toggler');
+      if (navbarCollapse && navbarToggler) {
+        if (navbarCollapse.classList.contains('show')) {
+          navbarCollapse.classList.remove('show');
+          navbarToggler.classList.add('collapsed');
+          navbarToggler.setAttribute('aria-expanded', 'false');
+        } else {
+          navbarCollapse.classList.add('show');
+          navbarToggler.classList.remove('collapsed');
+          navbarToggler.setAttribute('aria-expanded', 'true');
+        }
+      }
+    }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const navbarCollapse = document.getElementById('navbarNav');
+      const navbarToggler = document.querySelector('.navbar-toggler');
+      const navbar = document.querySelector('.navbar');
+      
+      if (navbarCollapse && navbarToggler && navbar) {
+        if (!navbar.contains(event.target) && navbarCollapse.classList.contains('show')) {
+          navbarCollapse.classList.remove('show');
+          navbarToggler.classList.add('collapsed');
+          navbarToggler.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

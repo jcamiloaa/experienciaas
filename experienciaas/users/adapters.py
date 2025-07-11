@@ -17,6 +17,37 @@ class AccountAdapter(DefaultAccountAdapter):
     def is_open_for_signup(self, request: HttpRequest) -> bool:
         return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
 
+    def add_message(self, request, level, message_template, message_context=None, extra_tags=""):
+        """
+        Override to disable automatic login/logout messages.
+        """
+        # Don't show login/logout success messages
+        if message_template in [
+            "account/messages/logged_in.txt", 
+            "account/messages/logged_out.txt"
+        ]:
+            return
+        # Call parent method for other messages
+        super().add_message(request, level, message_template, message_context, extra_tags)
+
+    def is_email_verification_mandatory(self, request, email_address):
+        """
+        Override to make email verification mandatory for the primary email only.
+        """
+        return True
+
+    def get_email_confirmation_url(self, request, emailconfirmation):
+        """
+        Override to use custom email confirmation URL if needed.
+        """
+        return super().get_email_confirmation_url(request, emailconfirmation)
+
+    def send_mail(self, template_prefix, email, context):
+        """
+        Override to customize email sending behavior.
+        """
+        return super().send_mail(template_prefix, email, context)
+
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):
     def is_open_for_signup(

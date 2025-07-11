@@ -22,7 +22,27 @@ class UserAdmin(auth_admin.UserAdmin):
     add_form = UserAdminCreationForm
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ("name",)}),
+        (_("Personal info"), {
+            "fields": ("name", "birth_date", "gender", "bio", "avatar")
+        }),
+        (_("Contact Information"), {
+            "fields": ("country_code", "phone_number", "country", "city", "address", "postal_code")
+        }),
+        (_("Professional"), {
+            "fields": ("occupation", "company", "website")
+        }),
+        (_("Social Media"), {
+            "fields": ("linkedin_url", "twitter_url", "instagram_url", "facebook_url")
+        }),
+        (_("Interests"), {
+            "fields": ("interests", "hobbies")
+        }),
+        (_("Privacy Settings"), {
+            "fields": ("profile_visible", "show_email", "show_phone")
+        }),
+        (_("Notifications"), {
+            "fields": ("email_notifications", "sms_notifications", "marketing_emails")
+        }),
         (
             _("Permissions"),
             {
@@ -38,16 +58,33 @@ class UserAdmin(auth_admin.UserAdmin):
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     list_display = [
-        "email", "name", "is_staff", "is_superuser", "has_organizer_profile", 
-        "events_count", "followers_count", "date_joined"
+        "email", "name", "age", "location", "occupation", "is_staff", "is_superuser", 
+        "has_organizer_profile", "events_count", "followers_count", "date_joined"
     ]
     list_filter = [
-        "is_staff", "is_superuser", "is_active", "date_joined",
+        "is_staff", "is_superuser", "is_active", "date_joined", "gender", "country",
+        "profile_visible", "email_notifications",
         ("organizer_profile", admin.EmptyFieldListFilter),
     ]
-    search_fields = ["name", "email"]
+    search_fields = ["name", "email", "city", "occupation", "company"]
+    readonly_fields = ["email", "date_joined", "last_login"]
     ordering = ["id"]
+    
+    def get_readonly_fields(self, request, obj=None):
+        """Make email readonly for existing users, editable for new users."""
+        if obj:  # Editing existing user
+            return self.readonly_fields
+        else:  # Creating new user
+            return ["date_joined", "last_login"]
     actions = ["make_staff", "remove_staff", "create_organizer_profile", "toggle_organizer_public"]
+    
+    def age(self, obj):
+        return obj.age or "-"
+    age.short_description = _("Edad")
+    
+    def location(self, obj):
+        return obj.location or "-"
+    location.short_description = _("Ubicación")
     
     def has_organizer_profile(self, obj):
         if hasattr(obj, 'organizer_profile'):

@@ -3,38 +3,303 @@
 {% load static %}
 
 {% block title %}
-  User: 
-  
-    {{ object.name }}
-  
-  
+  Perfil de {{ object.name|default:object.email }} - Experienciaas
 {% endblock title %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .profile-hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem 0;
+      margin-bottom: 2rem;
+    }
+    .profile-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-top: -80px;
+      position: relative;
+      z-index: 2;
+    }
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: 700;
+      color: white;
+      margin: 0 auto 1rem;
+      border: 5px solid white;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .profile-actions .btn {
+      border-radius: 12px;
+      font-weight: 600;
+      padding: 12px 25px;
+      margin: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    .profile-actions .btn-primary {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border: none;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    .profile-actions .btn-outline-secondary {
+      border: 2px solid #6c757d;
+      color: #6c757d;
+    }
+    .profile-actions .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .info-section {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+    .info-label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 0.5rem;
+    }
+    .info-value {
+      color: #6c757d;
+      font-size: 1.1rem;
+    }
+  </style>
+{% endblock css %}
+
 {% block content %}
+<!-- Profile Hero Section -->
+<div class="profile-hero">
   <div class="container">
     <div class="row">
-      <div class="col-sm-12">
-        <h2>
-        
-        
-          {{ object.name }}
-        
-      </h2>
-    </div>
-  </div>
-  {% if object == request.user %}
-    <!-- Action buttons -->
-    <div class="row">
-      <div class="col-sm-12">
-        <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
-        <a class="btn btn-primary"
-           href="{% url 'account_email' %}"
-           role="button">E-Mail</a>
-        {% comment %} <a class="btn btn-primary"
-           href="{% url 'mfa_index' %}"
-           role="button">MFA</a> {% endcomment %}
+      <div class="col-12 text-center">
+        <h1 class="display-5 fw-bold mb-2">
+          {% if object == request.user %}
+            Mi Perfil
+          {% else %}
+            Perfil de Usuario
+          {% endif %}
+        </h1>
+        <p class="lead">
+          {% if object == request.user %}
+            Gestiona tu información personal y configuración de cuenta
+          {% else %}
+            Información del usuario
+          {% endif %}
+        </p>
       </div>
     </div>
-    <!-- End Action buttons -->
-  {% endif %}
+  </div>
+</div>
+
+<div class="container">
+  <!-- Profile Card -->
+  <div class="profile-card">
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <!-- Avatar -->
+        <div class="profile-avatar">
+          {% if object.avatar %}
+            <img src="{{ object.avatar.url }}" alt="Avatar" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 5px solid white; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+          {% else %}
+            {{ object.name|default:object.email|first|upper }}
+          {% endif %}
+        </div>
+        <h3 class="mb-1">{{ object.name|default:"Usuario" }}</h3>
+        <p class="text-muted">{{ object.email }}</p>
+        {% if object.age %}
+          <p class="text-muted"><i class="fas fa-birthday-cake me-1"></i>{{ object.age }} años</p>
+        {% endif %}
+        {% if object.location %}
+          <p class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>{{ object.location }}</p>
+        {% endif %}
+        {% if object.occupation %}
+          <p class="text-muted"><i class="fas fa-briefcase me-1"></i>{{ object.occupation }}</p>
+        {% endif %}
+        
+        {% if object == request.user %}
+          <!-- Action buttons for own profile -->
+          <div class="profile-actions mt-4">
+            <a class="btn btn-primary" href="{% url 'users:update' %}">
+              <i class="fas fa-edit me-2"></i>Editar Perfil
+            </a>
+            <a class="btn btn-outline-secondary" href="{% url 'events:my_events' %}">
+              <i class="fas fa-ticket-alt me-2"></i>Mis Eventos
+            </a>
+            <a class="btn btn-outline-secondary" href="{% url 'account_change_password' %}">
+              <i class="fas fa-key me-2"></i>Cambiar Contraseña
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="col-md-8">
+        <!-- Profile Information -->
+        <h4 class="mb-4">
+          <i class="fas fa-info-circle me-2 text-primary"></i>Información del Perfil
+        </h4>
+        
+        <div class="info-section">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="info-label">Nombre completo</div>
+              <div class="info-value">{{ object.name|default:"No especificado" }}</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-label">Email</div>
+              <div class="info-value">
+                {% if object.show_email or object == request.user %}
+                  {{ object.email }}
+                {% else %}
+                  <i class="fas fa-lock me-1"></i>Privado
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {% if object.bio %}
+          <div class="info-section">
+            <div class="info-label">
+              <i class="fas fa-user-edit me-2 text-primary"></i>Biografía
+            </div>
+            <div class="info-value">{{ object.bio }}</div>
+          </div>
+        {% endif %}
+        
+        {% if object.full_phone or object.location or object.company %}
+          <div class="info-section">
+            <div class="row">
+              {% if object.full_phone %}
+                <div class="col-sm-6">
+                  <div class="info-label">Teléfono</div>
+                  <div class="info-value">
+                    {% if object.show_phone or object == request.user %}
+                      {{ object.full_phone }}
+                    {% else %}
+                      <i class="fas fa-lock me-1"></i>Privado
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+              {% if object.company %}
+                <div class="col-sm-6">
+                  <div class="info-label">Empresa</div>
+                  <div class="info-value">{{ object.company }}</div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+        
+        {% if object.get_interests_display %}
+          <div class="info-section">
+            <div class="info-label">
+              <i class="fas fa-star me-2 text-warning"></i>Intereses
+            </div>
+            <div class="info-value">
+              {% for interest in object.get_interests_display %}
+                <span class="badge bg-light text-dark me-1 mb-1">{{ interest }}</span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        
+        {% if object.hobbies %}
+          <div class="info-section">
+            <div class="info-label">
+              <i class="fas fa-gamepad me-2 text-success"></i>Hobbies
+            </div>
+            <div class="info-value">{{ object.hobbies }}</div>
+          </div>
+        {% endif %}
+        
+        <!-- Social Media Links -->
+        {% if object.website or object.linkedin_url or object.twitter_url or object.instagram_url or object.facebook_url %}
+          <div class="info-section">
+            <div class="info-label">
+              <i class="fas fa-share-alt me-2 text-info"></i>Enlaces
+            </div>
+            <div class="info-value">
+              {% if object.website %}
+                <a href="{{ object.website }}" target="_blank" class="btn btn-outline-primary btn-sm me-2 mb-2">
+                  <i class="fas fa-link me-1"></i>Sitio web
+                </a>
+              {% endif %}
+              {% if object.linkedin_url %}
+                <a href="{{ object.linkedin_url }}" target="_blank" class="btn btn-outline-primary btn-sm me-2 mb-2">
+                  <i class="fab fa-linkedin me-1"></i>LinkedIn
+                </a>
+              {% endif %}
+              {% if object.twitter_url %}
+                <a href="{{ object.twitter_url }}" target="_blank" class="btn btn-outline-info btn-sm me-2 mb-2">
+                  <i class="fab fa-twitter me-1"></i>Twitter
+                </a>
+              {% endif %}
+              {% if object.instagram_url %}
+                <a href="{{ object.instagram_url }}" target="_blank" class="btn btn-outline-danger btn-sm me-2 mb-2">
+                  <i class="fab fa-instagram me-1"></i>Instagram
+                </a>
+              {% endif %}
+              {% if object.facebook_url %}
+                <a href="{{ object.facebook_url }}" target="_blank" class="btn btn-outline-primary btn-sm me-2 mb-2">
+                  <i class="fab fa-facebook me-1"></i>Facebook
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+        
+        <div class="info-section">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="info-label">Fecha de registro</div>
+              <div class="info-value">{{ object.date_joined|date:"d M Y" }}</div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-label">Última actividad</div>
+              <div class="info-value">{{ object.last_login|date:"d M Y, H:i"|default:"Nunca" }}</div>
+            </div>
+          </div>
+        </div>
+        
+        {% if object.is_staff %}
+          <div class="info-section">
+            <div class="row">
+              <div class="col-12">
+                <div class="info-label">
+                  <i class="fas fa-crown me-2 text-warning"></i>Rol
+                </div>
+                <div class="info-value">
+                  <span class="badge bg-warning text-dark px-3 py-2">
+                    <i class="fas fa-cogs me-1"></i>Organizador de Eventos
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        
+        {% if not object == request.user %}
+          <!-- Actions for viewing other profiles -->
+          <div class="mt-4">
+            <a href="{% url 'events:list' %}" class="btn btn-outline-primary">
+              <i class="fas fa-arrow-left me-2"></i>Volver a Eventos
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock content %}

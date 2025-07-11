@@ -327,6 +327,22 @@ ACCOUNT_FORMS = {"signup": "experienciaas.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "experienciaas.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {"signup": "experienciaas.users.forms.UserSocialSignupForm"}
+# Disable automatic login/logout messages
+# https://docs.allauth.org/en/latest/account/configuration.html
+ACCOUNT_SESSION_REMEMBER = None
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = False
+# Disable success messages for login/logout
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = None
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
+# Disable multiple email management
+# https://docs.allauth.org/en/latest/account/configuration.html
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 180
+ACCOUNT_MAX_EMAIL_ADDRESSES = 1  # Only allow one email per user
+ACCOUNT_CHANGE_EMAIL = False  # Disable email change functionality
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = None
 # django-compressor
 # ------------------------------------------------------------------------------
 # https://django-compressor.readthedocs.io/en/latest/quickstart/#installation

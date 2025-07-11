@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  Gestión de Email Deshabilitada - Experienciaas
+{% endblock title %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .disabled-hero {
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+      color: white;
+      padding: 4rem 0;
+      margin-bottom: 2rem;
+    }
+    .disabled-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 3rem;
+      margin-top: -80px;
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+    .disabled-icon {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #6c757d, #495057);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+      margin: 0 auto 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+  </style>
+{% endblock css %}
+
+{% block content %}
+<!-- Disabled Feature Hero Section -->
+<div class="disabled-hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h1 class="display-5 fw-bold mb-2">
+          <i class="fas fa-ban me-3"></i>Funcionalidad Deshabilitada
+        </h1>
+        <p class="lead">
+          La gestión de múltiples emails ha sido deshabilitada
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Disabled Feature Card -->
+  <div class="disabled-card">
+    <!-- Disabled Icon -->
+    <div class="disabled-icon">
+      <i class="fas fa-envelope-open-text"></i>
+    </div>
+    
+    <h3 class="mb-3">Gestión de Email Simplificada</h3>
+    
+    <div class="alert alert-info">
+      <h6 class="alert-heading">
+        <i class="fas fa-info-circle me-2"></i>¿Por qué está deshabilitado?
+      </h6>
+      <p class="mb-0">
+        Para simplificar la experiencia de usuario, hemos deshabilitado la gestión de múltiples direcciones de email. 
+        Cada usuario puede tener una sola dirección de email principal.
+      </p>
+    </div>
+
+    <div class="mt-4">
+      <h5>Tu email actual:</h5>
+      <p class="fs-5 text-primary fw-bold">{{ request.user.email }}</p>
+    </div>
+
+    <div class="mt-4">
+      <h6 class="text-muted mb-3">¿Qué puedes hacer?</h6>
+      <div class="d-flex justify-content-center flex-wrap gap-3">
+        <a href="{% url 'users:update' %}" class="btn btn-primary">
+          <i class="fas fa-edit me-2"></i>Editar Perfil
+        </a>
+        <a href="{% url 'account_change_password' %}" class="btn btn-outline-warning">
+          <i class="fas fa-key me-2"></i>Cambiar Contraseña
+        </a>
+        <a href="{% url 'users:detail' request.user.pk %}" class="btn btn-outline-secondary">
+          <i class="fas fa-user me-2"></i>Ver Mi Perfil
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-4 pt-4 border-top">
+      <small class="text-muted">
+        <i class="fas fa-info-circle me-1"></i>
+        Si necesitas cambiar tu dirección de email, contacta al soporte.
+      </small>
+    </div>
+  </div>
+</div>
+{% endblock content %}

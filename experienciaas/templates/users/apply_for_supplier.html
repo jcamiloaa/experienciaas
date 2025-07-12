@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Aplicar para Proveedor - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .application-hero {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      padding: 3rem 0 4rem;
+      margin-bottom: 2rem;
+    }
+    .application-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-top: -80px;
+      position: relative;
+      z-index: 2;
+    }
+    .benefit-item {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+  </style>
+{% endblock css %}
+
+{% block content %}
+<!-- Application Hero Section -->
+<div class="application-hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <i class="fas fa-handshake fa-4x mb-3"></i>
+        <h1 class="display-5 fw-bold mb-2">
+          Aplicar para Proveedor/Patrocinador
+        </h1>
+        <p class="lead">
+          Conecta tu marca con eventos emocionantes y llega a nuevas audiencias
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="application-card">
+    <div class="row">
+      <div class="col-lg-8">
+        <form method="post">
+          {% csrf_token %}
+          
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+          
+          {{ form.role.as_hidden }}
+          
+          <div class="mb-4">
+            <h4 class="mb-3">
+              <i class="fas fa-clipboard-list me-2 text-success"></i>Información de la Aplicación
+            </h4>
+            
+            <div class="mb-3">
+              <label for="{{ form.motivation.id_for_label }}" class="form-label">
+                {{ form.motivation.label }} <span class="text-danger">*</span>
+              </label>
+              {{ form.motivation }}
+              {% if form.motivation.errors %}
+                <div class="text-danger small">{{ form.motivation.errors }}</div>
+              {% endif %}
+              {% if form.motivation.help_text %}
+                <div class="form-text">{{ form.motivation.help_text }}</div>
+              {% endif %}
+            </div>
+            
+            <div class="mb-3">
+              <label for="{{ form.experience.id_for_label }}" class="form-label">
+                {{ form.experience.label }}
+              </label>
+              {{ form.experience }}
+              {% if form.experience.errors %}
+                <div class="text-danger small">{{ form.experience.errors }}</div>
+              {% endif %}
+              {% if form.experience.help_text %}
+                <div class="form-text">{{ form.experience.help_text }}</div>
+              {% endif %}
+            </div>
+            
+            <div class="mb-3">
+              <label for="{{ form.additional_info.id_for_label }}" class="form-label">
+                {{ form.additional_info.label }}
+              </label>
+              {{ form.additional_info }}
+              {% if form.additional_info.errors %}
+                <div class="text-danger small">{{ form.additional_info.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+          
+          <!-- Next Steps Info -->
+          <div class="alert alert-info">
+            <h6 class="alert-heading">
+              <i class="fas fa-info-circle me-2"></i>Próximos Pasos
+            </h6>
+            <p class="mb-2">Una vez aprobada tu aplicación:</p>
+            <ul class="mb-0 small">
+              <li>Podrás completar tu perfil de empresa con información detallada.</li>
+              <li>Tendrás acceso a la lista de eventos que buscan patrocinadores.</li>
+              <li>Podrás aplicar directamente a patrocinios que se ajusten a tu presupuesto.</li>
+              <li>Los organizadores podrán contactarte para oportunidades de colaboración.</li>
+            </ul>
+          </div>
+          
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a href="{% url 'users:detail' pk=request.user.id %}" class="btn btn-outline-secondary me-md-2">
+              <i class="fas fa-times me-2"></i>Cancelar
+            </a>
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-paper-plane me-2"></i>Enviar Aplicación
+            </button>
+          </div>
+        </form>
+      </div>
+      
+      <div class="col-lg-4">
+        <h5 class="mb-3">
+          <i class="fas fa-rocket me-2 text-success"></i>Beneficios del Proveedor
+        </h5>
+        
+        <div class="benefit-item">
+          <h6 class="mb-1">
+            <i class="fas fa-bullhorn me-2"></i>Promoción de Marca
+          </h6>
+          <small class="text-muted">Aumenta la visibilidad de tu marca en eventos relevantes.</small>
+        </div>
+        
+        <div class="benefit-item">
+          <h6 class="mb-1">
+            <i class="fas fa-target me-2"></i>Audiencia Específica
+          </h6>
+          <small class="text-muted">Llega exactamente a tu público objetivo según tipo de evento.</small>
+        </div>
+        
+        <div class="benefit-item">
+          <h6 class="mb-1">
+            <i class="fas fa-network-wired me-2"></i>Networking
+          </h6>
+          <small class="text-muted">Conecta con organizadores y otros patrocinadores.</small>
+        </div>
+        
+        <div class="benefit-item">
+          <h6 class="mb-1">
+            <i class="fas fa-chart-bar me-2"></i>ROI Medible
+          </h6>
+          <small class="text-muted">Obtén métricas claras del retorno de tu inversión.</small>
+        </div>
+        
+        <div class="benefit-item">
+          <h6 class="mb-1">
+            <i class="fas fa-handshake me-2"></i>Gestión Simplificada
+          </h6>
+          <small class="text-muted">Plataforma centralizada para gestionar todos tus patrocinios.</small>
+        </div>
+        
+        <div class="benefit-item">
+          <h6 class="mb-1">
+            <i class="fas fa-building me-2"></i>Perfil Corporativo
+          </h6>
+          <small class="text-muted">Perfil público de empresa con información detallada.</small>
+        </div>
+        
+        <h5 class="mb-3 mt-4">
+          <i class="fas fa-dollar-sign me-2 text-success"></i>Niveles de Patrocinio
+        </h5>
+        
+        <div class="small">
+          <div class="mb-2">
+            <span class="badge bg-secondary">Platinum</span> 
+            <span class="text-muted">Máxima visibilidad y beneficios premium</span>
+          </div>
+          <div class="mb-2">
+            <span class="badge bg-warning">Gold</span> 
+            <span class="text-muted">Alta visibilidad y menciones destacadas</span>
+          </div>
+          <div class="mb-2">
+            <span class="badge bg-secondary">Silver</span> 
+            <span class="text-muted">Visibilidad media y presencia sólida</span>
+          </div>
+          <div class="mb-2">
+            <span class="badge bg-success">Bronze</span> 
+            <span class="text-muted">Visibilidad básica y reconocimiento</span>
+          </div>
+          <div class="mb-2">
+            <span class="badge bg-info">Partner</span> 
+            <span class="text-muted">Colaboración y apoyo mutuo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

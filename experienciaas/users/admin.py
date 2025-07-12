@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .forms import UserAdminChangeForm
 from .forms import UserAdminCreationForm
-from .models import User, OrganizerProfile, Follow
+from .models import User, OrganizerProfile, Follow, SupplierProfile, RoleApplication, SponsorshipApplication
 
 if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
     # Force the `admin` sign in process to go through the `django-allauth` workflow:
@@ -208,3 +208,255 @@ class FollowAdmin(admin.ModelAdmin):
     list_filter = ["created_at"]
     search_fields = ["follower__name", "follower__email", "organizer__user__name", "organizer__user__email"]
     readonly_fields = ["created_at"]
+
+
+@admin.register(RoleApplication)
+class RoleApplicationAdmin(admin.ModelAdmin):
+    list_display = ["user", "role", "status", "created_at", "reviewed_by", "reviewed_at"]
+    list_filter = ["role", "status", "created_at", "reviewed_at"]
+    search_fields = ["user__name", "user__email", "motivation"]
+    readonly_fields = ["created_at", "updated_at"]
+    actions = ["approve_applications", "reject_applications", "mark_under_review"]
+    
+    fieldsets = (
+        ("Application Info", {
+            "fields": ("user", "role", "status")
+        }),
+        ("Details", {
+            "fields": ("motivation", "experience", "additional_info")
+        }),
+        ("Review", {
+            "fields": ("reviewed_by", "reviewed_at", "admin_notes", "rejection_reason"),
+            "classes": ("collapse",)
+        }),
+        ("Timestamps", {
+            "fields": ("created_at", "updated_at"),
+            "classes": ("collapse",)
+        }),
+    )
+    
+    def approve_applications(self, request, queryset):
+        """Approve selected role applications."""
+        from django.utils import timezone
+        approved = 0
+        
+        for application in queryset.filter(status='pending'):
+            application.status = 'approved'
+            application.reviewed_by = request.user
+            application.reviewed_at = timezone.now()
+            application.save()
+            
+            # Create organizer profile if needed
+            if application.role == 'organizer':
+                application.user.is_staff = True
+                application.user.save()
+                if not hasattr(application.user, 'organizer_profile'):
+                    OrganizerProfile.objects.create(user=application.user)
+            
+            approved += 1
+        
+        self.message_user(request, f"{approved} aplicaciones aprobadas.")
+    approve_applications.short_description = "Aprobar aplicaciones seleccionadas"
+    
+    def reject_applications(self, request, queryset):
+        """Reject selected role applications."""
+        from django.utils import timezone
+        rejected = 0
+        
+        for application in queryset.filter(status='pending'):
+            application.status = 'rejected'
+            application.reviewed_by = request.user
+            application.reviewed_at = timezone.now()
+            application.save()
+            rejected += 1
+        
+        self.message_user(request, f"{rejected} aplicaciones rechazadas.")
+    reject_applications.short_description = "Rechazar aplicaciones seleccionadas"
+    
+    def mark_under_review(self, request, queryset):
+        """Mark selected applications as under review."""
+        updated = queryset.filter(status='pending').update(status='under_review')
+        self.message_user(request, f"{updated} aplicaciones marcadas como en revisión.")
+    mark_under_review.short_description = "Marcar como en revisión"
+
+
+@admin.register(SupplierProfile)
+class SupplierProfileAdmin(admin.ModelAdmin):
+    list_display = ["company_name", "user", "status", "industry", "company_size", "is_approved", "created_at"]
+    list_filter = ["status", "industry", "company_size", "is_public", "created_at", "approved_at"]
+    search_fields = ["company_name", "user__name", "user__email", "company_description", "application_reason"]
+    readonly_fields = ["slug", "created_at", "updated_at", "approved_at", "sponsored_events_count", "active_applications_count"]
+    actions = ["approve_suppliers", "reject_suppliers", "suspend_suppliers"]
+    
+    fieldsets = (
+        ("Basic Info", {
+            "fields": ("user", "status", "slug")
+        }),
+        ("Company Information", {
+            "fields": ("company_name", "company_description", "company_size", "industry", "founding_year")
+        }),
+        ("Legal Information", {
+            "fields": ("tax_id", "legal_address"),
+            "classes": ("collapse",)
+        }),
+        ("Contact Information", {
+            "fields": ("business_phone", "business_email", "contact_person", "contact_position"),
+            "classes": ("collapse",)
+        }),
+        ("Online Presence", {
+            "fields": ("company_website", "facebook_url", "twitter_url", "instagram_url", "linkedin_url", "youtube_url"),
+            "classes": ("collapse",)
+        }),
+        ("Marketing Materials", {
+            "fields": ("company_logo", "company_banner", "brochure"),
+            "classes": ("collapse",)
+        }),
+        ("Sponsorship Preferences", {
+            "fields": ("sponsorship_budget_min", "sponsorship_budget_max", "preferred_event_types", "preferred_locations", "target_audience"),
+            "classes": ("collapse",)
+        }),
+        ("Application", {
+            "fields": ("application_reason",)
+        }),
+        ("Admin Review", {
+            "fields": ("reviewed_by", "reviewed_at", "admin_notes", "rejection_reason"),
+            "classes": ("collapse",)
+        }),
+        ("Settings", {
+            "fields": ("is_public", "allow_contact", "email_notifications"),
+            "classes": ("collapse",)
+        }),
+        ("Statistics", {
+            "fields": ("sponsored_events_count", "active_applications_count"),
+            "classes": ("collapse",)
+        }),
+        ("Timestamps", {
+            "fields": ("created_at", "updated_at", "approved_at"),
+            "classes": ("collapse",)
+        }),
+    )
+    
+    def is_approved(self, obj):
+        return obj.status == 'approved'
+    is_approved.boolean = True
+    is_approved.short_description = "Aprobado"
+    
+    def sponsored_events_count(self, obj):
+        return obj.sponsored_events_count
+    sponsored_events_count.short_description = "Eventos Patrocinados"
+    
+    def active_applications_count(self, obj):
+        return obj.active_applications_count
+    active_applications_count.short_description = "Aplicaciones Activas"
+    
+    def approve_suppliers(self, request, queryset):
+        """Approve selected supplier profiles."""
+        from django.utils import timezone
+        approved = 0
+        
+        for supplier in queryset.filter(status='pending'):
+            supplier.status = 'approved'
+            supplier.reviewed_by = request.user
+            supplier.reviewed_at = timezone.now()
+            supplier.approved_at = timezone.now()
+            supplier.save()
+            approved += 1
+        
+        self.message_user(request, f"{approved} proveedores aprobados.")
+    approve_suppliers.short_description = "Aprobar proveedores seleccionados"
+    
+    def reject_suppliers(self, request, queryset):
+        """Reject selected supplier profiles."""
+        from django.utils import timezone
+        rejected = 0
+        
+        for supplier in queryset.filter(status='pending'):
+            supplier.status = 'rejected'
+            supplier.reviewed_by = request.user
+            supplier.reviewed_at = timezone.now()
+            supplier.save()
+            rejected += 1
+        
+        self.message_user(request, f"{rejected} proveedores rechazados.")
+    reject_suppliers.short_description = "Rechazar proveedores seleccionados"
+    
+    def suspend_suppliers(self, request, queryset):
+        """Suspend selected supplier profiles."""
+        from django.utils import timezone
+        suspended = 0
+        
+        for supplier in queryset.filter(status='approved'):
+            supplier.status = 'suspended'
+            supplier.reviewed_by = request.user
+            supplier.reviewed_at = timezone.now()
+            supplier.save()
+            suspended += 1
+        
+        self.message_user(request, f"{suspended} proveedores suspendidos.")
+    suspend_suppliers.short_description = "Suspender proveedores seleccionados"
+
+
+@admin.register(SponsorshipApplication)
+class SponsorshipApplicationAdmin(admin.ModelAdmin):
+    list_display = ["supplier_profile", "event", "proposed_tier", "budget_offered", "status", "created_at"]
+    list_filter = ["status", "proposed_tier", "final_tier", "created_at", "reviewed_at"]
+    search_fields = ["supplier_profile__company_name", "event__title", "message"]
+    readonly_fields = ["created_at", "updated_at"]
+    actions = ["approve_sponsorships", "reject_sponsorships", "mark_contracted"]
+    
+    fieldsets = (
+        ("Application Info", {
+            "fields": ("supplier_profile", "event", "status")
+        }),
+        ("Proposal", {
+            "fields": ("proposed_tier", "budget_offered", "message", "special_requirements")
+        }),
+        ("Review", {
+            "fields": ("reviewed_by", "reviewed_at", "organizer_notes", "admin_notes"),
+            "classes": ("collapse",)
+        }),
+        ("Contract", {
+            "fields": ("final_tier", "contract_amount", "contract_notes"),
+            "classes": ("collapse",)
+        }),
+        ("Timestamps", {
+            "fields": ("created_at", "updated_at"),
+            "classes": ("collapse",)
+        }),
+    )
+    
+    def approve_sponsorships(self, request, queryset):
+        """Approve selected sponsorship applications."""
+        from django.utils import timezone
+        approved = 0
+        
+        for application in queryset.filter(status='pending'):
+            application.status = 'approved'
+            application.reviewed_by = request.user
+            application.reviewed_at = timezone.now()
+            application.save()
+            approved += 1
+        
+        self.message_user(request, f"{approved} solicitudes de patrocinio aprobadas.")
+    approve_sponsorships.short_description = "Aprobar solicitudes seleccionadas"
+    
+    def reject_sponsorships(self, request, queryset):
+        """Reject selected sponsorship applications."""
+        from django.utils import timezone
+        rejected = 0
+        
+        for application in queryset.filter(status='pending'):
+            application.status = 'rejected'
+            application.reviewed_by = request.user
+            application.reviewed_at = timezone.now()
+            application.save()
+            rejected += 1
+        
+        self.message_user(request, f"{rejected} solicitudes de patrocinio rechazadas.")
+    reject_sponsorships.short_description = "Rechazar solicitudes seleccionadas"
+    
+    def mark_contracted(self, request, queryset):
+        """Mark selected applications as contracted."""
+        updated = queryset.filter(status='approved').update(status='contracted')
+        self.message_user(request, f"{updated} solicitudes marcadas como contratadas.")
+    mark_contracted.short_description = "Marcar como contratadas"

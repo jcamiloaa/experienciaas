@@ -1,0 +1,469 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Detalles del Proveedor - Admin - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .admin-header {
+      background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+      color: white;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+    }
+    .detail-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .info-section {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .company-logo {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+    .verified-badge {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-weight: bold;
+    }
+    .status-badge {
+      font-size: 1.1rem;
+      padding: 0.5rem 1rem;
+    }
+    .action-buttons {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    .social-links a {
+      margin-right: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .document-preview {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
+  </style>
+{% endblock css %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h1 class="display-6 fw-bold mb-2">
+          <i class="fas fa-building me-3"></i>{{ supplier.company_name }}
+        </h1>
+        <p class="lead mb-0">
+          Detalles completos del perfil de proveedor
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <a href="{% url 'users:admin_supplier_profiles' %}" class="btn btn-light">
+          <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Company Overview -->
+  <div class="detail-card">
+    <div class="row">
+      <div class="col-md-3 text-center">
+        {% if supplier.company_logo %}
+          <img src="{{ supplier.company_logo.url }}" alt="{{ supplier.company_name }}" 
+               class="company-logo mb-3">
+        {% else %}
+          <div class="company-logo bg-secondary d-inline-flex align-items-center justify-content-center mb-3">
+            <i class="fas fa-building fa-4x text-white"></i>
+          </div>
+        {% endif %}
+        
+        {% if supplier.is_approved %}
+          <div class="verified-badge">
+            <i class="fas fa-check-circle me-2"></i>Verificado
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-md-6">
+            <h3 class="mb-3">{{ supplier.company_name }}</h3>
+            <div class="info-section">
+              <h6 class="fw-bold text-muted">INFORMACIÓN BÁSICA</h6>
+              <p class="mb-2"><strong>Usuario:</strong> {{ supplier.user.name|default:supplier.user.email }}</p>
+              <p class="mb-2"><strong>Email:</strong> {{ supplier.user.email }}</p>
+              <p class="mb-2"><strong>Estado:</strong> 
+                <span class="badge status-badge {% if supplier.status == 'pending' %}bg-warning{% elif supplier.status == 'approved' %}bg-success{% elif supplier.status == 'rejected' %}bg-danger{% else %}bg-info{% endif %}">
+                  {{ supplier.get_status_display }}
+                </span>
+              </p>
+              <p class="mb-2"><strong>Fecha de registro:</strong> {{ supplier.created_at|date:"d M Y, H:i" }}</p>
+              {% if supplier.approved_at %}
+                <p class="mb-0"><strong>Fecha de aprobación:</strong> {{ supplier.approved_at|date:"d M Y, H:i" }}</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="info-section">
+              <h6 class="fw-bold text-muted">INDUSTRIA Y TAMAÑO</h6>
+              <p class="mb-2"><strong>Industria:</strong> {{ supplier.get_industry_display|default:"No especificada" }}</p>
+              <p class="mb-2"><strong>Tamaño:</strong> {{ supplier.get_company_size_display|default:"No especificado" }}</p>
+              {% if supplier.founding_year %}
+                <p class="mb-2"><strong>Año de fundación:</strong> {{ supplier.founding_year }}</p>
+              {% endif %}
+              {% if supplier.tax_id %}
+                <p class="mb-0"><strong>NIT/RUT:</strong> {{ supplier.tax_id }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Company Description -->
+  {% if supplier.company_description %}
+    <div class="detail-card">
+      <h3 class="mb-3">Descripción de la Empresa</h3>
+      <div class="info-section">
+        <p>{{ supplier.company_description|linebreaks }}</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Application Reason -->
+  <div class="detail-card">
+    <h3 class="mb-3">Razón de la Aplicación</h3>
+    <div class="info-section">
+      <p>{{ supplier.application_reason|linebreaks }}</p>
+    </div>
+  </div>
+
+  <!-- Contact Information -->
+  <div class="detail-card">
+    <h3 class="mb-3">Información de Contacto</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="info-section">
+          <h6 class="fw-bold text-muted">CONTACTO EMPRESARIAL</h6>
+          {% if supplier.contact_person %}
+            <p class="mb-2"><strong>Persona de contacto:</strong> {{ supplier.contact_person }}</p>
+          {% endif %}
+          {% if supplier.contact_position %}
+            <p class="mb-2"><strong>Cargo:</strong> {{ supplier.contact_position }}</p>
+          {% endif %}
+          {% if supplier.business_email %}
+            <p class="mb-2"><strong>Email empresarial:</strong> 
+              <a href="mailto:{{ supplier.business_email }}">{{ supplier.business_email }}</a>
+            </p>
+          {% endif %}
+          {% if supplier.business_phone %}
+            <p class="mb-0"><strong>Teléfono empresarial:</strong> {{ supplier.business_phone }}</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="info-section">
+          <h6 class="fw-bold text-muted">DIRECCIÓN</h6>
+          {% if supplier.legal_address %}
+            <p class="mb-0">{{ supplier.legal_address }}</p>
+          {% else %}
+            <p class="text-muted mb-0">No especificada</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Online Presence -->
+  <div class="detail-card">
+    <h3 class="mb-3">Presencia Online</h3>
+    <div class="info-section">
+      {% if supplier.company_website %}
+        <p class="mb-3">
+          <strong>Sitio web:</strong> 
+          <a href="{{ supplier.company_website }}" target="_blank" class="ms-2">
+            {{ supplier.company_website }} <i class="fas fa-external-link-alt"></i>
+          </a>
+        </p>
+      {% endif %}
+      
+      <div class="social-links">
+        <h6 class="fw-bold text-muted mb-2">REDES SOCIALES</h6>
+        {% if supplier.facebook_url %}
+          <a href="{{ supplier.facebook_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+            <i class="fab fa-facebook me-1"></i>Facebook
+          </a>
+        {% endif %}
+        {% if supplier.twitter_url %}
+          <a href="{{ supplier.twitter_url }}" target="_blank" class="btn btn-outline-info btn-sm">
+            <i class="fab fa-twitter me-1"></i>Twitter
+          </a>
+        {% endif %}
+        {% if supplier.instagram_url %}
+          <a href="{{ supplier.instagram_url }}" target="_blank" class="btn btn-outline-danger btn-sm">
+            <i class="fab fa-instagram me-1"></i>Instagram
+          </a>
+        {% endif %}
+        {% if supplier.linkedin_url %}
+          <a href="{{ supplier.linkedin_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+            <i class="fab fa-linkedin me-1"></i>LinkedIn
+          </a>
+        {% endif %}
+        {% if supplier.youtube_url %}
+          <a href="{{ supplier.youtube_url }}" target="_blank" class="btn btn-outline-danger btn-sm">
+            <i class="fab fa-youtube me-1"></i>YouTube
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Sponsorship Preferences -->
+  <div class="detail-card">
+    <h3 class="mb-3">Preferencias de Patrocinio</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="info-section">
+          <h6 class="fw-bold text-muted">PRESUPUESTO</h6>
+          {% if supplier.sponsorship_budget_min or supplier.sponsorship_budget_max %}
+            <p class="mb-0">
+              {% if supplier.sponsorship_budget_min %}${{ supplier.sponsorship_budget_min|floatformat:0 }}{% endif %}
+              {% if supplier.sponsorship_budget_min and supplier.sponsorship_budget_max %} - {% endif %}
+              {% if supplier.sponsorship_budget_max %}${{ supplier.sponsorship_budget_max|floatformat:0 }}{% endif %}
+            </p>
+          {% else %}
+            <p class="text-muted mb-0">No especificado</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <div class="info-section">
+          <h6 class="fw-bold text-muted">AUDIENCIA OBJETIVO</h6>
+          {% if supplier.target_audience %}
+            <p class="mb-0">{{ supplier.target_audience }}</p>
+          {% else %}
+            <p class="text-muted mb-0">No especificada</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    {% if supplier.preferred_event_types %}
+      <div class="info-section">
+        <h6 class="fw-bold text-muted">TIPOS DE EVENTOS PREFERIDOS</h6>
+        <div class="d-flex flex-wrap gap-2">
+          {% for event_type in supplier.preferred_event_types %}
+            <span class="badge bg-secondary">{{ event_type }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    
+    {% if supplier.preferred_locations %}
+      <div class="info-section">
+        <h6 class="fw-bold text-muted">UBICACIONES PREFERIDAS</h6>
+        <div class="d-flex flex-wrap gap-2">
+          {% for location in supplier.preferred_locations %}
+            <span class="badge bg-info">{{ location }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Marketing Materials -->
+  {% if supplier.company_banner or supplier.brochure %}
+    <div class="detail-card">
+      <h3 class="mb-3">Materiales de Marketing</h3>
+      <div class="row">
+        {% if supplier.company_banner %}
+          <div class="col-md-6">
+            <div class="info-section">
+              <h6 class="fw-bold text-muted">BANNER DE LA EMPRESA</h6>
+              <img src="{{ supplier.company_banner.url }}" alt="Banner" class="document-preview">
+            </div>
+          </div>
+        {% endif %}
+        
+        {% if supplier.brochure %}
+          <div class="col-md-6">
+            <div class="info-section">
+              <h6 class="fw-bold text-muted">BROCHURE/CATÁLOGO</h6>
+              <a href="{{ supplier.brochure.url }}" target="_blank" class="btn btn-outline-primary">
+                <i class="fas fa-download me-2"></i>Descargar Brochure
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Admin Review History -->
+  {% if supplier.reviewed_by or supplier.admin_notes %}
+    <div class="detail-card">
+      <h3 class="mb-3">Historial de Revisión</h3>
+      <div class="info-section">
+        {% if supplier.reviewed_by %}
+          <p class="mb-2"><strong>Revisado por:</strong> {{ supplier.reviewed_by.name|default:supplier.reviewed_by.email }}</p>
+          <p class="mb-2"><strong>Fecha de revisión:</strong> {{ supplier.reviewed_at|date:"d M Y, H:i" }}</p>
+        {% endif %}
+        
+        {% if supplier.admin_notes %}
+          <h6 class="fw-bold text-muted mt-3">NOTAS DEL ADMINISTRADOR</h6>
+          <p class="mb-0">{{ supplier.admin_notes|linebreaks }}</p>
+        {% endif %}
+        
+        {% if supplier.rejection_reason %}
+          <h6 class="fw-bold text-muted mt-3">RAZÓN DE RECHAZO</h6>
+          <div class="alert alert-danger">
+            {{ supplier.rejection_reason|linebreaks }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Activity Summary -->
+  <div class="detail-card">
+    <h3 class="mb-3">Resumen de Actividad</h3>
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <div class="p-3 border rounded">
+          <i class="fas fa-handshake fa-2x text-primary mb-2"></i>
+          <h5>{{ supplier.sponsored_events_count }}</h5>
+          <p class="text-muted mb-0">Eventos Patrocinados</p>
+        </div>
+      </div>
+      <div class="col-md-4 text-center">
+        <div class="p-3 border rounded">
+          <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+          <h5>{{ supplier.active_applications_count }}</h5>
+          <p class="text-muted mb-0">Aplicaciones Activas</p>
+        </div>
+      </div>
+      <div class="col-md-4 text-center">
+        <div class="p-3 border rounded">
+          <i class="fas fa-calendar fa-2x text-info mb-2"></i>
+          <h5>{{ days_since_registration }}</h5>
+          <p class="text-muted mb-0">Días Registrado</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <h4 class="mb-3">Acciones Administrativas</h4>
+    
+    {% if supplier.status == 'pending' %}
+      <div class="row">
+        <div class="col-md-6">
+          <form method="post" action="{% url 'users:admin_verify_supplier' supplier.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="admin_notes" class="form-label">Notas de Aprobación (Opcional)</label>
+              <textarea name="admin_notes" id="admin_notes" class="form-control" rows="3" 
+                        placeholder="Añadir comentarios sobre la aprobación..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-success btn-lg w-100" 
+                    onclick="return confirm('¿Aprobar y verificar este proveedor?')">
+              <i class="fas fa-check me-2"></i>Aprobar y Verificar
+            </button>
+          </form>
+        </div>
+        
+        <div class="col-md-6">
+          <form method="post" action="{% url 'users:admin_reject_supplier' supplier.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="rejection_reason" class="form-label">Razón del Rechazo <span class="text-danger">*</span></label>
+              <textarea name="rejection_reason" id="rejection_reason" class="form-control" rows="3" 
+                        placeholder="Explica por qué se rechaza la aplicación..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-danger btn-lg w-100" 
+                    onclick="return confirm('¿Rechazar este proveedor?')">
+              <i class="fas fa-times me-2"></i>Rechazar Proveedor
+            </button>
+          </form>
+        </div>
+      </div>
+      
+    {% elif supplier.status == 'approved' %}
+      <div class="alert alert-success" role="alert">
+        <h5 class="alert-heading">
+          <i class="fas fa-check-circle me-2"></i>Proveedor Aprobado y Verificado
+        </h5>
+        <p class="mb-0">
+          Este proveedor fue aprobado el {{ supplier.approved_at|date:"d M Y" }}
+          {% if supplier.reviewed_by %}por {{ supplier.reviewed_by.name|default:supplier.reviewed_by.email }}{% endif %}.
+        </p>
+        
+        <hr>
+        <div class="text-center mt-3">
+          <form method="post" action="{% url 'users:admin_unverify_supplier' supplier.id %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning" 
+                    onclick="return confirm('¿Remover verificación? Esto suspenderá al proveedor.')">
+              <i class="fas fa-ban me-2"></i>Suspender Proveedor
+            </button>
+          </form>
+        </div>
+      </div>
+      
+    {% else %}
+      <div class="alert alert-danger" role="alert">
+        <h5 class="alert-heading">
+          <i class="fas fa-times-circle me-2"></i>Proveedor {{ supplier.get_status_display }}
+        </h5>
+        <p class="mb-0">
+          Estado actual: {{ supplier.get_status_display }}
+          {% if supplier.reviewed_at %}
+            ({{ supplier.reviewed_at|date:"d M Y" }})
+          {% endif %}
+        </p>
+        
+        {% if supplier.status == 'rejected' %}
+          <hr>
+          <div class="text-center mt-3">
+            <form method="post" action="{% url 'users:admin_verify_supplier' supplier.id %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-success" 
+                      onclick="return confirm('¿Reconsiderar y aprobar este proveedor?')">
+                <i class="fas fa-redo me-2"></i>Reconsiderar y Aprobar
+              </button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

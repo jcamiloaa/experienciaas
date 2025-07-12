@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ profile.company_name }} - Proveedor - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .supplier-hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 60px 0;
+      color: white;
+    }
+    
+    .supplier-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      margin-top: -50px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    .company-logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 15px;
+      object-fit: cover;
+      border: 4px solid white;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    
+    .info-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    .info-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .social-link {
+      display: inline-block;
+      padding: 10px;
+      margin: 5px;
+      border-radius: 50%;
+      color: white;
+      text-decoration: none;
+      transition: transform 0.3s ease;
+    }
+    
+    .social-link:hover {
+      transform: scale(1.1);
+      color: white;
+    }
+    
+    .social-link.facebook { background: #3b5998; }
+    .social-link.twitter { background: #1da1f2; }
+    .social-link.instagram { background: #e4405f; }
+    .social-link.linkedin { background: #0077b5; }
+    .social-link.youtube { background: #ff0000; }
+    
+    .badge-custom {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<!-- Supplier Hero Section -->
+<div class="supplier-hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-3">{{ profile.company_name }}</h1>
+        <p class="lead mb-4">{{ profile.company_description|default:"Proveedor de servicios para eventos" }}</p>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          {% if profile.industry %}
+            <span class="badge badge-custom">{{ profile.get_industry_display }}</span>
+          {% endif %}
+          {% if profile.company_size %}
+            <span class="badge badge-custom">{{ profile.get_company_size_display }}</span>
+          {% endif %}
+          {% if profile.founding_year %}
+            <span class="badge badge-custom">Fundada en {{ profile.founding_year }}</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-lg-4 text-center">
+        {% if profile.company_logo %}
+          <img src="{{ profile.company_logo.url }}" alt="{{ profile.company_name }} logo" class="company-logo">
+        {% else %}
+          <div class="company-logo d-flex align-items-center justify-content-center bg-light">
+            <i class="fas fa-building fa-3x text-muted"></i>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+  <!-- Supplier Card -->
+  <div class="supplier-card">
+    <div class="row">
+      <div class="col-lg-8">
+        <h2 class="h3 mb-4">Sobre la Empresa</h2>
+        <p class="text-muted mb-4">{{ profile.company_description|default:"Información de la empresa no disponible." }}</p>
+        
+        {% if profile.target_audience %}
+          <h4 class="h5 mb-3">Audiencia Objetivo</h4>
+          <p class="text-muted mb-4">{{ profile.target_audience }}</p>
+        {% endif %}
+        
+        {% if profile.company_website %}
+          <a href="{{ profile.company_website }}" target="_blank" class="btn btn-primary me-3">
+            <i class="fas fa-globe me-2"></i>Sitio Web
+          </a>
+        {% endif %}
+        
+        {% if profile.brochure %}
+          <a href="{{ profile.brochure.url }}" target="_blank" class="btn btn-outline-primary">
+            <i class="fas fa-download me-2"></i>Descargar Brochure
+          </a>
+        {% endif %}
+      </div>
+      
+      <div class="col-lg-4">
+        <!-- Contact Information -->
+        <div class="info-card">
+          <h4 class="h5 mb-3">Información de Contacto</h4>
+          
+          {% if profile.contact_person %}
+            <div class="mb-2">
+              <i class="fas fa-user me-2 text-primary"></i>
+              <strong>{{ profile.contact_person }}</strong>
+              {% if profile.contact_position %}
+                <br><small class="text-muted ms-3">{{ profile.contact_position }}</small>
+              {% endif %}
+            </div>
+          {% endif %}
+          
+          {% if profile.business_email %}
+            <div class="mb-2">
+              <i class="fas fa-envelope me-2 text-primary"></i>
+              <a href="mailto:{{ profile.business_email }}">{{ profile.business_email }}</a>
+            </div>
+          {% endif %}
+          
+          {% if profile.business_phone %}
+            <div class="mb-2">
+              <i class="fas fa-phone me-2 text-primary"></i>
+              <a href="tel:{{ profile.business_phone }}">{{ profile.business_phone }}</a>
+            </div>
+          {% endif %}
+          
+          {% if profile.legal_address %}
+            <div class="mb-2">
+              <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+              {{ profile.legal_address }}
+            </div>
+          {% endif %}
+        </div>
+        
+        <!-- Social Media -->
+        {% if profile.facebook_url or profile.twitter_url or profile.instagram_url or profile.linkedin_url or profile.youtube_url %}
+          <div class="info-card">
+            <h4 class="h5 mb-3">Redes Sociales</h4>
+            <div class="text-center">
+              {% if profile.facebook_url %}
+                <a href="{{ profile.facebook_url }}" target="_blank" class="social-link facebook">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              {% endif %}
+              {% if profile.twitter_url %}
+                <a href="{{ profile.twitter_url }}" target="_blank" class="social-link twitter">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              {% endif %}
+              {% if profile.instagram_url %}
+                <a href="{{ profile.instagram_url }}" target="_blank" class="social-link instagram">
+                  <i class="fab fa-instagram"></i>
+                </a>
+              {% endif %}
+              {% if profile.linkedin_url %}
+                <a href="{{ profile.linkedin_url }}" target="_blank" class="social-link linkedin">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              {% endif %}
+              {% if profile.youtube_url %}
+                <a href="{{ profile.youtube_url }}" target="_blank" class="social-link youtube">
+                  <i class="fab fa-youtube"></i>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <!-- Additional Information -->
+  <div class="row mt-5">
+    <!-- Sponsorship Preferences -->
+    {% if profile.preferred_event_types or profile.preferred_locations or profile.sponsorship_budget_min or profile.sponsorship_budget_max %}
+      <div class="col-lg-6">
+        <div class="info-card">
+          <h4 class="h5 mb-3">Preferencias de Patrocinio</h4>
+          
+          {% if profile.preferred_event_types %}
+            <div class="mb-3">
+              <strong>Tipos de Eventos:</strong>
+              <div class="mt-2">
+                {% for event_type in profile.preferred_event_types %}
+                  <span class="badge bg-light text-dark me-1 mb-1">{{ event_type }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if profile.preferred_locations %}
+            <div class="mb-3">
+              <strong>Ubicaciones Preferidas:</strong>
+              <div class="mt-2">
+                {% for location in profile.preferred_locations %}
+                  <span class="badge bg-light text-dark me-1 mb-1">{{ location }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+          
+          {% if profile.sponsorship_budget_min or profile.sponsorship_budget_max %}
+            <div class="mb-3">
+              <strong>Rango de Presupuesto:</strong>
+              <div class="mt-1">
+                {% if profile.sponsorship_budget_min and profile.sponsorship_budget_max %}
+                  ${{ profile.sponsorship_budget_min|floatformat:0 }} - ${{ profile.sponsorship_budget_max|floatformat:0 }} COP
+                {% elif profile.sponsorship_budget_min %}
+                  Desde ${{ profile.sponsorship_budget_min|floatformat:0 }} COP
+                {% elif profile.sponsorship_budget_max %}
+                  Hasta ${{ profile.sponsorship_budget_max|floatformat:0 }} COP
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+    
+    <!-- Company Banner -->
+    {% if profile.company_banner %}
+      <div class="col-lg-6">
+        <div class="info-card">
+          <h4 class="h5 mb-3">Banner de la Empresa</h4>
+          <img src="{{ profile.company_banner.url }}" alt="{{ profile.company_name }} banner" class="img-fluid rounded">
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  
+  <!-- Contact CTA -->
+  {% if profile.allow_contact %}
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="info-card text-center">
+          <h4 class="h5 mb-3">¿Interesado en trabajar con nosotros?</h4>
+          <p class="text-muted mb-4">Contáctanos para discutir oportunidades de patrocinio y colaboración.</p>
+          {% if profile.business_email %}
+            <a href="mailto:{{ profile.business_email }}" class="btn btn-primary btn-lg">
+              <i class="fas fa-envelope me-2"></i>Contactar
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

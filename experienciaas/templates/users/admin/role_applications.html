@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestión de Aplicaciones de Roles - Admin - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .admin-header {
+      background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+      color: white;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+    }
+    .filter-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .application-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    .application-card:hover {
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+    .status-pending {
+      border-left: 4px solid #ffc107;
+    }
+    .status-approved {
+      border-left: 4px solid #28a745;
+    }
+    .status-rejected {
+      border-left: 4px solid #dc3545;
+    }
+    .status-under_review {
+      border-left: 4px solid #17a2b8;
+    }
+  </style>
+{% endblock css %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="display-6 fw-bold mb-2">
+          <i class="fas fa-user-cog me-3"></i>Gestión de Aplicaciones de Roles
+        </h1>
+        <p class="lead mb-0">
+          Administra las solicitudes de usuarios para roles de organizador y proveedor
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Filters -->
+  <div class="filter-card">
+    <form method="get" class="row g-3">
+      <div class="col-md-3">
+        <label for="status" class="form-label">Estado</label>
+        <select name="status" id="status" class="form-select">
+          <option value="">Todos los estados</option>
+          {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="col-md-3">
+        <label for="role" class="form-label">Rol</label>
+        <select name="role" id="role" class="form-select">
+          <option value="">Todos los roles</option>
+          {% for value, label in role_choices %}
+            <option value="{{ value }}" {% if current_role == value %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="col-md-4">
+        <label for="search" class="form-label">Buscar</label>
+        <input type="text" name="search" id="search" class="form-control" 
+               placeholder="Nombre, email o motivación..." value="{{ current_search }}">
+      </div>
+      
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">
+          <i class="fas fa-search me-1"></i>Filtrar
+        </button>
+        <a href="{% url 'users:admin_role_applications' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-times"></i>
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Applications List -->
+  {% if applications %}
+    <div class="row">
+      {% for application in applications %}
+        <div class="col-12">
+          <div class="application-card status-{{ application.status }}">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-3">
+                  <h6 class="mb-1">
+                    {{ application.user.name|default:application.user.email }}
+                  </h6>
+                  <p class="text-muted small mb-0">{{ application.user.email }}</p>
+                  <span class="badge {% if application.role == 'organizer' %}bg-warning{% else %}bg-success{% endif %} mt-1">
+                    {{ application.get_role_display }}
+                  </span>
+                </div>
+                
+                <div class="col-md-4">
+                  <h6 class="mb-1">Motivación</h6>
+                  <p class="text-muted small mb-0">
+                    {{ application.motivation|truncatewords:15 }}
+                  </p>
+                </div>
+                
+                <div class="col-md-2 text-center">
+                  <span class="badge {% if application.status == 'pending' %}bg-warning{% elif application.status == 'approved' %}bg-success{% elif application.status == 'rejected' %}bg-danger{% else %}bg-info{% endif %} px-3 py-2">
+                    {{ application.get_status_display }}
+                  </span>
+                  <p class="text-muted small mt-1 mb-0">
+                    {{ application.created_at|date:"d M Y" }}
+                  </p>
+                </div>
+                
+                <div class="col-md-3 text-end">
+                  <a href="{% url 'users:admin_review_role_application' application.id %}" 
+                     class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-eye me-1"></i>Revisar
+                  </a>
+                  
+                  {% if application.status == 'pending' %}
+                    <div class="btn-group mt-2" role="group">
+                      <form method="post" action="{% url 'users:admin_review_role_application' application.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="approve">
+                        <button type="submit" class="btn btn-success btn-sm" 
+                                onclick="return confirm('¿Aprobar esta aplicación?')">
+                          <i class="fas fa-check me-1"></i>Aprobar
+                        </button>
+                      </form>
+                      
+                      <form method="post" action="{% url 'users:admin_review_role_application' application.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="reject">
+                        <button type="submit" class="btn btn-danger btn-sm" 
+                                onclick="return confirm('¿Rechazar esta aplicación?')">
+                          <i class="fas fa-times me-1"></i>Rechazar
+                        </button>
+                      </form>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if applications.has_other_pages %}
+      <nav aria-label="Paginación de aplicaciones" class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if applications.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}">Primera</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ applications.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}">Anterior</a>
+            </li>
+          {% endif %}
+
+          <li class="page-item active">
+            <span class="page-link">
+              Página {{ applications.number }} de {{ applications.paginator.num_pages }}
+            </span>
+          </li>
+
+          {% if applications.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ applications.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}">Siguiente</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ applications.paginator.num_pages }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}">Última</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+  {% else %}
+    <div class="text-center py-5">
+      <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+      <h4 class="text-muted">No se encontraron aplicaciones</h4>
+      <p class="text-muted">
+        {% if current_status or current_role or current_search %}
+          No hay aplicaciones que coincidan con los filtros aplicados.
+        {% else %}
+          No hay aplicaciones de roles pendientes en este momento.
+        {% endif %}
+      </p>
+      {% if current_status or current_role or current_search %}
+        <a href="{% url 'users:admin_role_applications' %}" class="btn btn-primary">
+          <i class="fas fa-times me-2"></i>Limpiar Filtros
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+<!-- Statistics Cards -->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body text-center">
+          <i class="fas fa-clock fa-2x mb-2"></i>
+          <h5 class="card-title">{{ applications.paginator.count }} Total</h5>
+          <p class="card-text">Aplicaciones</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white">
+        <div class="card-body text-center">
+          <i class="fas fa-hourglass-half fa-2x mb-2"></i>
+          <h5 class="card-title">Pendientes</h5>
+          <p class="card-text">Estado: Pending</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body text-center">
+          <i class="fas fa-check fa-2x mb-2"></i>
+          <h5 class="card-title">Aprobadas</h5>
+          <p class="card-text">Este mes</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-danger text-white">
+        <div class="card-body text-center">
+          <i class="fas fa-times fa-2x mb-2"></i>
+          <h5 class="card-title">Rechazadas</h5>
+          <p class="card-text">Este mes</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

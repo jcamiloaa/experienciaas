@@ -285,63 +285,29 @@ class CityForm(forms.ModelForm):
 
 
 class SponsorshipApplicationForm(forms.ModelForm):
-    """Form for applying for event sponsorship."""
-    
-    # Custom field to remove URL validation
-    company_website = forms.CharField(
-        label=_('Sitio Web de la Empresa'),
-        max_length=200,
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'www.empresa.com o https://www.empresa.com'
-        }),
-        help_text=_('Ingresa la URL de tu sitio web (opcional)')
-    )
+    """Form for applying for event sponsorship - uses supplier profile data."""
     
     class Meta:
         model = SponsorshipApplication
-        fields = [
-            'company_name', 'contact_name', 'contact_email', 'contact_phone',
-            'company_website', 'message', 'proposed_tier'
-        ]
+        fields = ['message', 'proposed_tier']
         widgets = {
-            'company_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nombre de la empresa'
-            }),
-            'contact_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nombre del contacto'
-            }),
-            'contact_email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'correo@empresa.com'
-            }),
-            'contact_phone': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': '+57 300 123 4567'
-            }),
             'message': forms.Textarea(attrs={
                 'class': 'form-control',
-                'rows': 5,
-                'placeholder': 'Describe tu empresa y por qué quieres patrocinar este evento...'
+                'rows': 6,
+                'placeholder': 'Describe por qué quieres patrocinar este evento, qué puedes ofrecer y tus objetivos de marketing...'
             }),
             'proposed_tier': forms.Select(attrs={
                 'class': 'form-select'
             })
         }
         labels = {
-            'company_name': _('Nombre de la Empresa'),
-            'contact_name': _('Nombre del Contacto'),
-            'contact_email': _('Email de Contacto'),
-            'contact_phone': _('Teléfono de Contacto'),
-            'message': _('Mensaje'),
+            'message': _('Propuesta de Patrocinio'),
             'proposed_tier': _('Nivel de Patrocinio Propuesto')
         }
     
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event', None)
+        self.supplier_profile = kwargs.pop('supplier_profile', None)
         super().__init__(*args, **kwargs)
         
         # Add tier descriptions as help text
@@ -365,6 +331,17 @@ class SponsorshipApplicationForm(forms.ModelForm):
         self.fields['proposed_tier'].help_text = _(
             'Selecciona el nivel de patrocinio que mejor se adapte a tu presupuesto y objetivos.'
         )
+        
+        # Add budget guidance based on supplier profile
+        if self.supplier_profile:
+            budget_text = ""
+            if self.supplier_profile.sponsorship_budget_min and self.supplier_profile.sponsorship_budget_max:
+                budget_text = f" (Tu rango de presupuesto: ${self.supplier_profile.sponsorship_budget_min:,} - ${self.supplier_profile.sponsorship_budget_max:,})"
+            elif self.supplier_profile.sponsorship_budget_min:
+                budget_text = f" (Tu presupuesto mínimo: ${self.supplier_profile.sponsorship_budget_min:,})"
+            
+            if budget_text:
+                self.fields['proposed_tier'].help_text += budget_text
     
     def save(self, commit=True):
         instance = super().save(commit=False)

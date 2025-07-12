@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Gestión de Perfiles de Proveedores" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-building me-2"></i>
+                            {% trans "Gestión de Perfiles de Proveedores" %}
+                        </h4>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Filters -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <form method="get" class="d-flex gap-2">
+                                <select name="status" class="form-select">
+                                    <option value="">{% trans "Todos los estados" %}</option>
+                                    <option value="approved" {% if current_status == 'approved' %}selected{% endif %}>
+                                        {% trans "Aprobados" %}
+                                    </option>
+                                    <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>
+                                        {% trans "Pendientes" %}
+                                    </option>
+                                </select>
+                                <button type="submit" class="btn btn-outline-success">
+                                    <i class="fas fa-filter"></i> {% trans "Filtrar" %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Profiles Table -->
+                    {% if profiles %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>{% trans "Usuario" %}</th>
+                                        <th>{% trans "Empresa" %}</th>
+                                        <th>{% trans "Tipo de Proveedor" %}</th>
+                                        <th>{% trans "Estado" %}</th>
+                                        <th>{% trans "Presupuesto" %}</th>
+                                        <th>{% trans "Creado" %}</th>
+                                        <th>{% trans "Aprobado por" %}</th>
+                                        <th>{% trans "Acciones" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for profile in profiles %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm me-2">
+                                                        {% if profile.user.avatar %}
+                                                            <img src="{{ profile.user.avatar.url }}" 
+                                                                 class="rounded-circle" width="32" height="32"
+                                                                 alt="{{ profile.user.get_full_name }}">
+                                                        {% else %}
+                                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                                                 style="width: 32px; height: 32px;">
+                                                                <i class="fas fa-user text-white"></i>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <strong>{{ profile.user.get_full_name }}</strong><br>
+                                                        <small class="text-muted">{{ profile.user.email }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <strong>{{ profile.company_name }}</strong><br>
+                                                    {% if profile.website %}
+                                                        <small>
+                                                            <a href="{{ profile.website }}" target="_blank" class="text-decoration-none">
+                                                                <i class="fas fa-external-link-alt"></i> {% trans "Sitio Web" %}
+                                                            </a>
+                                                        </small>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">
+                                                    {{ profile.get_supplier_type_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if profile.is_approved %}
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-check"></i> {% trans "Aprobado" %}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">
+                                                        <i class="fas fa-clock"></i> {% trans "Pendiente" %}
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if profile.min_budget and profile.max_budget %}
+                                                    <small class="text-muted">
+                                                        ${{ profile.min_budget|floatformat:0 }} - ${{ profile.max_budget|floatformat:0 }}
+                                                    </small>
+                                                {% elif profile.min_budget %}
+                                                    <small class="text-muted">
+                                                        Desde ${{ profile.min_budget|floatformat:0 }}
+                                                    </small>
+                                                {% else %}
+                                                    <em class="text-muted">{% trans "No especificado" %}</em>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <small>{{ profile.created_at|date:"d/m/Y H:i" }}</small>
+                                            </td>
+                                            <td>
+                                                {% if profile.approved_by %}
+                                                    <small>
+                                                        {{ profile.approved_by.get_full_name }}<br>
+                                                        <em class="text-muted">{{ profile.approved_at|date:"d/m/Y H:i" }}</em>
+                                                    </small>
+                                                {% else %}
+                                                    <em class="text-muted">{% trans "Pendiente" %}</em>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    {% if profile.is_approved %}
+                                                        <form method="post" 
+                                                              action="{% url 'users:reject_supplier_profile' profile.id %}" 
+                                                              class="d-inline">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-sm btn-warning"
+                                                                    onclick="return confirm('{% trans "¿Cambiar estado a pendiente?" %}')">
+                                                                <i class="fas fa-undo"></i>
+                                                            </button>
+                                                        </form>
+                                                    {% else %}
+                                                        <form method="post" 
+                                                              action="{% url 'users:approve_supplier_profile' profile.id %}" 
+                                                              class="d-inline">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-sm btn-success"
+                                                                    onclick="return confirm('{% trans "¿Aprobar este perfil de proveedor?" %}')">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        </form>
+                                                    {% endif %}
+                                                    
+                                                    <!-- View details button -->
+                                                    <button type="button" class="btn btn-sm btn-info" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#profileModal{{ profile.id }}">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if is_paginated %}
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center mt-4">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=1{% if current_status %}&status={{ current_status }}{% endif %}">
+                                                {% trans "Primera" %}
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                                {% trans "Anterior" %}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    <li class="page-item active">
+                                        <span class="page-link">
+                                            {% trans "Página" %} {{ page_obj.number }} {% trans "de" %} {{ page_obj.paginator.num_pages }}
+                                        </span>
+                                    </li>
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                                {% trans "Siguiente" %}
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                                {% trans "Última" %}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-building fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">{% trans "No hay perfiles de proveedores" %}</h5>
+                            <p class="text-muted">{% trans "No se encontraron perfiles con los filtros seleccionados." %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Detail Modals -->
+{% for profile in profiles %}
+<div class="modal fade" id="profileModal{{ profile.id }}" tabindex="-1" 
+     aria-labelledby="profileModalLabel{{ profile.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profileModalLabel{{ profile.id }}">
+                    {% trans "Detalles del Perfil de Proveedor" %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>{% trans "Información de la Empresa" %}</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>{% trans "Nombre" %}:</th>
+                                <td>{{ profile.company_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>{% trans "Tipo" %}:</th>
+                                <td>{{ profile.get_supplier_type_display }}</td>
+                            </tr>
+                            <tr>
+                                <th>{% trans "Teléfono" %}:</th>
+                                <td>{{ profile.phone|default:"No especificado" }}</td>
+                            </tr>
+                            <tr>
+                                <th>{% trans "Sitio Web" %}:</th>
+                                <td>
+                                    {% if profile.website %}
+                                        <a href="{{ profile.website }}" target="_blank">{{ profile.website }}</a>
+                                    {% else %}
+                                        {% trans "No especificado" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{% trans "Ubicación" %}:</th>
+                                <td>{{ profile.location|default:"No especificada" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>{% trans "Información Comercial" %}</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <th>{% trans "Presupuesto Mín" %}:</th>
+                                <td>
+                                    {% if profile.min_budget %}
+                                        ${{ profile.min_budget|floatformat:0 }}
+                                    {% else %}
+                                        {% trans "No especificado" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{% trans "Presupuesto Máx" %}:</th>
+                                <td>
+                                    {% if profile.max_budget %}
+                                        ${{ profile.max_budget|floatformat:0 }}
+                                    {% else %}
+                                        {% trans "No especificado" %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{% trans "Experiencia" %}:</th>
+                                <td>{{ profile.years_of_experience|default:"No especificado" }} {% if profile.years_of_experience %}años{% endif %}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                {% if profile.description %}
+                    <div class="mt-3">
+                        <h6>{% trans "Descripción" %}</h6>
+                        <p class="text-muted">{{ profile.description }}</p>
+                    </div>
+                {% endif %}
+                {% if profile.services_offered %}
+                    <div class="mt-3">
+                        <h6>{% trans "Servicios Ofrecidos" %}</h6>
+                        <p class="text-muted">{{ profile.services_offered }}</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cerrar" %}</button>
+                {% if profile.is_approved %}
+                    <form method="post" action="{% url 'users:reject_supplier_profile' profile.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning"
+                                onclick="return confirm('{% trans "¿Cambiar estado a pendiente?" %}')">
+                            <i class="fas fa-undo"></i> {% trans "Cambiar a Pendiente" %}
+                        </button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'users:approve_supplier_profile' profile.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success"
+                                onclick="return confirm('{% trans "¿Aprobar este perfil de proveedor?" %}')">
+                            <i class="fas fa-check"></i> {% trans "Aprobar" %}
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

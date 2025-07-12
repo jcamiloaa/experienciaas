@@ -34,6 +34,17 @@ class StaffRequiredMixin(UserPassesTestMixin):
         return redirect('events:list')
 
 
+class SuperUserRequiredMixin(UserPassesTestMixin):
+    """Mixin to require superuser permissions."""
+    
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_superuser
+    
+    def handle_no_permission(self):
+        messages.error(self.request, _("Only administrators can access this area."))
+        return redirect('events:list')
+
+
 class OrganizerRequiredMixin(UserPassesTestMixin):
     """Mixin to require organizer permissions (staff or event organizer)."""
     
@@ -422,7 +433,7 @@ class AdminTicketListView(StaffRequiredMixin, ListView):
 
 # Sponsor Management Views
 
-class AdminSponsorListView(OrganizerRequiredMixin, ListView):
+class AdminSponsorListView(SuperUserRequiredMixin, ListView):
     """Admin view for managing sponsors."""
     model = Sponsor
     template_name = "events/admin/sponsor_list.html"
@@ -444,18 +455,40 @@ class AdminSponsorListView(OrganizerRequiredMixin, ListView):
         if is_approved:
             queryset = queryset.filter(is_approved=(is_approved == 'true'))
         
-        # If not staff, only show sponsors for organizer's events
-        if not self.request.user.is_staff:
-            # Get events organized by this user
-            user_events = Event.objects.filter(organizer=self.request.user)
-            # Get sponsors that are linked to these events
-            sponsor_ids = EventSponsor.objects.filter(event__in=user_events).values_list('sponsor_id', flat=True)
-            queryset = queryset.filter(id__in=sponsor_ids)
-        
+        # Superusers can see all sponsors
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Add SupplierProfile information for each sponsor
+        from experienciaas.users.models import SupplierProfile, User
+        sponsors_with_profiles = []
+        
+        for sponsor in context['sponsors']:
+            supplier_profile = None
+            try:
+                # Find user by email that matches sponsor's contact_email
+                user = User.objects.get(email=sponsor.contact_email)
+                # Get the supplier profile for that user if it exists and is approved
+                supplier_profile = SupplierProfile.objects.get(
+                    user=user,
+                    status='approved'
+                )
+            except (User.DoesNotExist, SupplierProfile.DoesNotExist):
+                pass
+            
+            sponsors_with_profiles.append({
+                'sponsor': sponsor,
+                'supplier_profile': supplier_profile,
+                'has_robust_profile': supplier_profile is not None
+            })
+        
+        context['sponsors_with_profiles'] = sponsors_with_profiles
+        return context
 
 
-class AdminSponsorCreateView(StaffRequiredMixin, CreateView):
+class AdminSponsorCreateView(SuperUserRequiredMixin, CreateView):
     """Admin view for creating sponsors."""
     model = Sponsor
     form_class = SponsorForm
@@ -467,32 +500,49 @@ class AdminSponsorCreateView(StaffRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class AdminSponsorUpdateView(OrganizerRequiredMixin, UpdateView):
-    """Admin view for editing sponsors."""
+class AdminSponsorUpdateView(SuperUserRequiredMixin, UpdateView):
+    """Admin view for editing sponsors - redirects to SupplierProfile system."""
     model = Sponsor
     form_class = SponsorForm
     template_name = "events/admin/sponsor_form.html"
     success_url = reverse_lazy('events:admin_sponsors')
     
     def get_queryset(self):
-        queryset = super().get_queryset()
-        # If not staff, only allow editing sponsors for organizer's events
-        if not self.request.user.is_staff:
-            user_events = Event.objects.filter(organizer=self.request.user)
-            sponsor_ids = EventSponsor.objects.filter(event__in=user_events).values_list('sponsor_id', flat=True)
-            queryset = queryset.filter(id__in=sponsor_ids)
-        return queryset
+        # Superusers can edit any sponsor
+        return super().get_queryset()
     
-    def form_valid(self, form):
-        messages.success(self.request, _("Sponsor updated successfully!"))
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        """Redirect to the robust SupplierProfile system if available."""
+        sponsor = self.get_object()
+        
+        # Try to find corresponding SupplierProfile by user email
+        from experienciaas.users.models import SupplierProfile, User
+        try:
+            # Find user by email that matches sponsor's contact_email
+            user = User.objects.get(email=sponsor.contact_email)
+            # Get the supplier profile for that user if it exists and is approved
+            supplier_profile = SupplierProfile.objects.get(
+                user=user,
+                status='approved'
+            )
+            # Redirect to the admin version of supplier profile edit
+            return redirect('users:admin_edit_supplier_profile', profile_id=supplier_profile.id)
+        except (User.DoesNotExist, SupplierProfile.DoesNotExist):
+            # If no SupplierProfile exists, show message and continue with legacy form
+            messages.warning(
+                request, 
+                _("Este patrocinador no tiene un perfil de proveedor asociado. "
+                  "Usando el formulario básico. Para funcionalidad completa, "
+                  "el patrocinador debe crear un perfil de proveedor.")
+            )
+            return super().get(request, *args, **kwargs)
     
     def form_valid(self, form):
         messages.success(self.request, _("Sponsor updated successfully!"))
         return super().form_valid(form)
 
 
-class AdminSponsorDeleteView(StaffRequiredMixin, DeleteView):
+class AdminSponsorDeleteView(SuperUserRequiredMixin, DeleteView):
     """Admin view for deleting sponsors."""
     model = Sponsor
     template_name = "events/admin/sponsor_confirm_delete.html"
@@ -623,8 +673,8 @@ class AdminSponsorshipApplicationListView(OrganizerRequiredMixin, ListView):
         if event_id:
             queryset = queryset.filter(event_id=event_id)
         
-        # If not staff, only show applications for organizer's events
-        if not self.request.user.is_staff:
+        # Only superusers can see all applications, staff see only their events
+        if not self.request.user.is_superuser:
             user_events = Event.objects.filter(organizer=self.request.user)
             queryset = queryset.filter(event__in=user_events)
         
@@ -634,7 +684,7 @@ class AdminSponsorshipApplicationListView(OrganizerRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         
         # Filter events based on user permissions
-        if self.request.user.is_staff:
+        if self.request.user.is_superuser:
             events = Event.objects.filter(max_sponsors__gt=0).order_by('-created_at')
         else:
             events = Event.objects.filter(organizer=self.request.user, max_sponsors__gt=0).order_by('-created_at')
@@ -651,8 +701,8 @@ class AdminSponsorshipApplicationDetailView(OrganizerRequiredMixin, DetailView):
     
     def get_queryset(self):
         queryset = super().get_queryset()
-        # If not staff, only allow access to applications for organizer's events
-        if not self.request.user.is_staff:
+        # Only superusers can access all applications, staff can only access their events
+        if not self.request.user.is_superuser:
             user_events = Event.objects.filter(organizer=self.request.user)
             queryset = queryset.filter(event__in=user_events)
         return queryset
@@ -666,8 +716,8 @@ class AdminSponsorshipApplicationUpdateView(OrganizerRequiredMixin, UpdateView):
     
     def get_queryset(self):
         queryset = super().get_queryset()
-        # If not staff, only allow access to applications for organizer's events
-        if not self.request.user.is_staff:
+        # Only superusers can access all applications, staff can only access their events
+        if not self.request.user.is_superuser:
             user_events = Event.objects.filter(organizer=self.request.user)
             queryset = queryset.filter(event__in=user_events)
         return queryset
@@ -695,6 +745,11 @@ class AdminSponsorshipApplicationApproveView(StaffRequiredMixin, View):
     
     def post(self, request, pk):
         application = get_object_or_404(SponsorshipApplication, pk=pk)
+        
+        # Check permissions: organizers can only approve applications for their events
+        if not request.user.is_superuser and application.event.organizer != request.user:
+            messages.error(request, _("You don't have permission to approve this application."))
+            return redirect('events:admin_sponsorship_applications')
         
         # Check if event has available slots
         if application.event.available_sponsor_slots <= 0:
@@ -744,6 +799,11 @@ class AdminSponsorshipApplicationRejectView(StaffRequiredMixin, View):
     
     def post(self, request, pk):
         application = get_object_or_404(SponsorshipApplication, pk=pk)
+        
+        # Check permissions: organizers can only reject applications for their events
+        if not request.user.is_superuser and application.event.organizer != request.user:
+            messages.error(request, _("You don't have permission to reject this application."))
+            return redirect('events:admin_sponsorship_applications')
         
         application.status = 'rejected'
         application.reviewed_by = request.user

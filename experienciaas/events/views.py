@@ -436,35 +436,74 @@ class SponsorshipSuccessView(DetailView):
         return context
 
 
-class SponsorshipApplicationCreateView(CreateView):
-    """View for creating sponsorship applications."""
+class SponsorshipApplicationCreateView(LoginRequiredMixin, CreateView):
+    """View for creating sponsorship applications - requires approved supplier profile."""
     model = SponsorshipApplication
     form_class = SponsorshipApplicationForm
     template_name = "events/sponsorship_application_form.html"
     
+    def dispatch(self, request, *args, **kwargs):
+        # Check if user has approved supplier profile
+        if not request.user.is_authenticated:
+            return redirect('account_login')
+        
+        if not hasattr(request.user, 'supplier_profile'):
+            messages.error(request, _("Necesitas tener un perfil de proveedor para aplicar a patrocinios. Primero solicita ser proveedor."))
+            return redirect('users:apply_for_role')
+        
+        if not request.user.supplier_profile.is_approved:
+            messages.error(request, _("Tu perfil de proveedor debe estar aprobado para aplicar a patrocinios. Estado actual: {status}").format(
+                status=_("Pendiente de aprobación") if not request.user.supplier_profile.is_approved else _("Aprobado")
+            ))
+            return redirect('users:profile')
+        
+        # Check if supplier role is active (not suspended)
+        if not request.user.is_supplier_active:
+            suspension_msg = ""
+            if request.user.supplier_suspended_until:
+                suspension_msg = _(" hasta el {}").format(request.user.supplier_suspended_until.strftime("%d/%m/%Y"))
+            elif request.user.supplier_suspended:
+                suspension_msg = _(" de forma permanente")
+            
+            messages.error(request, _("Tu rol de proveedor está suspendido{suspension}. No puedes aplicar a patrocinios.").format(
+                suspension=suspension_msg
+            ))
+            return redirect('users:profile')
+        
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['event'] = get_object_or_404(Event, slug=self.kwargs['event_slug'])
+        kwargs['supplier_profile'] = self.request.user.supplier_profile
         return kwargs
     
     def form_valid(self, form):
         event = get_object_or_404(Event, slug=self.kwargs['event_slug'])
+        supplier_profile = self.request.user.supplier_profile
         
         # Check if sponsorship is available
         if not event.sponsorship_available:
-            messages.error(self.request, _("Sponsorship applications are not available for this event."))
+            messages.error(self.request, _("Las aplicaciones de patrocinio no están disponibles para este evento."))
             return redirect(event.get_absolute_url())
         
-        # Check if user already applied
+        # Check if supplier already applied
         if SponsorshipApplication.objects.filter(
             event=event,
-            contact_email=form.cleaned_data['contact_email']
+            contact_email=supplier_profile.business_email or supplier_profile.user.email
         ).exists():
-            messages.error(self.request, _("You have already applied for sponsorship on this event."))
+            messages.error(self.request, _("Ya has aplicado para patrocinar este evento."))
             return redirect(event.get_absolute_url())
         
+        # Auto-fill company information from supplier profile
         form.instance.event = event
-        messages.success(self.request, _("Your sponsorship application has been submitted successfully! The event organizer will contact you soon."))
+        form.instance.company_name = supplier_profile.company_name
+        form.instance.contact_name = supplier_profile.contact_person or supplier_profile.user.name or supplier_profile.user.email
+        form.instance.contact_email = supplier_profile.business_email or supplier_profile.user.email
+        form.instance.contact_phone = supplier_profile.business_phone or supplier_profile.user.full_phone
+        form.instance.company_website = supplier_profile.company_website
+        
+        messages.success(self.request, _("Tu solicitud de patrocinio ha sido enviada exitosamente! El organizador del evento te contactará pronto."))
         return super().form_valid(form)
     
     def get_success_url(self):
@@ -473,4 +512,5 @@ class SponsorshipApplicationCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['event'] = get_object_or_404(Event, slug=self.kwargs['event_slug'])
+        context['supplier_profile'] = self.request.user.supplier_profile
         return context

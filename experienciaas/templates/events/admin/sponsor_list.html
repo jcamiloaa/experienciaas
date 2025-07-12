@@ -17,10 +17,23 @@
     </a>
   </div>
 
+  <!-- System Info Alert -->
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <div class="d-flex align-items-center">
+      <i class="fas fa-info-circle me-2"></i>
+      <div>
+        <strong>Profile System Enhancement</strong><br>
+        <small>Sponsors with <span class="badge bg-success">Robust</span> profiles have comprehensive business information and can be edited through the enhanced supplier profile system. 
+        <span class="badge bg-warning">Basic</span> profiles use the traditional sponsor form.</small>
+      </div>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
   <!-- Sponsors Table -->
   <div class="card">
     <div class="card-body">
-      {% if sponsors %}
+      {% if sponsors_with_profiles %}
         <div class="table-responsive">
           <table class="table table-hover">
             <thead>
@@ -28,17 +41,22 @@
                 <th>Company</th>
                 <th>Contact</th>
                 <th>Website</th>
+                <th>Profile Type</th>
                 <th>Status</th>
                 <th>Events</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {% for sponsor in sponsors %}
-                <tr>
+              {% for item in sponsors_with_profiles %}
+                {% with sponsor=item.sponsor supplier_profile=item.supplier_profile has_robust_profile=item.has_robust_profile %}
+                <tr class="{% if has_robust_profile %}table-success{% endif %}">
                   <td>
                     <div class="d-flex align-items-center">
-                      {% if sponsor.logo %}
+                      {% if has_robust_profile and supplier_profile.company_logo %}
+                        <img src="{{ supplier_profile.company_logo.url }}" alt="{{ supplier_profile.company_name }}" 
+                             style="width: 40px; height: 40px; object-fit: contain; margin-right: 10px;">
+                      {% elif sponsor.logo %}
                         <img src="{{ sponsor.logo.url }}" alt="{{ sponsor.name }}" 
                              style="width: 40px; height: 40px; object-fit: contain; margin-right: 10px;">
                       {% else %}
@@ -48,8 +66,16 @@
                         </div>
                       {% endif %}
                       <div>
-                        <strong>{{ sponsor.name }}</strong>
-                        {% if sponsor.description %}
+                        <strong>
+                          {% if has_robust_profile %}
+                            {{ supplier_profile.company_name }}
+                          {% else %}
+                            {{ sponsor.name }}
+                          {% endif %}
+                        </strong>
+                        {% if has_robust_profile and supplier_profile.company_description %}
+                          <br><small class="text-muted">{{ supplier_profile.company_description|truncatewords:8 }}</small>
+                        {% elif sponsor.description %}
                           <br><small class="text-muted">{{ sponsor.description|truncatewords:8 }}</small>
                         {% endif %}
                       </div>
@@ -57,14 +83,27 @@
                   </td>
                   <td>
                     <div class="contact-info">
-                      <div>{{ sponsor.contact_email }}</div>
-                      {% if sponsor.contact_phone %}
-                        <small class="text-muted">{{ sponsor.contact_phone }}</small>
+                      {% if has_robust_profile %}
+                        <div>{{ supplier_profile.business_email|default:sponsor.contact_email }}</div>
+                        {% if supplier_profile.business_phone %}
+                          <small class="text-muted">{{ supplier_profile.business_phone }}</small>
+                        {% elif sponsor.contact_phone %}
+                          <small class="text-muted">{{ sponsor.contact_phone }}</small>
+                        {% endif %}
+                      {% else %}
+                        <div>{{ sponsor.contact_email }}</div>
+                        {% if sponsor.contact_phone %}
+                          <small class="text-muted">{{ sponsor.contact_phone }}</small>
+                        {% endif %}
                       {% endif %}
                     </div>
                   </td>
                   <td>
-                    {% if sponsor.website %}
+                    {% if has_robust_profile and supplier_profile.company_website %}
+                      <a href="{{ supplier_profile.company_website }}" target="_blank" rel="noopener" class="text-decoration-none">
+                        <i class="fas fa-external-link-alt me-1"></i>{{ supplier_profile.company_website|truncatechars:30 }}
+                      </a>
+                    {% elif sponsor.website %}
                       <a href="{{ sponsor.website }}" target="_blank" rel="noopener" class="text-decoration-none">
                         <i class="fas fa-external-link-alt me-1"></i>{{ sponsor.website|truncatechars:30 }}
                       </a>
@@ -73,19 +112,41 @@
                     {% endif %}
                   </td>
                   <td>
-                    <span class="badge {% if sponsor.is_approved %}bg-success{% else %}bg-warning{% endif %}">
-                      {% if sponsor.is_approved %}Approved{% else %}Pending{% endif %}
-                    </span>
+                    {% if has_robust_profile %}
+                      <span class="badge bg-success" title="Perfil completo de proveedor disponible">
+                        <i class="fas fa-star me-1"></i>Robusto
+                      </span>
+                    {% else %}
+                      <span class="badge bg-warning" title="Solo perfil básico de patrocinador">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Básico
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if has_robust_profile %}
+                      <span class="badge bg-success">{{ supplier_profile.get_status_display }}</span>
+                    {% else %}
+                      <span class="badge {% if sponsor.is_approved %}bg-success{% else %}bg-warning{% endif %}">
+                        {% if sponsor.is_approved %}Approved{% else %}Pending{% endif %}
+                      </span>
+                    {% endif %}
                   </td>
                   <td>
                     <span class="badge bg-secondary">{{ sponsor.sponsored_events.count }} events</span>
                   </td>
                   <td>
                     <div class="btn-group" role="group">
-                      <a href="{% url 'events:admin_edit_sponsor' sponsor.pk %}" 
-                         class="btn btn-sm btn-outline-primary" title="Edit">
-                        <i class="fas fa-edit"></i>
-                      </a>
+                      {% if has_robust_profile %}
+                        <a href="{% url 'users:admin_edit_supplier_profile' profile_id=supplier_profile.id %}" 
+                           class="btn btn-sm btn-success" title="Editar Perfil Completo">
+                          <i class="fas fa-edit"></i> Robusto
+                        </a>
+                      {% else %}
+                        <a href="{% url 'events:admin_edit_sponsor' sponsor.pk %}" 
+                           class="btn btn-sm btn-outline-primary" title="Editar Perfil Básico">
+                          <i class="fas fa-edit"></i> Básico
+                        </a>
+                      {% endif %}
                       
                       <a href="{% url 'events:admin_delete_sponsor' sponsor.pk %}" 
                          class="btn btn-sm btn-outline-danger" title="Delete"
@@ -95,6 +156,7 @@
                     </div>
                   </td>
                 </tr>
+                {% endwith %}
               {% endfor %}
             </tbody>
           </table>

@@ -140,6 +140,67 @@
               <i class="fas fa-key me-2"></i>Cambiar Contraseña
             </a>
           </div>
+          
+          <!-- Role Management Section -->
+          <div class="mt-4">
+            <h6 class="text-muted mb-3">Gestión de Roles</h6>
+            
+            <!-- Current Roles -->
+            {% if object.is_organizer or object.is_supplier %}
+              <div class="mb-3">
+                {% if object.is_organizer %}
+                  <span class="badge bg-warning text-dark me-2 mb-2">
+                    <i class="fas fa-cogs me-1"></i>Organizador
+                  </span>
+                  <a href="{% url 'users:profile_update' %}" class="btn btn-sm btn-outline-warning me-2 mb-2">
+                    <i class="fas fa-edit me-1"></i>Editar Perfil
+                  </a>
+                  <a href="{% url 'users:manage_organizer_profile' %}" class="btn btn-sm btn-outline-info me-2 mb-2">
+                    <i class="fas fa-cog me-1"></i>Gestionar
+                  </a>
+                {% endif %}
+                
+                {% if object.is_supplier %}
+                  <span class="badge bg-success text-white me-2 mb-2">
+                    <i class="fas fa-handshake me-1"></i>Proveedor
+                  </span>
+                  <a href="{% url 'users:supplier_profile_update' %}" class="btn btn-sm btn-outline-success me-2 mb-2">
+                    <i class="fas fa-edit me-1"></i>Editar Perfil
+                  </a>
+                  <a href="{% url 'users:manage_supplier_profile' %}" class="btn btn-sm btn-outline-info me-2 mb-2">
+                    <i class="fas fa-cog me-1"></i>Gestionar
+                  </a>
+                {% endif %}
+              </div>
+            {% endif %}
+            
+            <!-- Role Applications -->
+            {% if object.can_apply_for_organizer or object.can_apply_for_supplier %}
+              <div class="mb-3">
+                {% if object.can_apply_for_organizer %}
+                  <a href="{% url 'users:apply_for_organizer' %}" class="btn btn-sm btn-outline-primary me-2 mb-2">
+                    <i class="fas fa-plus me-1"></i>Aplicar para Organizador
+                  </a>
+                {% endif %}
+                
+                {% if object.can_apply_for_supplier %}
+                  <a href="{% url 'users:apply_for_supplier' %}" class="btn btn-sm btn-outline-success me-2 mb-2">
+                    <i class="fas fa-plus me-1"></i>Aplicar para Proveedor
+                  </a>
+                {% endif %}
+              </div>
+            {% endif %}
+            
+            <!-- Pending Applications -->
+            {% if object.has_pending_organizer_application or object.has_pending_supplier_application %}
+              <div class="alert alert-info py-2">
+                <small>
+                  <i class="fas fa-clock me-1"></i>
+                  Tienes aplicaciones pendientes de revisión.
+                </small>
+              </div>
+            {% endif %}
+          </div>
         {% endif %}
       </div>
       
@@ -273,19 +334,42 @@
           </div>
         </div>
         
-        {% if object.is_staff %}
+        <!-- User Roles Section -->
+        {% if object.is_admin or object.is_organizer or object.is_supplier %}
           <div class="info-section">
-            <div class="row">
-              <div class="col-12">
-                <div class="info-label">
-                  <i class="fas fa-crown me-2 text-warning"></i>Rol
-                </div>
-                <div class="info-value">
-                  <span class="badge bg-warning text-dark px-3 py-2">
-                    <i class="fas fa-cogs me-1"></i>Organizador de Eventos
-                  </span>
-                </div>
-              </div>
+            <div class="info-label">
+              <i class="fas fa-user-tag me-2 text-primary"></i>Roles del Usuario
+            </div>
+            <div class="info-value">
+              {% if object.is_admin %}
+                <span class="badge bg-danger text-white px-3 py-2 me-2 mb-2">
+                  <i class="fas fa-crown me-1"></i>Administrador
+                </span>
+              {% endif %}
+              
+              {% if object.is_organizer %}
+                <span class="badge bg-warning text-dark px-3 py-2 me-2 mb-2">
+                  <i class="fas fa-cogs me-1"></i>Organizador de Eventos
+                </span>
+                {% if object == request.user or object.organizer_profile.is_public %}
+                  <a href="{% url 'users:organizer_profile' slug=object.organizer_profile.slug %}" 
+                     class="btn btn-outline-warning btn-sm me-2 mb-2">
+                    <i class="fas fa-eye me-1"></i>Ver Perfil de Organizador
+                  </a>
+                {% endif %}
+              {% endif %}
+              
+              {% if object.is_supplier %}
+                <span class="badge bg-success text-white px-3 py-2 me-2 mb-2">
+                  <i class="fas fa-handshake me-1"></i>Proveedor/Patrocinador
+                </span>
+                {% if object == request.user or object.supplier_profile.is_public %}
+                  <a href="{% url 'users:supplier_profile' slug=object.supplier_profile.slug %}" 
+                     class="btn btn-outline-success btn-sm me-2 mb-2">
+                    <i class="fas fa-eye me-1"></i>Ver Perfil de Proveedor
+                  </a>
+                {% endif %}
+              {% endif %}
             </div>
           </div>
         {% endif %}

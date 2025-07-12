@@ -218,3 +218,103 @@ class UserSocialSignupForm(SocialSignupForm):
         user.name = self.cleaned_data['name']
         user.save()
         return user
+
+
+class SupplierProfileUpdateForm(forms.ModelForm):
+    """
+    Form for updating supplier profile information.
+    """
+    preferred_event_types = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Ejemplo: Conferencias, Talleres, Networking, Ferias comerciales'
+        }),
+        required=False,
+        label=_("Tipos de eventos preferidos"),
+        help_text=_("Tipos de eventos que te interesan patrocinar (separados por comas)")
+    )
+    
+    preferred_locations = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Ejemplo: Bogotá, Medellín, Cali, Todo Colombia'
+        }),
+        required=False,
+        label=_("Ubicaciones preferidas"),
+        help_text=_("Ciudades o regiones donde prefieres patrocinar eventos (separadas por comas)")
+    )
+    
+    class Meta:
+        from .models import SupplierProfile
+        model = SupplierProfile
+        fields = [
+            'company_name', 'company_description', 'company_size', 'industry', 'founding_year',
+            'tax_id', 'legal_address', 'business_phone', 'business_email', 
+            'contact_person', 'contact_position', 'company_website',
+            'facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url', 'youtube_url',
+            'company_logo', 'company_banner', 'brochure',
+            'sponsorship_budget_min', 'sponsorship_budget_max', 'preferred_event_types', 
+            'preferred_locations', 'target_audience',
+            'is_public', 'allow_contact', 'email_notifications'
+        ]
+        widgets = {
+            'company_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'company_description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'company_size': forms.Select(attrs={'class': 'form-select'}),
+            'industry': forms.Select(attrs={'class': 'form-select'}),
+            'founding_year': forms.NumberInput(attrs={'class': 'form-control', 'min': 1800, 'max': 2025}),
+            'tax_id': forms.TextInput(attrs={'class': 'form-control'}),
+            'legal_address': forms.TextInput(attrs={'class': 'form-control'}),
+            'business_phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'business_email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'contact_person': forms.TextInput(attrs={'class': 'form-control'}),
+            'contact_position': forms.TextInput(attrs={'class': 'form-control'}),
+            'company_website': forms.URLInput(attrs={'class': 'form-control'}),
+            'facebook_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'twitter_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'instagram_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'linkedin_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'youtube_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'company_logo': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'company_banner': forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+            'brochure': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf,.doc,.docx'}),
+            'sponsorship_budget_min': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'sponsorship_budget_max': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+            'target_audience': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'is_public': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'allow_contact': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'email_notifications': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Convert JSON fields to comma-separated strings for display
+        if self.instance and self.instance.pk:
+            if self.instance.preferred_event_types:
+                if isinstance(self.instance.preferred_event_types, list):
+                    self.fields['preferred_event_types'].initial = ', '.join(self.instance.preferred_event_types)
+                else:
+                    self.fields['preferred_event_types'].initial = self.instance.preferred_event_types
+            
+            if self.instance.preferred_locations:
+                if isinstance(self.instance.preferred_locations, list):
+                    self.fields['preferred_locations'].initial = ', '.join(self.instance.preferred_locations)
+                else:
+                    self.fields['preferred_locations'].initial = self.instance.preferred_locations
+    
+    def clean_preferred_event_types(self):
+        """Convert comma-separated string to list for JSON field."""
+        value = self.cleaned_data.get('preferred_event_types', '')
+        if value:
+            return [item.strip() for item in value.split(',') if item.strip()]
+        return []
+    
+    def clean_preferred_locations(self):
+        """Convert comma-separated string to list for JSON field."""
+        value = self.cleaned_data.get('preferred_locations', '')
+        if value:
+            return [item.strip() for item in value.split(',') if item.strip()]
+        return []

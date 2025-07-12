@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestión de Perfiles de Proveedores - Admin - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .admin-header {
+      background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+      color: white;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+    }
+    .supplier-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    .supplier-card:hover {
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .verified-badge {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+    .filter-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+  </style>
+{% endblock css %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="display-6 fw-bold mb-2">
+          <i class="fas fa-building me-3"></i>Gestión de Perfiles de Proveedores
+        </h1>
+        <p class="lead mb-0">
+          Administra y supervisa los perfiles de proveedores verificados
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Filters -->
+  <div class="filter-card">
+    <form method="get" class="row g-3">
+      <div class="col-md-3">
+        <label for="is_verified" class="form-label">Estado de Verificación</label>
+        <select name="is_verified" id="is_verified" class="form-select">
+          <option value="">Todos</option>
+          <option value="true" {% if current_verified == 'true' %}selected{% endif %}>Verificados</option>
+          <option value="false" {% if current_verified == 'false' %}selected{% endif %}>No Verificados</option>
+        </select>
+      </div>
+      
+      <div class="col-md-3">
+        <label for="category" class="form-label">Categoría</label>
+        <select name="category" id="category" class="form-select">
+          <option value="">Todas las categorías</option>
+          {% for value, label in category_choices %}
+            <option value="{{ value }}" {% if current_category == value %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="col-md-4">
+        <label for="search" class="form-label">Buscar</label>
+        <input type="text" name="search" id="search" class="form-control" 
+               placeholder="Nombre de empresa, usuario, email..." value="{{ current_search }}">
+      </div>
+      
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">
+          <i class="fas fa-search me-1"></i>Filtrar
+        </button>
+        <a href="{% url 'users:admin_supplier_profiles' %}" class="btn btn-outline-secondary">
+          <i class="fas fa-times"></i>
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Suppliers List -->
+  {% if suppliers %}
+    <div class="row">
+      {% for supplier in suppliers %}
+        <div class="col-12">
+          <div class="supplier-card">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-1">
+                  {% if supplier.company_logo %}
+                    <img src="{{ supplier.company_logo.url }}" alt="{{ supplier.company_name }}" 
+                         class="company-logo">
+                  {% else %}
+                    <div class="company-logo bg-secondary d-flex align-items-center justify-content-center">
+                      <i class="fas fa-building text-white"></i>
+                    </div>
+                  {% endif %}
+                </div>
+                
+                <div class="col-md-3">
+                  <h6 class="mb-1">{{ supplier.company_name }}</h6>
+                  <p class="text-muted small mb-1">{{ supplier.user.name|default:supplier.user.email }}</p>
+                  <p class="text-muted small mb-0">{{ supplier.user.email }}</p>
+                  {% if supplier.is_verified %}
+                    <span class="verified-badge">
+                      <i class="fas fa-check me-1"></i>Verificado
+                    </span>
+                  {% endif %}
+                </div>
+                
+                <div class="col-md-2">
+                  <h6 class="mb-1">Categoría</h6>
+                  <span class="badge bg-primary">{{ supplier.get_category_display }}</span>
+                </div>
+                
+                <div class="col-md-2">
+                  <h6 class="mb-1">Contacto</h6>
+                  <p class="text-muted small mb-1">{{ supplier.phone|default:"No especificado" }}</p>
+                  <p class="text-muted small mb-0">{{ supplier.website|default:"Sin web" }}</p>
+                </div>
+                
+                <div class="col-md-2 text-center">
+                  <h6 class="mb-1">Ubicación</h6>
+                  <p class="text-muted small mb-0">
+                    {{ supplier.city|default:"No especificada" }}
+                    {% if supplier.country %}, {{ supplier.country }}{% endif %}
+                  </p>
+                </div>
+                
+                <div class="col-md-2 text-end">
+                  <a href="{% url 'users:admin_supplier_detail' supplier.id %}" 
+                     class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-eye me-1"></i>Ver Detalles
+                  </a>
+                  
+                  <div class="mt-2">
+                    {% if not supplier.is_verified %}
+                      <form method="post" action="{% url 'users:admin_verify_supplier' supplier.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm" 
+                                onclick="return confirm('¿Verificar este proveedor?')">
+                          <i class="fas fa-check me-1"></i>Verificar
+                        </button>
+                      </form>
+                    {% else %}
+                      <form method="post" action="{% url 'users:admin_unverify_supplier' supplier.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning btn-sm" 
+                                onclick="return confirm('¿Remover verificación?')">
+                          <i class="fas fa-times me-1"></i>Desverificar
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if suppliers.has_other_pages %}
+      <nav aria-label="Paginación de proveedores" class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if suppliers.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1{% if current_verified %}&is_verified={{ current_verified }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}">Primera</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ suppliers.previous_page_number }}{% if current_verified %}&is_verified={{ current_verified }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}">Anterior</a>
+            </li>
+          {% endif %}
+
+          <li class="page-item active">
+            <span class="page-link">
+              Página {{ suppliers.number }} de {{ suppliers.paginator.num_pages }}
+            </span>
+          </li>
+
+          {% if suppliers.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ suppliers.next_page_number }}{% if current_verified %}&is_verified={{ current_verified }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}">Siguiente</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ suppliers.paginator.num_pages }}{% if current_verified %}&is_verified={{ current_verified }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}">Última</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+  {% else %}
+    <div class="text-center py-5">
+      <i class="fas fa-building fa-3x text-muted mb-3"></i>
+      <h4 class="text-muted">No se encontraron proveedores</h4>
+      <p class="text-muted">
+        {% if current_verified or current_category or current_search %}
+          No hay proveedores que coincidan con los filtros aplicados.
+        {% else %}
+          No hay perfiles de proveedores registrados en este momento.
+        {% endif %}
+      </p>
+      {% if current_verified or current_category or current_search %}
+        <a href="{% url 'users:admin_supplier_profiles' %}" class="btn btn-primary">
+          <i class="fas fa-times me-2"></i>Limpiar Filtros
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+<!-- Statistics Cards -->
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body text-center">
+          <i class="fas fa-building fa-2x mb-2"></i>
+          <h5 class="card-title">{{ suppliers.paginator.count }} Total</h5>
+          <p class="card-text">Proveedores</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body text-center">
+          <i class="fas fa-check-circle fa-2x mb-2"></i>
+          <h5 class="card-title">Verificados</h5>
+          <p class="card-text">Proveedores activos</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body text-center">
+          <i class="fas fa-clock fa-2x mb-2"></i>
+          <h5 class="card-title">Pendientes</h5>
+          <p class="card-text">Sin verificar</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-info text-white">
+        <div class="card-body text-center">
+          <i class="fas fa-plus fa-2x mb-2"></i>
+          <h5 class="card-title">Este mes</h5>
+          <p class="card-text">Nuevos registros</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

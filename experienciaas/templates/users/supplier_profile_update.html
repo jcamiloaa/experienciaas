@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Actualizar Perfil de Proveedor - Experienciaas{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1>Perfil de Proveedor/Patrocinador</h1>
+          <p class="text-muted">Administra tu perfil público como proveedor y patrocinador de eventos</p>
+        </div>
+        
+        {% if object.slug %}
+          <a href="{{ object.get_absolute_url }}" class="btn btn-outline-primary" target="_blank">
+            <i class="fas fa-external-link-alt me-1"></i>Ver Perfil Público
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Profile Form -->
+      <div class="card">
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <!-- Company Images -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Imágenes de la Empresa</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_logo.id_for_label }}" class="form-label">{{ form.company_logo.label }}</label>
+                    {{ form.company_logo }}
+                    {% if form.company_logo.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_logo.errors }}</div>
+                    {% endif %}
+                    {% if object.company_logo %}
+                      <div class="mt-2">
+                        <img src="{{ object.company_logo.url }}" alt="Current logo" class="img-thumbnail" style="max-width: 100px;">
+                        <small class="text-muted d-block">Logo actual</small>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_banner.id_for_label }}" class="form-label">{{ form.company_banner.label }}</label>
+                    {{ form.company_banner }}
+                    {% if form.company_banner.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_banner.errors }}</div>
+                    {% endif %}
+                    {% if object.company_banner %}
+                      <div class="mt-2">
+                        <img src="{{ object.company_banner.url }}" alt="Current banner" class="img-thumbnail" style="max-width: 150px;">
+                        <small class="text-muted d-block">Banner actual</small>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Company Information -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Información de la Empresa</h5>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.company_name.id_for_label }}" class="form-label">{{ form.company_name.label }}</label>
+                {{ form.company_name }}
+                {% if form.company_name.errors %}
+                  <div class="invalid-feedback d-block">{{ form.company_name.errors }}</div>
+                {% endif %}
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.company_description.id_for_label }}" class="form-label">{{ form.company_description.label }}</label>
+                {{ form.company_description }}
+                {% if form.company_description.errors %}
+                  <div class="invalid-feedback d-block">{{ form.company_description.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">Describe tu empresa y los servicios/productos que ofrecen</small>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_size.id_for_label }}" class="form-label">{{ form.company_size.label }}</label>
+                    {{ form.company_size }}
+                    {% if form.company_size.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_size.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.industry.id_for_label }}" class="form-label">{{ form.industry.label }}</label>
+                    {{ form.industry }}
+                    {% if form.industry.errors %}
+                      <div class="invalid-feedback d-block">{{ form.industry.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.founding_year.id_for_label }}" class="form-label">{{ form.founding_year.label }}</label>
+                    {{ form.founding_year }}
+                    {% if form.founding_year.errors %}
+                      <div class="invalid-feedback d-block">{{ form.founding_year.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.company_website.id_for_label }}" class="form-label">{{ form.company_website.label }}</label>
+                {{ form.company_website }}
+                {% if form.company_website.errors %}
+                  <div class="invalid-feedback d-block">{{ form.company_website.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Legal Information -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Información Legal</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.tax_id.id_for_label }}" class="form-label">{{ form.tax_id.label }}</label>
+                    {{ form.tax_id }}
+                    {% if form.tax_id.errors %}
+                      <div class="invalid-feedback d-block">{{ form.tax_id.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.legal_address.id_for_label }}" class="form-label">{{ form.legal_address.label }}</label>
+                    {{ form.legal_address }}
+                    {% if form.legal_address.errors %}
+                      <div class="invalid-feedback d-block">{{ form.legal_address.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Información de Contacto</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.business_phone.id_for_label }}" class="form-label">{{ form.business_phone.label }}</label>
+                    {{ form.business_phone }}
+                    {% if form.business_phone.errors %}
+                      <div class="invalid-feedback d-block">{{ form.business_phone.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.business_email.id_for_label }}" class="form-label">{{ form.business_email.label }}</label>
+                    {{ form.business_email }}
+                    {% if form.business_email.errors %}
+                      <div class="invalid-feedback d-block">{{ form.business_email.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.contact_person.id_for_label }}" class="form-label">{{ form.contact_person.label }}</label>
+                    {{ form.contact_person }}
+                    {% if form.contact_person.errors %}
+                      <div class="invalid-feedback d-block">{{ form.contact_person.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.contact_position.id_for_label }}" class="form-label">{{ form.contact_position.label }}</label>
+                    {{ form.contact_position }}
+                    {% if form.contact_position.errors %}
+                      <div class="invalid-feedback d-block">{{ form.contact_position.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Redes Sociales</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.facebook_url.id_for_label }}" class="form-label">
+                      <i class="fab fa-facebook-f me-1"></i>{{ form.facebook_url.label }}
+                    </label>
+                    {{ form.facebook_url }}
+                    {% if form.facebook_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.facebook_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.twitter_url.id_for_label }}" class="form-label">
+                      <i class="fab fa-twitter me-1"></i>{{ form.twitter_url.label }}
+                    </label>
+                    {{ form.twitter_url }}
+                    {% if form.twitter_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.twitter_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.instagram_url.id_for_label }}" class="form-label">
+                      <i class="fab fa-instagram me-1"></i>{{ form.instagram_url.label }}
+                    </label>
+                    {{ form.instagram_url }}
+                    {% if form.instagram_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.instagram_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.linkedin_url.id_for_label }}" class="form-label">
+                      <i class="fab fa-linkedin me-1"></i>{{ form.linkedin_url.label }}
+                    </label>
+                    {{ form.linkedin_url }}
+                    {% if form.linkedin_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.linkedin_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.youtube_url.id_for_label }}" class="form-label">
+                  <i class="fab fa-youtube me-1"></i>{{ form.youtube_url.label }}
+                </label>
+                {{ form.youtube_url }}
+                {% if form.youtube_url.errors %}
+                  <div class="invalid-feedback d-block">{{ form.youtube_url.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Marketing Materials -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Material de Marketing</h5>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.brochure.id_for_label }}" class="form-label">{{ form.brochure.label }}</label>
+                {{ form.brochure }}
+                {% if form.brochure.errors %}
+                  <div class="invalid-feedback d-block">{{ form.brochure.errors }}</div>
+                {% endif %}
+                {% if object.brochure %}
+                  <div class="mt-2">
+                    <a href="{{ object.brochure.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-download me-1"></i>Ver archivo actual
+                    </a>
+                  </div>
+                {% endif %}
+                <small class="form-text text-muted">Sube un brochure o catálogo de tus productos/servicios (PDF recomendado)</small>
+              </div>
+            </div>
+
+            <!-- Sponsorship Preferences -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Preferencias de Patrocinio</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.sponsorship_budget_min.id_for_label }}" class="form-label">{{ form.sponsorship_budget_min.label }}</label>
+                    {{ form.sponsorship_budget_min }}
+                    {% if form.sponsorship_budget_min.errors %}
+                      <div class="invalid-feedback d-block">{{ form.sponsorship_budget_min.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted">Monto en pesos colombianos</small>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.sponsorship_budget_max.id_for_label }}" class="form-label">{{ form.sponsorship_budget_max.label }}</label>
+                    {{ form.sponsorship_budget_max }}
+                    {% if form.sponsorship_budget_max.errors %}
+                      <div class="invalid-feedback d-block">{{ form.sponsorship_budget_max.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted">Monto en pesos colombianos</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.target_audience.id_for_label }}" class="form-label">{{ form.target_audience.label }}</label>
+                {{ form.target_audience }}
+                {% if form.target_audience.errors %}
+                  <div class="invalid-feedback d-block">{{ form.target_audience.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">Describe qué tipo de audiencia quieres alcanzar</small>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.preferred_event_types.id_for_label }}" class="form-label">{{ form.preferred_event_types.label }}</label>
+                {{ form.preferred_event_types }}
+                {% if form.preferred_event_types.errors %}
+                  <div class="invalid-feedback d-block">{{ form.preferred_event_types.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">Tipos de eventos que te interesan patrocinar (separados por comas)</small>
+              </div>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.preferred_locations.id_for_label }}" class="form-label">{{ form.preferred_locations.label }}</label>
+                {{ form.preferred_locations }}
+                {% if form.preferred_locations.errors %}
+                  <div class="invalid-feedback d-block">{{ form.preferred_locations.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">Ciudades o regiones donde prefieres patrocinar eventos (separadas por comas)</small>
+              </div>
+            </div>
+
+            <!-- Privacy Settings -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">Configuración de Privacidad</h5>
+              
+              <div class="form-check mb-3">
+                {{ form.is_public }}
+                <label class="form-check-label" for="{{ form.is_public.id_for_label }}">
+                  {{ form.is_public.label }}
+                </label>
+                {% if form.is_public.errors %}
+                  <div class="invalid-feedback d-block">{{ form.is_public.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">Si está habilitado, tu perfil será visible públicamente</small>
+              </div>
+              
+              <div class="form-check mb-3">
+                {{ form.allow_contact }}
+                <label class="form-check-label" for="{{ form.allow_contact.id_for_label }}">
+                  {{ form.allow_contact.label }}
+                </label>
+                {% if form.allow_contact.errors %}
+                  <div class="invalid-feedback d-block">{{ form.allow_contact.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">Permite que los organizadores te contacten directamente</small>
+              </div>
+              
+              <div class="form-check mb-3">
+                {{ form.email_notifications }}
+                <label class="form-check-label" for="{{ form.email_notifications.id_for_label }}">
+                  {{ form.email_notifications.label }}
+                </label>
+                {% if form.email_notifications.errors %}
+                  <div class="invalid-feedback d-block">{{ form.email_notifications.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">Recibir notificaciones por email sobre oportunidades de patrocinio</small>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'users:detail' pk=request.user.pk %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Cancelar
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Initialize form widgets
+    $('.form-control').addClass('form-control');
+    $('.form-select').addClass('form-select');
+    $('textarea').addClass('form-control');
+    $('input[type="file"]').addClass('form-control');
+    $('input[type="checkbox"]').addClass('form-check-input');
+    
+    // Handle file input previews
+    $('input[type="file"][accept*="image"]').change(function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = $(this).siblings('.preview-image');
+                if (preview.length === 0) {
+                    $(this).after('<img class="preview-image img-thumbnail mt-2" style="max-width: 150px;">');
+                }
+                $(this).siblings('.preview-image').attr('src', e.target.result);
+            }.bind(this);
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>
+{% endblock %}

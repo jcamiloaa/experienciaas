@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Aplicar para Rol - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .application-hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 3rem 0 4rem;
+      margin-bottom: 2rem;
+    }
+    .application-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-top: -80px;
+      position: relative;
+      z-index: 2;
+    }
+    .role-option {
+      border: 2px solid #e9ecef;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .role-option:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    }
+    .role-option.selected {
+      border-color: #667eea;
+      background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+    }
+    .role-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .organizer-icon {
+      background: linear-gradient(45deg, #ffc107, #fd7e14);
+      color: white;
+    }
+    .supplier-icon {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      color: white;
+    }
+  </style>
+{% endblock css %}
+
+{% block content %}
+<!-- Application Hero Section -->
+<div class="application-hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h1 class="display-5 fw-bold mb-2">
+          <i class="fas fa-user-plus me-3"></i>Aplicar para Nuevo Rol
+        </h1>
+        <p class="lead">
+          Expande tus capacidades en la plataforma aplicando para roles adicionales
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="application-card">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <form method="post" id="roleApplicationForm">
+          {% csrf_token %}
+          
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+          
+          <!-- Role Selection -->
+          {% if can_apply_organizer or can_apply_supplier %}
+            <div class="mb-4">
+              <h4 class="mb-3">
+                <i class="fas fa-clipboard-list me-2 text-primary"></i>Selecciona el Rol
+              </h4>
+              
+              <div class="row">
+                {% if can_apply_organizer %}
+                  <div class="col-md-6">
+                    <div class="role-option" data-role="organizer">
+                      <div class="role-icon organizer-icon mx-auto">
+                        <i class="fas fa-cogs"></i>
+                      </div>
+                      <h5 class="text-center mb-2">Organizador de Eventos</h5>
+                      <p class="text-muted text-center small">
+                        Crea y gestiona eventos, vende tickets, administra patrocinadores y construye tu comunidad de seguidores.
+                      </p>
+                      <ul class="list-unstyled small text-muted">
+                        <li><i class="fas fa-check text-success me-2"></i>Crear eventos ilimitados</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Gestionar tickets y ventas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Administrar patrocinadores</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Perfil público de organizador</li>
+                      </ul>
+                    </div>
+                  </div>
+                {% endif %}
+                
+                {% if can_apply_supplier %}
+                  <div class="col-md-6">
+                    <div class="role-option" data-role="supplier">
+                      <div class="role-icon supplier-icon mx-auto">
+                        <i class="fas fa-handshake"></i>
+                      </div>
+                      <h5 class="text-center mb-2">Proveedor/Patrocinador</h5>
+                      <p class="text-muted text-center small">
+                        Patrocina eventos, promociona tu marca, conecta con organizadores y llega a nuevas audiencias.
+                      </p>
+                      <ul class="list-unstyled small text-muted">
+                        <li><i class="fas fa-check text-success me-2"></i>Aplicar a patrocinios</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Perfil público de empresa</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Promoción de marca</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Gestión de contratos</li>
+                      </ul>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+              
+              {{ form.role.as_hidden }}
+              {% if form.role.errors %}
+                <div class="text-danger small">{{ form.role.errors }}</div>
+              {% endif %}
+            </div>
+            
+            <!-- Application Details -->
+            <div class="mb-4">
+              <h4 class="mb-3">
+                <i class="fas fa-file-alt me-2 text-primary"></i>Detalles de la Aplicación
+              </h4>
+              
+              <div class="mb-3">
+                <label for="{{ form.motivation.id_for_label }}" class="form-label">
+                  {{ form.motivation.label }} <span class="text-danger">*</span>
+                </label>
+                {{ form.motivation }}
+                {% if form.motivation.errors %}
+                  <div class="text-danger small">{{ form.motivation.errors }}</div>
+                {% endif %}
+                <div class="form-text">
+                  Explica por qué quieres este rol y cómo planeas usarlo en la plataforma.
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="{{ form.experience.id_for_label }}" class="form-label">
+                  {{ form.experience.label }}
+                </label>
+                {{ form.experience }}
+                {% if form.experience.errors %}
+                  <div class="text-danger small">{{ form.experience.errors }}</div>
+                {% endif %}
+                <div class="form-text">
+                  Describe tu experiencia previa relacionada con este rol (opcional pero recomendado).
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="{{ form.additional_info.id_for_label }}" class="form-label">
+                  {{ form.additional_info.label }}
+                </label>
+                {{ form.additional_info }}
+                {% if form.additional_info.errors %}
+                  <div class="text-danger small">{{ form.additional_info.errors }}</div>
+                {% endif %}
+                <div class="form-text">
+                  Cualquier información adicional que consideres relevante.
+                </div>
+              </div>
+            </div>
+            
+            <!-- Terms and Conditions -->
+            <div class="alert alert-info">
+              <h6 class="alert-heading">Términos y Condiciones</h6>
+              <ul class="mb-0 small">
+                <li>Tu aplicación será revisada por nuestro equipo de administradores.</li>
+                <li>El proceso de revisión puede tomar entre 1-3 días hábiles.</li>
+                <li>Te notificaremos por email sobre el estado de tu aplicación.</li>
+                <li>Los roles aprobados son responsabilidades serias y esperamos un uso apropiado.</li>
+                <li>Los roles pueden ser revocados en caso de mal uso o violación de términos.</li>
+              </ul>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="{% url 'users:detail' pk=request.user.id %}" class="btn btn-outline-secondary me-md-2">
+                <i class="fas fa-times me-2"></i>Cancelar
+              </a>
+              <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                <i class="fas fa-paper-plane me-2"></i>Enviar Aplicación
+              </button>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+              <h4 class="text-muted">No hay roles disponibles</h4>
+              <p class="text-muted">
+                No tienes roles disponibles para aplicar en este momento. 
+                Esto puede ser porque ya tienes todos los roles disponibles o 
+                tienes aplicaciones pendientes.
+              </p>
+              <a href="{% url 'users:detail' pk=request.user.id %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-2"></i>Volver a Mi Perfil
+              </a>
+            </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block inline_javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const roleOptions = document.querySelectorAll('.role-option');
+    const roleField = document.getElementById('{{ form.role.id_for_label }}');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    roleOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selected class from all options
+            roleOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            this.classList.add('selected');
+            
+            // Set the hidden field value
+            const role = this.getAttribute('data-role');
+            roleField.value = role;
+            
+            // Enable submit button
+            submitBtn.disabled = false;
+        });
+    });
+    
+    // Form validation
+    const form = document.getElementById('roleApplicationForm');
+    form.addEventListener('submit', function(e) {
+        if (!roleField.value) {
+            e.preventDefault();
+            alert('Por favor selecciona un rol antes de enviar la aplicación.');
+            return false;
+        }
+        
+        const motivation = document.getElementById('{{ form.motivation.id_for_label }}').value;
+        if (!motivation.trim()) {
+            e.preventDefault();
+            alert('Por favor completa el campo de motivación.');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock inline_javascript %}

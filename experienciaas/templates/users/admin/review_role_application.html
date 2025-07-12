@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Revisar Aplicación de Rol - Admin - Experienciaas{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <style>
+    .admin-header {
+      background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+      color: white;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+    }
+    .review-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .info-section {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .status-badge {
+      font-size: 1.1rem;
+      padding: 0.5rem 1rem;
+    }
+    .action-buttons {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+  </style>
+{% endblock css %}
+
+{% block content %}
+<!-- Admin Header -->
+<div class="admin-header">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h1 class="display-6 fw-bold mb-2">
+          <i class="fas fa-clipboard-check me-3"></i>Revisar Aplicación de Rol
+        </h1>
+        <p class="lead mb-0">
+          Evaluación detallada de la solicitud de {{ application.get_role_display }}
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <a href="{% url 'users:admin_role_applications' %}" class="btn btn-light">
+          <i class="fas fa-arrow-left me-2"></i>Volver a la Lista
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Application Overview -->
+  <div class="review-card">
+    <div class="row">
+      <div class="col-md-8">
+        <h3 class="mb-3">Información del Solicitante</h3>
+        <div class="info-section">
+          <div class="row">
+            <div class="col-md-6">
+              <h6 class="fw-bold text-muted">NOMBRE COMPLETO</h6>
+              <p class="mb-3">{{ application.user.name|default:"No especificado" }}</p>
+              
+              <h6 class="fw-bold text-muted">EMAIL</h6>
+              <p class="mb-3">{{ application.user.email }}</p>
+              
+              <h6 class="fw-bold text-muted">FECHA DE REGISTRO</h6>
+              <p class="mb-3">{{ application.user.date_joined|date:"d M Y, H:i" }}</p>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-bold text-muted">ROL SOLICITADO</h6>
+              <p class="mb-3">
+                <span class="badge {% if application.role == 'organizer' %}bg-warning{% else %}bg-success{% endif %} fs-6">
+                  {{ application.get_role_display }}
+                </span>
+              </p>
+              
+              <h6 class="fw-bold text-muted">FECHA DE APLICACIÓN</h6>
+              <p class="mb-3">{{ application.created_at|date:"d M Y, H:i" }}</p>
+              
+              <h6 class="fw-bold text-muted">ESTADO ACTUAL</h6>
+              <p class="mb-3">
+                <span class="badge status-badge {% if application.status == 'pending' %}bg-warning{% elif application.status == 'approved' %}bg-success{% elif application.status == 'rejected' %}bg-danger{% else %}bg-info{% endif %}">
+                  {{ application.get_status_display }}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="text-center">
+          {% if application.user.avatar %}
+            <img src="{{ application.user.avatar.url }}" alt="{{ application.user.name }}" 
+                 class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+          {% else %}
+            <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                 style="width: 120px; height: 120px;">
+              <i class="fas fa-user fa-3x text-white"></i>
+            </div>
+          {% endif %}
+          <h5>{{ application.user.name|default:application.user.email }}</h5>
+          <p class="text-muted">{{ application.user.email }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Details -->
+  <div class="review-card">
+    <h3 class="mb-3">Detalles de la Aplicación</h3>
+    
+    <div class="info-section">
+      <h6 class="fw-bold text-muted">MOTIVACIÓN</h6>
+      <p class="mb-0">{{ application.motivation|linebreaks }}</p>
+    </div>
+
+    {% if application.experience %}
+      <div class="info-section">
+        <h6 class="fw-bold text-muted">EXPERIENCIA PREVIA</h6>
+        <p class="mb-0">{{ application.experience|linebreaks }}</p>
+      </div>
+    {% endif %}
+
+    {% if application.additional_info %}
+      <div class="info-section">
+        <h6 class="fw-bold text-muted">INFORMACIÓN ADICIONAL</h6>
+        <p class="mb-0">{{ application.additional_info|linebreaks }}</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Review History -->
+  {% if application.reviewed_at %}
+    <div class="review-card">
+      <h3 class="mb-3">Historial de Revisión</h3>
+      <div class="info-section">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="fw-bold text-muted">REVISADO POR</h6>
+            <p class="mb-3">{{ application.reviewed_by.name|default:application.reviewed_by.email }}</p>
+          </div>
+          <div class="col-md-6">
+            <h6 class="fw-bold text-muted">FECHA DE REVISIÓN</h6>
+            <p class="mb-3">{{ application.reviewed_at|date:"d M Y, H:i" }}</p>
+          </div>
+        </div>
+        
+        {% if application.review_notes %}
+          <h6 class="fw-bold text-muted">NOTAS DE REVISIÓN</h6>
+          <p class="mb-0">{{ application.review_notes|linebreaks }}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <h4 class="mb-3">Acciones de Revisión</h4>
+    
+    {% if application.status == 'pending' or application.status == 'under_review' %}
+      <div class="row">
+        <div class="col-md-6">
+          <form method="post" id="approveForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="approve">
+            
+            <div class="mb-3">
+              <label for="approve_notes" class="form-label">Notas de Aprobación (Opcional)</label>
+              <textarea name="review_notes" id="approve_notes" class="form-control" rows="3" 
+                        placeholder="Añadir comentarios sobre la aprobación..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-success btn-lg w-100" 
+                    onclick="return confirm('¿Aprobar esta aplicación? El usuario recibirá una notificación.')">
+              <i class="fas fa-check me-2"></i>Aprobar Aplicación
+            </button>
+          </form>
+        </div>
+        
+        <div class="col-md-6">
+          <form method="post" id="rejectForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="reject">
+            
+            <div class="mb-3">
+              <label for="reject_notes" class="form-label">Razón del Rechazo <span class="text-danger">*</span></label>
+              <textarea name="review_notes" id="reject_notes" class="form-control" rows="3" 
+                        placeholder="Explica por qué se rechaza la aplicación..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-danger btn-lg w-100" 
+                    onclick="return confirm('¿Rechazar esta aplicación? El usuario recibirá una notificación.')">
+              <i class="fas fa-times me-2"></i>Rechazar Aplicación
+            </button>
+          </form>
+        </div>
+      </div>
+      
+      <hr class="my-4">
+      
+      <div class="text-center">
+        <form method="post" class="d-inline">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="under_review">
+          <button type="submit" class="btn btn-info" 
+                  onclick="return confirm('¿Marcar como en revisión?')">
+            <i class="fas fa-clock me-2"></i>Marcar como En Revisión
+          </button>
+        </form>
+      </div>
+      
+    {% else %}
+      <div class="alert {% if application.status == 'approved' %}alert-success{% else %}alert-danger{% endif %}" role="alert">
+        <h5 class="alert-heading">
+          <i class="fas {% if application.status == 'approved' %}fa-check-circle{% else %}fa-times-circle{% endif %} me-2"></i>
+          Aplicación {{ application.get_status_display }}
+        </h5>
+        <p class="mb-0">
+          Esta aplicación ya ha sido revisada el {{ application.reviewed_at|date:"d M Y" }} 
+          por {{ application.reviewed_by.name|default:application.reviewed_by.email }}.
+        </p>
+        
+        {% if application.status == 'approved' %}
+          <hr>
+          <div class="text-center mt-3">
+            <form method="post" class="d-inline">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="revoke">
+              <button type="submit" class="btn btn-warning" 
+                      onclick="return confirm('¿Revocar la aprobación? Esto removerá los permisos del usuario.')">
+                <i class="fas fa-undo me-2"></i>Revocar Aprobación
+              </button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- User Activity Summary -->
+  <div class="review-card">
+    <h3 class="mb-3">Resumen de Actividad del Usuario</h3>
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <div class="p-3 border rounded">
+          <i class="fas fa-calendar fa-2x text-primary mb-2"></i>
+          <h5>{{ user_events_count }}</h5>
+          <p class="text-muted mb-0">Eventos Registrados</p>
+        </div>
+      </div>
+      <div class="col-md-4 text-center">
+        <div class="p-3 border rounded">
+          <i class="fas fa-users fa-2x text-success mb-2"></i>
+          <h5>{{ user_following_count }}</h5>
+          <p class="text-muted mb-0">Organizadores Seguidos</p>
+        </div>
+      </div>
+      <div class="col-md-4 text-center">
+        <div class="p-3 border rounded">
+          <i class="fas fa-clock fa-2x text-info mb-2"></i>
+          <h5>{{ user_days_since_joined }}</h5>
+          <p class="text-muted mb-0">Días como Usuario</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add validation for reject form
+    const rejectForm = document.getElementById('rejectForm');
+    const rejectNotes = document.getElementById('reject_notes');
+    
+    if (rejectForm) {
+        rejectForm.addEventListener('submit', function(e) {
+            if (!rejectNotes.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, proporciona una razón para el rechazo.');
+                rejectNotes.focus();
+            }
+        });
+    }
+});
+</script>
+{% endblock content %}

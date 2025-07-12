@@ -6,7 +6,7 @@
 {% block content %}
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-lg-8">
+    <div class="col-lg-10">
       <!-- Header -->
       <div class="mb-4">
         <nav aria-label="breadcrumb">
@@ -32,22 +32,70 @@
         </div>
       </div>
 
-      <!-- Sponsorship Information -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <h4 class="card-title">¿Por qué patrocinar este evento?</h4>
-          <div class="row">
-            <div class="col-md-6">
-              <ul class="list-unstyled">
+      <!-- Supplier Profile Info -->
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Tu Perfil de Proveedor</h4>
+              <div class="row">
+                <div class="col-md-3 text-center">
+                  {% if supplier_profile.company_logo %}
+                    <img src="{{ supplier_profile.company_logo.url }}" alt="{{ supplier_profile.company_name }}" 
+                         class="img-fluid rounded" style="max-width: 100px; max-height: 100px;">
+                  {% else %}
+                    <div class="bg-secondary rounded d-inline-flex align-items-center justify-content-center" 
+                         style="width: 80px; height: 80px;">
+                      <i class="fas fa-building fa-2x text-white"></i>
+                    </div>
+                  {% endif %}
+                </div>
+                <div class="col-md-9">
+                  <h5 class="mb-2">{{ supplier_profile.company_name }}</h5>
+                  <p class="text-muted small mb-2">{{ supplier_profile.get_industry_display }} - {{ supplier_profile.get_company_size_display }}</p>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p class="mb-1"><strong>Contacto:</strong> {{ supplier_profile.contact_person|default:supplier_profile.user.name }}</p>
+                      <p class="mb-1"><strong>Email:</strong> {{ supplier_profile.business_email|default:supplier_profile.user.email }}</p>
+                      {% if supplier_profile.business_phone %}
+                        <p class="mb-1"><strong>Teléfono:</strong> {{ supplier_profile.business_phone }}</p>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                      {% if supplier_profile.company_website %}
+                        <p class="mb-1"><strong>Web:</strong> <a href="{{ supplier_profile.company_website }}" target="_blank">{{ supplier_profile.company_website }}</a></p>
+                      {% endif %}
+                      {% if supplier_profile.sponsorship_budget_min or supplier_profile.sponsorship_budget_max %}
+                        <p class="mb-1"><strong>Presupuesto de patrocinio:</strong>
+                          {% if supplier_profile.sponsorship_budget_min %}${{ supplier_profile.sponsorship_budget_min|floatformat:0 }}{% endif %}
+                          {% if supplier_profile.sponsorship_budget_min and supplier_profile.sponsorship_budget_max %} - {% endif %}
+                          {% if supplier_profile.sponsorship_budget_max %}${{ supplier_profile.sponsorship_budget_max|floatformat:0 }}{% endif %}
+                        </p>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">¿Por qué patrocinar?</h5>
+              <ul class="list-unstyled small">
                 <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Promociona tu marca</li>
-                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Conecta con tu audiencia objetivo</li>
-                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Visibilidad en materiales del evento</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Conecta con tu audiencia</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Visibilidad en materiales</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Networking profesional</li>
+                <li class="mb-0"><i class="fas fa-check text-success me-2"></i>Apoyo a la comunidad</li>
               </ul>
             </div>
-            <div class="col-md-6">
-              <ul class="list-unstyled">
-                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Networking con otros patrocinadores</li>
-                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Apoyo a la comunidad local</li>
+          </div>
+        </div>
+      </div>
                 <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Presencia en redes sociales</li>
               </ul>
             </div>
@@ -58,7 +106,19 @@
       <!-- Application Form -->
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title mb-4">Formulario de Postulación</h4>
+          <h4 class="card-title mb-4">
+            <i class="fas fa-paper-plane me-2"></i>Solicitud de Patrocinio
+          </h4>
+          
+          <div class="alert alert-info mb-4">
+            <h6 class="alert-heading">
+              <i class="fas fa-info-circle me-2"></i>Información Automática
+            </h6>
+            <p class="mb-0">
+              La información de tu empresa se tomará automáticamente de tu perfil de proveedor verificado. 
+              Solo necesitas completar los detalles específicos de esta solicitud de patrocinio.
+            </p>
+          </div>
           
           <form method="post">
             {% csrf_token %}
@@ -69,85 +129,15 @@
               </div>
             {% endif %}
 
-            <!-- Company Information -->
-            <div class="form-section mb-4">
-              <h5 class="mb-3">Información de la Empresa</h5>
-              
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group mb-3">
-                    <label for="{{ form.company_name.id_for_label }}" class="form-label">
-                      {{ form.company_name.label }} <span class="text-danger">*</span>
-                    </label>
-                    {{ form.company_name }}
-                    {% if form.company_name.errors %}
-                      <div class="invalid-feedback d-block">{{ form.company_name.errors }}</div>
-                    {% endif %}
-                  </div>
-                </div>
-                
-                <div class="col-md-6">
-                  <div class="form-group mb-3">
-                    <label for="{{ form.company_website.id_for_label }}" class="form-label">
-                      {{ form.company_website.label }}
-                    </label>
-                    {{ form.company_website }}
-                    {% if form.company_website.errors %}
-                      <div class="invalid-feedback d-block">{{ form.company_website.errors }}</div>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Contact Information -->
-            <div class="form-section mb-4">
-              <h5 class="mb-3">Información de Contacto</h5>
-              
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group mb-3">
-                    <label for="{{ form.contact_name.id_for_label }}" class="form-label">
-                      {{ form.contact_name.label }} <span class="text-danger">*</span>
-                    </label>
-                    {{ form.contact_name }}
-                    {% if form.contact_name.errors %}
-                      <div class="invalid-feedback d-block">{{ form.contact_name.errors }}</div>
-                    {% endif %}
-                  </div>
-                </div>
-                
-                <div class="col-md-6">
-                  <div class="form-group mb-3">
-                    <label for="{{ form.contact_email.id_for_label }}" class="form-label">
-                      {{ form.contact_email.label }} <span class="text-danger">*</span>
-                    </label>
-                    {{ form.contact_email }}
-                    {% if form.contact_email.errors %}
-                      <div class="invalid-feedback d-block">{{ form.contact_email.errors }}</div>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
-              
-              <div class="form-group mb-3">
-                <label for="{{ form.contact_phone.id_for_label }}" class="form-label">
-                  {{ form.contact_phone.label }} <span class="text-danger">*</span>
-                </label>
-                {{ form.contact_phone }}
-                {% if form.contact_phone.errors %}
-                  <div class="invalid-feedback d-block">{{ form.contact_phone.errors }}</div>
-                {% endif %}
-              </div>
-            </div>
-
             <!-- Sponsorship Details -->
             <div class="form-section mb-4">
-              <h5 class="mb-3">Detalles del Patrocinio</h5>
+              <h5 class="mb-3">
+                <i class="fas fa-star me-2"></i>Nivel de Patrocinio Deseado
+              </h5>
               
               <div class="form-group mb-3">
                 <label for="{{ form.proposed_tier.id_for_label }}" class="form-label">
-                  {{ form.proposed_tier.label }}
+                  {{ form.proposed_tier.label }} <span class="text-danger">*</span>
                   <button type="button" class="btn btn-link btn-sm p-0 ms-1" data-bs-toggle="modal" data-bs-target="#tierInfoModal">
                     <i class="fas fa-info-circle text-info"></i>
                   </button>
@@ -157,10 +147,17 @@
                   <div class="invalid-feedback d-block">{{ form.proposed_tier.errors }}</div>
                 {% endif %}
                 <small class="form-text text-muted">
-                  Selecciona el nivel de patrocinio de tu interés. El organizador podrá ajustar esto según la disponibilidad y tu propuesta.
+                  {{ form.proposed_tier.help_text }}
                   <a href="#" data-bs-toggle="modal" data-bs-target="#tierInfoModal">Ver detalles de cada nivel</a>
                 </small>
               </div>
+            </div>
+
+            <!-- Proposal Message -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">
+                <i class="fas fa-comment-dots me-2"></i>Tu Propuesta de Patrocinio
+              </h5>
               
               <div class="form-group mb-3">
                 <label for="{{ form.message.id_for_label }}" class="form-label">
@@ -171,31 +168,87 @@
                   <div class="invalid-feedback d-block">{{ form.message.errors }}</div>
                 {% endif %}
                 <small class="form-text text-muted">
-                  Cuéntanos sobre tu empresa y por qué quieres patrocinar este evento. Incluye información sobre tu marca, productos/servicios, y cómo crees que puedes agregar valor al evento.
+                  Explica por qué quieres patrocinar este evento específico, qué puedes ofrecer además del apoyo financiero, 
+                  y cómo esta asociación beneficiaría tanto a tu empresa como al evento. Incluye cualquier idea creativa 
+                  de colaboración o activación que tengas en mente.
                 </small>
               </div>
             </div>
 
-            <!-- Disclaimer -->
-            <div class="alert alert-light border">
-              <h6 class="alert-heading">Información importante:</h6>
+            <!-- Company Preview -->
+            <div class="form-section mb-4">
+              <h5 class="mb-3">
+                <i class="fas fa-eye me-2"></i>Vista Previa de Información de Empresa
+              </h5>
+              
+              <div class="alert alert-light">
+                <div class="row align-items-center">
+                  <div class="col-md-2 text-center">
+                    {% if supplier_profile.company_logo %}
+                      <img src="{{ supplier_profile.company_logo.url }}" alt="{{ supplier_profile.company_name }}" 
+                           class="img-fluid rounded" style="max-width: 80px; max-height: 80px;">
+                    {% else %}
+                      <div class="bg-secondary rounded d-inline-flex align-items-center justify-content-center" 
+                           style="width: 60px; height: 60px;">
+                        <i class="fas fa-building fa-lg text-white"></i>
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div class="col-md-10">
+                    <h6 class="mb-2">{{ supplier_profile.company_name }}</h6>
+                    <div class="row small text-muted">
+                      <div class="col-md-6">
+                        <p class="mb-1"><strong>Contacto:</strong> {{ supplier_profile.contact_person|default:supplier_profile.user.name }}</p>
+                        <p class="mb-1"><strong>Email:</strong> {{ supplier_profile.business_email|default:supplier_profile.user.email }}</p>
+                        {% if supplier_profile.business_phone %}
+                          <p class="mb-0"><strong>Teléfono:</strong> {{ supplier_profile.business_phone }}</p>
+                        {% endif %}
+                      </div>
+                      <div class="col-md-6">
+                        <p class="mb-1"><strong>Industria:</strong> {{ supplier_profile.get_industry_display }}</p>
+                        {% if supplier_profile.company_website %}
+                          <p class="mb-1"><strong>Web:</strong> {{ supplier_profile.company_website }}</p>
+                        {% endif %}
+                        <p class="mb-0"><strong>Tamaño:</strong> {{ supplier_profile.get_company_size_display }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <small class="text-muted">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Esta información se enviará automáticamente al organizador junto con tu propuesta.
+                </small>
+              </div>
+            </div>
+
+            <!-- Important Information -->
+            <div class="alert alert-warning border-warning">
+              <h6 class="alert-heading">
+                <i class="fas fa-exclamation-triangle me-2"></i>Información Importante
+              </h6>
               <ul class="mb-0 small">
-                <li>Esta es una postulación. El organizador revisará tu solicitud y se pondrá en contacto contigo.</li>
-                <li>La negociación de términos específicos y pagos se realizará directamente con el organizador.</li>
-                <li>Los espacios de patrocinio están sujetos a disponibilidad.</li>
-                <li>El organizador se reserva el derecho de aprobar o rechazar postulaciones según sus criterios.</li>
+                <li><strong>Solicitud de revisión:</strong> Esta es una solicitud. El organizador revisará tu propuesta y se pondrá en contacto contigo.</li>
+                <li><strong>Negociación directa:</strong> Los términos específicos, beneficios detallados y pagos se negociarán directamente con el organizador.</li>
+                <li><strong>Disponibilidad:</strong> Los espacios de patrocinio están sujetos a disponibilidad y pueden variar según la demanda.</li>
+                <li><strong>Criterios del organizador:</strong> El organizador se reserva el derecho de aprobar o rechazar solicitudes según sus criterios y necesidades del evento.</li>
+                <li><strong>Respuesta estimada:</strong> Recibirás una respuesta en un plazo de 3-5 días hábiles.</li>
               </ul>
             </div>
 
             <!-- Action Buttons -->
-            <div class="d-flex justify-content-between">
-              <a href="{{ event.get_absolute_url }}" class="btn btn-secondary">
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{{ event.get_absolute_url }}" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-1"></i>Volver al Evento
               </a>
               
-              <button type="submit" class="btn btn-primary btn-lg">
-                <i class="fas fa-paper-plane me-2"></i>Enviar Postulación
-              </button>
+              <div class="text-end">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="fas fa-paper-plane me-2"></i>Enviar Solicitud de Patrocinio
+                </button>
+                <small class="d-block text-muted mt-1">
+                  Una vez enviada, recibirás una confirmación por email
+                </small>
+              </div>
             </div>
           </form>
         </div>

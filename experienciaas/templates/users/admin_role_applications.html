@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Gestión de Aplicaciones de Roles" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-check me-2"></i>
+                            {% trans "Gestión de Aplicaciones de Roles" %}
+                        </h4>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Filters -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <form method="get" class="d-flex gap-2">
+                                <select name="status" class="form-select">
+                                    <option value="">{% trans "Todos los estados" %}</option>
+                                    {% for value, label in status_choices %}
+                                        <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <select name="role" class="form-select">
+                                    <option value="">{% trans "Todos los roles" %}</option>
+                                    {% for value, label in role_choices %}
+                                        <option value="{{ value }}" {% if current_role == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="fas fa-filter"></i> {% trans "Filtrar" %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Applications Table -->
+                    {% if applications %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>{% trans "Usuario" %}</th>
+                                        <th>{% trans "Rol Solicitado" %}</th>
+                                        <th>{% trans "Estado" %}</th>
+                                        <th>{% trans "Fecha de Solicitud" %}</th>
+                                        <th>{% trans "Justificación" %}</th>
+                                        <th>{% trans "Procesado por" %}</th>
+                                        <th>{% trans "Acciones" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm me-2">
+                                                        {% if application.user.avatar %}
+                                                            <img src="{{ application.user.avatar.url }}" 
+                                                                 class="rounded-circle" width="32" height="32"
+                                                                 alt="{{ application.user.get_full_name }}">
+                                                        {% else %}
+                                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                                                 style="width: 32px; height: 32px;">
+                                                                <i class="fas fa-user text-white"></i>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <strong>{{ application.user.get_full_name }}</strong><br>
+                                                        <small class="text-muted">{{ application.user.email }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">
+                                                    {{ application.get_role_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if application.status == 'pending' %}
+                                                    <span class="badge bg-warning">{{ application.get_status_display }}</span>
+                                                {% elif application.status == 'approved' %}
+                                                    <span class="badge bg-success">{{ application.get_status_display }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">{{ application.get_status_display }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <small>{{ application.created_at|date:"d/m/Y H:i" }}</small>
+                                            </td>
+                                            <td>
+                                                {% if application.justification %}
+                                                    <div class="text-truncate" style="max-width: 200px;" 
+                                                         title="{{ application.justification }}">
+                                                        {{ application.justification|truncatechars:50 }}
+                                                    </div>
+                                                {% else %}
+                                                    <em class="text-muted">{% trans "Sin justificación" %}</em>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if application.processed_by %}
+                                                    <small>
+                                                        {{ application.processed_by.get_full_name }}<br>
+                                                        <em class="text-muted">{{ application.processed_at|date:"d/m/Y H:i" }}</em>
+                                                    </small>
+                                                {% else %}
+                                                    <em class="text-muted">{% trans "Pendiente" %}</em>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if application.status == 'pending' %}
+                                                    <div class="btn-group" role="group">
+                                                        <form method="post" 
+                                                              action="{% url 'users:approve_role_application' application.id %}" 
+                                                              class="d-inline">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-sm btn-success"
+                                                                    onclick="return confirm('{% trans "¿Aprobar esta aplicación de rol?" %}')">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        </form>
+                                                        <form method="post" 
+                                                              action="{% url 'users:reject_role_application' application.id %}" 
+                                                              class="d-inline">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                                    onclick="return confirm('{% trans "¿Rechazar esta aplicación de rol?" %}')">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                {% else %}
+                                                    <em class="text-muted">{% trans "Procesada" %}</em>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if is_paginated %}
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center mt-4">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=1{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}">
+                                                {% trans "Primera" %}
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}">
+                                                {% trans "Anterior" %}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    <li class="page-item active">
+                                        <span class="page-link">
+                                            {% trans "Página" %} {{ page_obj.number }} {% trans "de" %} {{ page_obj.paginator.num_pages }}
+                                        </span>
+                                    </li>
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}">
+                                                {% trans "Siguiente" %}
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}">
+                                                {% trans "Última" %}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">{% trans "No hay aplicaciones de roles" %}</h5>
+                            <p class="text-muted">{% trans "No se encontraron aplicaciones con los filtros seleccionados." %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

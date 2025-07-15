@@ -1,0 +1,641 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Gestión Unificada de Usuarios y Roles" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-users-cog me-2"></i>
+                            {% trans "Gestión Unificada de Usuarios y Roles" %}
+                        </h4>
+                        <div class="d-flex gap-2">
+                            {% if pending_applications_count > 0 %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="fas fa-clock me-1"></i>
+                                    {{ pending_applications_count }} {% trans "aplicaciones pendientes" %}
+                                </span>
+                            {% endif %}
+                            {% if pending_profiles_count > 0 %}
+                                <span class="badge bg-info text-dark">
+                                    <i class="fas fa-building me-1"></i>
+                                    {{ pending_profiles_count }} {% trans "perfiles pendientes" %}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Quick Action Buttons -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="btn-group" role="group" aria-label="Quick filters">
+                                <a href="?view=all" class="btn {% if current_view == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                                    <i class="fas fa-users me-1"></i>{% trans "Todos" %}
+                                </a>
+                                <a href="?view=applications&status=pending_applications" class="btn {% if current_view == 'applications' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                                    <i class="fas fa-clock me-1"></i>{% trans "Aplicaciones" %}
+                                    {% if pending_applications_count > 0 %}
+                                        <span class="badge bg-white text-warning ms-1">{{ pending_applications_count }}</span>
+                                    {% endif %}
+                                </a>
+                                <a href="?view=supplier_profiles&status=pending_profiles" class="btn {% if current_view == 'supplier_profiles' %}btn-info{% else %}btn-outline-info{% endif %}">
+                                    <i class="fas fa-building me-1"></i>{% trans "Perfiles" %}
+                                    {% if pending_profiles_count > 0 %}
+                                        <span class="badge bg-white text-info ms-1">{{ pending_profiles_count }}</span>
+                                    {% endif %}
+                                </a>
+                                <a href="?view=roles" class="btn {% if current_view == 'roles' %}btn-success{% else %}btn-outline-success{% endif %}">
+                                    <i class="fas fa-user-cog me-1"></i>{% trans "Con Roles" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Filters -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <form method="get" class="d-flex gap-2 flex-wrap">
+                                <select name="view" class="form-select">
+                                    {% for value, label in view_choices %}
+                                        <option value="{{ value }}" {% if current_view == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <select name="role" class="form-select">
+                                    {% for value, label in role_choices %}
+                                        <option value="{{ value }}" {% if current_role == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <select name="status" class="form-select">
+                                    {% for value, label in status_choices %}
+                                        <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="fas fa-filter"></i> {% trans "Filtrar" %}
+                                </button>
+                                <a href="{% url 'users:admin_unified_roles' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> {% trans "Limpiar" %}
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Users Table -->
+                    {% if users %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>{% trans "Usuario" %}</th>
+                                        <th>{% trans "Roles y Estado" %}</th>
+                                        <th>{% trans "Aplicaciones Pendientes" %}</th>
+                                        <th>{% trans "Suspensión" %}</th>
+                                        <th>{% trans "Acciones" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm me-2">
+                                                        {% if user.avatar %}
+                                                            <img src="{{ user.avatar.url }}" 
+                                                                 class="rounded-circle" width="32" height="32"
+                                                                 alt="{{ user.get_full_name }}">
+                                                        {% else %}
+                                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center" 
+                                                                 style="width: 32px; height: 32px;">
+                                                                <i class="fas fa-user text-white"></i>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <strong>{{ user.get_full_name }}</strong><br>
+                                                        <small class="text-muted">{{ user.email }}</small>
+                                                        {% if not user.is_active %}
+                                                            <br><span class="badge bg-dark small">{% trans "Cuenta Inactiva" %}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex gap-1 flex-wrap">
+                                                    {% if user.is_superuser %}
+                                                        <span class="badge bg-danger">
+                                                            <i class="fas fa-crown me-1"></i>{% trans "Admin" %}
+                                                        </span>
+                                                    {% endif %}
+                                                    
+                                                    {% if user.is_staff %}
+                                                        <span class="badge {% if user.organizer_suspended %}bg-warning text-dark{% else %}bg-info{% endif %}">
+                                                            <i class="fas fa-calendar me-1"></i>
+                                                            {% trans "Organizador" %}
+                                                            {% if user.organizer_suspended %}({% trans "Suspendido" %}){% endif %}
+                                                        </span>
+                                                    {% endif %}
+                                                    
+                                                    {% if user.is_supplier %}
+                                                        <span class="badge {% if user.supplier_suspended %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                                            <i class="fas fa-building me-1"></i>
+                                                            {% trans "Proveedor" %}
+                                                            {% if user.supplier_suspended %}({% trans "Suspendido" %}){% endif %}
+                                                        </span>
+                                                    {% endif %}
+                                                    
+                                                    {% if not user.is_staff and not user.is_supplier and not user.is_superuser %}
+                                                        <span class="badge bg-secondary">
+                                                            <i class="fas fa-user me-1"></i>{% trans "Usuario Básico" %}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-1">
+                                                    {% for application in user.role_applications.all %}
+                                                        {% if application.status == 'pending' %}
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <span class="badge bg-warning text-dark">
+                                                                    <i class="fas fa-clock me-1"></i>
+                                                                    {{ application.get_role_display }}
+                                                                </span>
+                                                                <div class="btn-group btn-group-sm">
+                                                                    <form method="post" action="{% url 'users:approve_role_application' application.id %}" class="d-inline">
+                                                                        {% csrf_token %}
+                                                                        <button type="submit" class="btn btn-sm btn-success" 
+                                                                                onclick="return confirm('{% trans "¿Aprobar aplicación?" %}')"
+                                                                                title="{% trans 'Aprobar' %}">
+                                                                            <i class="fas fa-check"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                    <form method="post" action="{% url 'users:reject_role_application' application.id %}" class="d-inline">
+                                                                        {% csrf_token %}
+                                                                        <button type="submit" class="btn btn-sm btn-danger" 
+                                                                                onclick="return confirm('{% trans "¿Rechazar aplicación?" %}')"
+                                                                                title="{% trans 'Rechazar' %}">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                                    {% if user.supplier_profile and user.supplier_profile.status == 'pending' %}
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <span class="badge bg-info text-dark">
+                                                                <i class="fas fa-building me-1"></i>{% trans "Perfil Proveedor Pendiente" %}
+                                                            </span>
+                                                            <div class="btn-group btn-group-sm">
+                                                                <form method="post" action="{% url 'users:approve_supplier_profile' user.supplier_profile.id %}" class="d-inline">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="btn btn-sm btn-success" 
+                                                                            onclick="return confirm('{% trans "¿Aprobar perfil de proveedor?" %}')"
+                                                                            title="{% trans 'Aprobar' %}">
+                                                                        <i class="fas fa-check"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <a href="{% url 'users:admin_edit_supplier_profile' user.supplier_profile.id %}" 
+                                                                   class="btn btn-sm btn-info" title="{% trans 'Editar' %}">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    
+                                                    {% if user.supplier_profile and user.supplier_profile.status == 'rejected' %}
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <span class="badge bg-secondary">
+                                                                <i class="fas fa-times me-1"></i>{% trans "Perfil Revocado" %}
+                                                            </span>
+                                                            <small class="text-muted">{% trans "Usuario puede volver a aplicar" %}</small>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column">
+                                                    {% if user.organizer_suspended %}
+                                                        <small class="text-warning">
+                                                            <i class="fas fa-pause me-1"></i>{% trans "Org. Suspendido" %}
+                                                            {% if user.organizer_suspended_until %}
+                                                                <br>{% trans "Hasta" %}: {{ user.organizer_suspended_until|date:"d/m/Y" }}
+                                                            {% else %}
+                                                                <br>{% trans "Permanente" %}
+                                                            {% endif %}
+                                                            {% if user.organizer_suspension_reason %}
+                                                                <br><em>{{ user.organizer_suspension_reason|truncatechars:30 }}</em>
+                                                            {% endif %}
+                                                        </small>
+                                                    {% endif %}
+                                                    {% if user.supplier_suspended %}
+                                                        <small class="text-warning">
+                                                            <i class="fas fa-pause me-1"></i>{% trans "Prov. Suspendido" %}
+                                                            {% if user.supplier_suspended_until %}
+                                                                <br>{% trans "Hasta" %}: {{ user.supplier_suspended_until|date:"d/m/Y" }}
+                                                            {% else %}
+                                                                <br>{% trans "Permanente" %}
+                                                            {% endif %}
+                                                            {% if user.supplier_suspension_reason %}
+                                                                <br><em>{{ user.supplier_suspension_reason|truncatechars:30 }}</em>
+                                                            {% endif %}
+                                                        </small>
+                                                    {% endif %}
+                                                    {% if not user.organizer_suspended and not user.supplier_suspended %}
+                                                        <em class="text-muted small">{% trans "Sin suspensiones" %}</em>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" 
+                                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fas fa-cogs"></i> {% trans "Acciones" %}
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <!-- Account Management -->
+                                                        {% if not user.is_active %}
+                                                            <li>
+                                                                <form method="post" 
+                                                                      action="{% url 'users:activate_user_account' user.id %}" 
+                                                                      class="d-inline">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="dropdown-item text-success"
+                                                                            onclick="return confirm('{% trans "¿Activar cuenta de usuario?" %}')">
+                                                                        <i class="fas fa-check-circle me-2"></i>{% trans "Activar Cuenta" %}
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% else %}
+                                                            <li>
+                                                                <a class="dropdown-item text-dark" href="#" 
+                                                                   data-bs-toggle="modal" 
+                                                                   data-bs-target="#deactivateAccountModal{{ user.id }}">
+                                                                    <i class="fas fa-ban me-2"></i>{% trans "Desactivar Cuenta" %}
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                        
+                                                        <!-- Role Promotions for Basic Users -->
+                                                        {% if not user.is_staff and not user.is_supplier and not user.is_superuser %}
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <form method="post" 
+                                                                      action="{% url 'users:promote_to_organizer' user.id %}" 
+                                                                      class="d-inline">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="dropdown-item text-info"
+                                                                            onclick="return confirm('{% trans "¿Promover a organizador?" %}')">
+                                                                        <i class="fas fa-user-plus me-2"></i>{% trans "Promover a Organizador" %}
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                            <li>
+                                                                <form method="post" 
+                                                                      action="{% url 'users:approve_as_supplier' user.id %}" 
+                                                                      class="d-inline">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="dropdown-item text-success"
+                                                                            onclick="return confirm('{% trans "¿Aprobar como proveedor?" %}')">
+                                                                        <i class="fas fa-building me-2"></i>{% trans "Aprobar como Proveedor" %}
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                        
+                                                        <!-- Organizer Role Actions -->
+                                                        {% if user.is_staff %}
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            {% if user.organizer_suspended %}
+                                                                <li>
+                                                                    <form method="post" 
+                                                                          action="{% url 'users:reactivate_organizer_role' user.id %}" 
+                                                                          class="d-inline">
+                                                                        {% csrf_token %}
+                                                                        <button type="submit" class="dropdown-item text-success"
+                                                                                onclick="return confirm('{% trans "¿Reactivar rol de organizador?" %}')">
+                                                                            <i class="fas fa-play me-2"></i>{% trans "Reactivar Organizador" %}
+                                                                        </button>
+                                                                    </form>
+                                                                </li>
+                                                            {% else %}
+                                                                <li>
+                                                                    <a class="dropdown-item text-warning" href="#" 
+                                                                       data-bs-toggle="modal" 
+                                                                       data-bs-target="#suspendOrganizerModal{{ user.id }}">
+                                                                        <i class="fas fa-pause me-2"></i>{% trans "Suspender Organizador" %}
+                                                                    </a>
+                                                                </li>
+                                                            {% endif %}
+                                                            <li>
+                                                                <form method="post" 
+                                                                      action="{% url 'users:revoke_organizer_role' user.id %}" 
+                                                                      class="d-inline">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="dropdown-item text-danger"
+                                                                            onclick="return confirm('{% trans "¿REVOCAR COMPLETAMENTE el rol de organizador? Esta acción no se puede deshacer." %}')">
+                                                                        <i class="fas fa-trash me-2"></i>{% trans "Revocar Organizador" %}
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                        
+                                                        <!-- Supplier Role Actions -->
+                                                        {% if user.supplier_profile and user.supplier_profile.is_approved %}
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <a href="{% url 'users:admin_edit_supplier_profile' user.supplier_profile.id %}" 
+                                                                   class="dropdown-item text-primary">
+                                                                    <i class="fas fa-edit me-2"></i>{% trans "Editar Perfil Proveedor" %}
+                                                                </a>
+                                                            </li>
+                                                            {% if user.supplier_suspended %}
+                                                                <li>
+                                                                    <form method="post" 
+                                                                          action="{% url 'users:reactivate_supplier_role' user.id %}" 
+                                                                          class="d-inline">
+                                                                        {% csrf_token %}
+                                                                        <button type="submit" class="dropdown-item text-success"
+                                                                                onclick="return confirm('{% trans "¿Reactivar rol de proveedor?" %}')">
+                                                                            <i class="fas fa-play me-2"></i>{% trans "Reactivar Proveedor" %}
+                                                                        </button>
+                                                                    </form>
+                                                                </li>
+                                                            {% else %}
+                                                                <li>
+                                                                    <a class="dropdown-item text-warning" href="#" 
+                                                                       data-bs-toggle="modal" 
+                                                                       data-bs-target="#suspendSupplierModal{{ user.id }}">
+                                                                        <i class="fas fa-pause me-2"></i>{% trans "Suspender Proveedor" %}
+                                                                    </a>
+                                                                </li>
+                                                            {% endif %}
+                                                            <li>
+                                                                <form method="post" 
+                                                                      action="{% url 'users:revoke_supplier_role' user.id %}" 
+                                                                      class="d-inline">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="dropdown-item text-danger"
+                                                                            onclick="return confirm('{% trans "¿REVOCAR COMPLETAMENTE el rol de proveedor? Esta acción no se puede deshacer." %}')">
+                                                                        <i class="fas fa-trash me-2"></i>{% trans "Revocar Proveedor" %}
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if is_paginated %}
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center mt-4">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=1{% if current_view %}&view={{ current_view }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                                {% trans "Primera" %}
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_view %}&view={{ current_view }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                                {% trans "Anterior" %}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    <li class="page-item active">
+                                        <span class="page-link">
+                                            {% trans "Página" %} {{ page_obj.number }} {% trans "de" %} {{ page_obj.paginator.num_pages }}
+                                        </span>
+                                    </li>
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_view %}&view={{ current_view }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                                {% trans "Siguiente" %}
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if current_view %}&view={{ current_view }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}">
+                                                {% trans "Última" %}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">{% trans "No hay usuarios" %}</h5>
+                            <p class="text-muted">{% trans "No se encontraron usuarios con los filtros seleccionados." %}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Suspension Modals -->
+{% for user in users %}
+    {% if user.is_staff and not user.organizer_suspended %}
+        <!-- Suspend Organizer Modal -->
+        <div class="modal fade" id="suspendOrganizerModal{{ user.id }}" tabindex="-1" 
+             aria-labelledby="suspendOrganizerModalLabel{{ user.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="suspendOrganizerModalLabel{{ user.id }}">
+                            {% trans "Suspender Rol de Organizador" %}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{% url 'users:suspend_organizer_role' user.id %}">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            <p>{% trans "¿Está seguro de que desea suspender el rol de organizador para" %} <strong>{{ user.get_full_name }}</strong>?</p>
+                            
+                            <div class="mb-3">
+                                <label for="reason{{ user.id }}" class="form-label">{% trans "Razón de la suspensión" %}</label>
+                                <textarea name="reason" id="reason{{ user.id }}" class="form-control" rows="3" 
+                                          placeholder="{% trans 'Describe la razón de la suspensión...' %}"></textarea>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="permanent" id="permanent{{ user.id }}" 
+                                       onchange="toggleDuration({{ user.id }})">
+                                <label class="form-check-label" for="permanent{{ user.id }}">
+                                    {% trans "Suspensión permanente" %}
+                                </label>
+                            </div>
+                            
+                            <div id="durationDiv{{ user.id }}" class="mb-3">
+                                <label for="duration_days{{ user.id }}" class="form-label">{% trans "Duración en días" %}</label>
+                                <input type="number" name="duration_days" id="duration_days{{ user.id }}" 
+                                       class="form-control" min="1" max="365" 
+                                       placeholder="{% trans 'Días de suspensión' %}">
+                                <div class="form-text">{% trans "Deje vacío para suspensión permanente" %}</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+                            <button type="submit" class="btn btn-warning">{% trans "Suspender" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    {% if user.supplier_profile and user.supplier_profile.is_approved and not user.supplier_suspended %}
+        <!-- Suspend Supplier Modal -->
+        <div class="modal fade" id="suspendSupplierModal{{ user.id }}" tabindex="-1" 
+             aria-labelledby="suspendSupplierModalLabel{{ user.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="suspendSupplierModalLabel{{ user.id }}">
+                            {% trans "Suspender Rol de Proveedor" %}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{% url 'users:suspend_supplier_role' user.id %}">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            <p>{% trans "¿Está seguro de que desea suspender el rol de proveedor para" %} <strong>{{ user.get_full_name }}</strong>?</p>
+                            
+                            <div class="mb-3">
+                                <label for="supplierReason{{ user.id }}" class="form-label">{% trans "Razón de la suspensión" %}</label>
+                                <textarea name="reason" id="supplierReason{{ user.id }}" class="form-control" rows="3" 
+                                          placeholder="{% trans 'Describe la razón de la suspensión...' %}"></textarea>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="permanent" id="permanentSupplier{{ user.id }}" 
+                                       onchange="toggleSupplierDuration({{ user.id }})">
+                                <label class="form-check-label" for="permanentSupplier{{ user.id }}">
+                                    {% trans "Suspensión permanente" %}
+                                </label>
+                            </div>
+                            
+                            <div id="supplierDurationDiv{{ user.id }}" class="mb-3">
+                                <label for="supplier_duration_days{{ user.id }}" class="form-label">{% trans "Duración en días" %}</label>
+                                <input type="number" name="duration_days" id="supplier_duration_days{{ user.id }}" 
+                                       class="form-control" min="1" max="365" 
+                                       placeholder="{% trans 'Días de suspensión' %}">
+                                <div class="form-text">{% trans "Deje vacío para suspensión permanente" %}</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+                            <button type="submit" class="btn btn-warning">{% trans "Suspender" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+<!-- Deactivate Account Modals -->
+{% for user in users %}
+    {% if user.is_active and not user.is_superuser %}
+        <div class="modal fade" id="deactivateAccountModal{{ user.id }}" tabindex="-1" 
+             aria-labelledby="deactivateAccountModalLabel{{ user.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deactivateAccountModalLabel{{ user.id }}">
+                            {% trans "Desactivar Cuenta de Usuario" %}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="{% url 'users:deactivate_user_account' user.id %}">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            <p>{% trans "¿Está seguro de que desea desactivar la cuenta de" %} <strong>{{ user.get_full_name }}</strong>?</p>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                {% trans "Esta acción suspenderá automáticamente todos los roles activos del usuario." %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="accountReason{{ user.id }}" class="form-label">{% trans "Razón de la desactivación" %}</label>
+                                <textarea name="reason" id="accountReason{{ user.id }}" class="form-control" rows="3" 
+                                          placeholder="{% trans 'Describe la razón de la desactivación...' %}"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancelar" %}</button>
+                            <button type="submit" class="btn btn-danger">{% trans "Desactivar Cuenta" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+<script>
+// Función para alternar duración de suspensión de organizador
+function toggleDuration(userId) {
+    const permanentCheck = document.getElementById('permanent' + userId);
+    const durationDiv = document.getElementById('durationDiv' + userId);
+    const durationInput = document.getElementById('duration_days' + userId);
+    
+    if (permanentCheck.checked) {
+        durationDiv.style.display = 'none';
+        durationInput.value = '';
+    } else {
+        durationDiv.style.display = 'block';
+    }
+}
+
+// Función para alternar duración de suspensión de proveedor
+function toggleSupplierDuration(userId) {
+    const permanentCheck = document.getElementById('permanentSupplier' + userId);
+    const durationDiv = document.getElementById('supplierDurationDiv' + userId);
+    const durationInput = document.getElementById('supplier_duration_days' + userId);
+    
+    if (permanentCheck.checked) {
+        durationDiv.style.display = 'none';
+        durationInput.value = '';
+    } else {
+        durationDiv.style.display = 'block';
+    }
+}
+
+// Auto-hide alerts after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert:not(.alert-warning)');
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            if (bootstrap.Alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }
+        }, 5000);
+    });
+});
+</script>
+{% endblock %}

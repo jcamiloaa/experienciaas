@@ -24,6 +24,8 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Analytics
     path("analytics/", include("experienciaas.analytics.urls", namespace="analytics")),
+    # QR Code URLs
+    path("qr_code/", include("qr_code.urls", namespace="qr_code")),
     # Your stuff: custom urls includes go here
     # ...
     # Media files

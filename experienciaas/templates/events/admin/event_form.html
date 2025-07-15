@@ -337,6 +337,88 @@
                 </div>
                 {% endif %}
             </div>
+
+            <!-- Post-Event Memories Section -->
+            {% if is_past_event %}
+            <div class="form-section memories-section">
+                <h2>
+                    <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M9 11H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/>
+                        <rect x="11" y="3" width="12" height="12" rx="2" ry="2"/>
+                        <circle cx="17" cy="9" r="2"/>
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L11 16"/>
+                    </svg>
+                    Memorias del Evento
+                </h2>
+                <div class="memories-info">
+                    <p class="info-text">
+                        El evento ya ha terminado. Ahora puedes agregar fotos, reseñas y memorias para que los visitantes puedan ver cómo fue el evento.
+                    </p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.post_event_summary.id_for_label }}">{{ form.post_event_summary.label }}</label>
+                        {{ form.post_event_summary }}
+                        {% if form.post_event_summary.errors %}
+                            <div class="field-errors">{{ form.post_event_summary.errors }}</div>
+                        {% endif %}
+                        <div class="field-help">
+                            Comparte una reseña general de cómo fue el evento, aspectos destacados y experiencias
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.post_event_photos.id_for_label }}">{{ form.post_event_photos.label }}</label>
+                        {{ form.post_event_photos }}
+                        {% if form.post_event_photos.errors %}
+                            <div class="field-errors">{{ form.post_event_photos.errors }}</div>
+                        {% endif %}
+                        <div class="field-help">
+                            Sube fotos destacadas del evento que se mostrarán en la página pública
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="{{ form.attendee_feedback_summary.id_for_label }}">{{ form.attendee_feedback_summary.label }}</label>
+                        {{ form.attendee_feedback_summary }}
+                        {% if form.attendee_feedback_summary.errors %}
+                            <div class="field-errors">{{ form.attendee_feedback_summary.errors }}</div>
+                        {% endif %}
+                        <div class="field-help">
+                            Resume los comentarios y testimonios positivos de los asistentes
+                        </div>
+                    </div>
+                    <div class="form-group half">
+                        <label for="{{ form.event_highlights.id_for_label }}">{{ form.event_highlights.label }}</label>
+                        {{ form.event_highlights }}
+                        {% if form.event_highlights.errors %}
+                            <div class="field-errors">{{ form.event_highlights.errors }}</div>
+                        {% endif %}
+                        <div class="field-help">
+                            Menciona los momentos más importantes y destacados del evento
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.organizer_notes.id_for_label }}">{{ form.organizer_notes.label }}</label>
+                        {{ form.organizer_notes }}
+                        {% if form.organizer_notes.errors %}
+                            <div class="field-errors">{{ form.organizer_notes.errors }}</div>
+                        {% endif %}
+                        <div class="field-help">
+                            Notas personales del organizador (solo visible para ti, no se muestra al público)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Form Actions -->
@@ -491,4 +573,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<style>
+.memories-section {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%);
+    border: 2px solid #e3f2fd;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+}
+
+.memories-section h2 {
+    color: #1976d2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.memories-section .icon {
+    stroke: #1976d2;
+}
+
+.memories-info {
+    background: rgba(25, 118, 210, 0.1);
+    border-left: 4px solid #1976d2;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+}
+
+.memories-info .info-text {
+    margin: 0;
+    color: #1565c0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.memories-section .form-row .form-group {
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+</style>
 {% endblock %}

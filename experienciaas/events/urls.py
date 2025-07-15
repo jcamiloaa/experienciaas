@@ -12,6 +12,9 @@ urlpatterns = [
     path("category/<slug:category_slug>/", views.EventsByCategoryView.as_view(), name="by_category"),
     path("register/<slug:slug>/", views.RegisterForEventView.as_view(), name="register"),
     
+    # Ticket detail with QR code
+    path("ticket/<str:ticket_number>/", views.TicketDetailView.as_view(), name="ticket_detail"),
+    
     # Sponsorship URLs
     path("<slug:event_slug>/sponsor-apply/", views.SponsorshipApplicationCreateView.as_view(), name="sponsor_apply"),
     
@@ -25,6 +28,8 @@ urlpatterns = [
     path("admin/events/bulk-actions/", admin_views.AdminBulkActionView.as_view(), name="admin_bulk_actions"),
     path("admin/tickets/", admin_views.AdminTicketListView.as_view(), name="admin_tickets"),
     path("admin/tickets/<int:event_pk>/", admin_views.AdminTicketListView.as_view(), name="admin_event_tickets"),
+    path("admin/tickets/<int:pk>/confirm/", admin_views.AdminTicketConfirmView.as_view(), name="admin_confirm_ticket"),
+    path("admin/tickets/<int:pk>/cancel/", admin_views.AdminTicketCancelView.as_view(), name="admin_cancel_ticket"),
     
     # Sponsor Management URLs
     path("admin/sponsors/", admin_views.AdminSponsorListView.as_view(), name="admin_sponsors"),
@@ -43,6 +48,12 @@ urlpatterns = [
     path("admin/sponsorship-applications/<int:pk>/edit/", admin_views.AdminSponsorshipApplicationUpdateView.as_view(), name="admin_edit_sponsorship_application"),
     path("admin/sponsorship-applications/<int:pk>/approve/", admin_views.AdminSponsorshipApplicationApproveView.as_view(), name="admin_approve_sponsorship_application"),
     path("admin/sponsorship-applications/<int:pk>/reject/", admin_views.AdminSponsorshipApplicationRejectView.as_view(), name="admin_reject_sponsorship_application"),
+    
+    # Event Photo Management URLs
+    path("admin/events/<int:event_pk>/photos/", admin_views.EventPhotoListView.as_view(), name="admin_event_photos"),
+    path("admin/events/<int:event_pk>/photos/add/", admin_views.EventPhotoCreateView.as_view(), name="admin_add_event_photo"),
+    path("admin/event-photos/<int:pk>/delete/", admin_views.EventPhotoDeleteView.as_view(), name="admin_delete_event_photo"),
+    path("admin/events/<int:event_pk>/photos/reorder/", admin_views.EventPhotoUpdateOrderView.as_view(), name="admin_reorder_event_photos"),
     
     # Public event detail (must be last to avoid conflicts)
     path("<slug:slug>/", views.EventDetailView.as_view(), name="detail"),

@@ -74,6 +74,164 @@
       color: #6c757d;
       font-size: 1.1rem;
     }
+    .application-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .application-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+    .role-icon {
+      transition: all 0.3s ease;
+    }
+    .card:hover .role-icon {
+      transform: scale(1.1);
+    }
+    .benefits small {
+      transition: all 0.2s ease;
+    }
+    .application-card:hover .benefits small {
+      transform: translateX(5px);
+    }
+    .application-icon {
+      transition: all 0.3s ease;
+    }
+    .application-card:hover .application-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+    
+    /* Profile Progress Styles */
+    .progress {
+      background-color: #e9ecef;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .progress-bar {
+      transition: width 0.8s ease, background-color 0.3s ease;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      position: relative;
+    }
+    
+    .progress-bar.bg-danger {
+      background: linear-gradient(45deg, #dc3545, #c82333) !important;
+    }
+    
+    .progress-bar.bg-warning {
+      background: linear-gradient(45deg, #ffc107, #e0a800) !important;
+    }
+    
+    .progress-bar.bg-info {
+      background: linear-gradient(45deg, #17a2b8, #138496) !important;
+    }
+    
+    .progress-bar.bg-success {
+      background: linear-gradient(45deg, #28a745, #1e7e34) !important;
+    }
+    
+    .progress-bar.bg-primary {
+      background: linear-gradient(45deg, #667eea, #764ba2) !important;
+    }
+    
+    .profile-progress-card {
+      transition: all 0.3s ease;
+    }
+    
+    .profile-progress-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+    }
+    
+    .progress-percentage-badge {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-radius: 20px;
+    }
+    
+    .progress-tips {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .missing-field {
+      color: #dc3545;
+      font-weight: 500;
+    }
+    
+    .completed-field {
+      color: #28a745;
+      font-weight: 500;
+    }
+    
+    @keyframes progressPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .progress-bar:not(.bg-success):hover {
+      animation: progressPulse 1s ease-in-out;
+    }
+    
+    /* Role Cards Styles */
+    .role-card {
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+    
+    .role-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+      border-color: #e9ecef;
+    }
+    
+    .role-card .card-body {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      border-radius: 12px;
+    }
+    
+    .role-card .role-icon {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .role-card:hover .role-icon {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    
+    .role-card .btn {
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    .role-card .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .border-dashed {
+      border-style: dashed !important;
+      border-width: 2px !important;
+    }
+    
+    .alert-light.border-dashed {
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      border-color: #dee2e6 !important;
+    }
   </style>
 {% endblock css %}
 
@@ -143,61 +301,147 @@
           
           <!-- Role Management Section -->
           <div class="mt-4">
-            <h6 class="text-muted mb-3">Gestión de Roles</h6>
+            <h6 class="text-muted mb-3">
+              <i class="fas fa-user-cog me-2"></i>Perfiles Profesionales
+            </h6>
             
-            <!-- Current Roles -->
+            <!-- Active Roles - Simplified -->
             {% if object.is_organizer or object.is_supplier %}
-              <div class="mb-3">
+              <div class="row g-3">
                 {% if object.is_organizer %}
-                  <span class="badge bg-warning text-dark me-2 mb-2">
-                    <i class="fas fa-cogs me-1"></i>Organizador
-                  </span>
-                  <a href="{% url 'users:profile_update' %}" class="btn btn-sm btn-outline-warning me-2 mb-2">
-                    <i class="fas fa-edit me-1"></i>Editar Perfil
-                  </a>
-                  <a href="{% url 'users:manage_organizer_profile' %}" class="btn btn-sm btn-outline-info me-2 mb-2">
-                    <i class="fas fa-cog me-1"></i>Gestionar
-                  </a>
+                  <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm role-card">
+                      <div class="card-body text-center py-4">
+                        <div class="role-icon bg-warning text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                          <i class="fas fa-cogs fa-lg"></i>
+                        </div>
+                        <h6 class="card-title">Organizador</h6>
+                        <p class="card-text text-muted small mb-3">Gestiona eventos profesionalmente</p>
+                        <a href="{% url 'users:manage_organizer_profile' %}" class="btn btn-warning btn-sm">
+                          <i class="fas fa-cog me-1"></i>Gestionar Perfil Organizador
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 {% endif %}
                 
                 {% if object.is_supplier %}
-                  <span class="badge bg-success text-white me-2 mb-2">
-                    <i class="fas fa-handshake me-1"></i>Proveedor
-                  </span>
-                  <a href="{% url 'users:supplier_profile_update' %}" class="btn btn-sm btn-outline-success me-2 mb-2">
-                    <i class="fas fa-edit me-1"></i>Editar Perfil
-                  </a>
-                  <a href="{% url 'users:manage_supplier_profile' %}" class="btn btn-sm btn-outline-info me-2 mb-2">
-                    <i class="fas fa-cog me-1"></i>Gestionar
-                  </a>
+                  <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm role-card">
+                      <div class="card-body text-center py-4">
+                        <div class="role-icon bg-success text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                          <i class="fas fa-handshake fa-lg"></i>
+                        </div>
+                        <h6 class="card-title">Proveedor/Patrocinador</h6>
+                        <p class="card-text text-muted small mb-3">Patrocina y apoya eventos</p>
+                        <a href="{% url 'users:manage_supplier_profile' %}" class="btn btn-success btn-sm">
+                          <i class="fas fa-cog me-1"></i>Gestionar Perfil Proveedor
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                 {% endif %}
+              </div>
+            {% else %}
+              <!-- No Active Roles -->
+              <div class="alert alert-light border-2 border-dashed text-center py-4">
+                <i class="fas fa-user-plus fa-2x text-muted mb-3"></i>
+                <h6 class="text-muted">No tienes perfiles profesionales activos</h6>
+                <p class="text-muted small mb-0">Solicita acceso a roles profesionales desde la sección de aplicaciones</p>
               </div>
             {% endif %}
             
-            <!-- Role Applications -->
-            {% if object.can_apply_for_organizer or object.can_apply_for_supplier %}
-              <div class="mb-3">
-                {% if object.can_apply_for_organizer %}
-                  <a href="{% url 'users:apply_for_organizer' %}" class="btn btn-sm btn-outline-primary me-2 mb-2">
-                    <i class="fas fa-plus me-1"></i>Aplicar para Organizador
-                  </a>
-                {% endif %}
-                
-                {% if object.can_apply_for_supplier %}
-                  <a href="{% url 'users:apply_for_supplier' %}" class="btn btn-sm btn-outline-success me-2 mb-2">
-                    <i class="fas fa-plus me-1"></i>Aplicar para Proveedor
-                  </a>
-                {% endif %}
-              </div>
-            {% endif %}
-            
-            <!-- Pending Applications -->
-            {% if object.has_pending_organizer_application or object.has_pending_supplier_application %}
-              <div class="alert alert-info py-2">
-                <small>
-                  <i class="fas fa-clock me-1"></i>
-                  Tienes aplicaciones pendientes de revisión.
-                </small>
+            <!-- Role Applications Section -->
+            {% if object.can_apply_for_organizer or object.can_apply_for_supplier or object.has_pending_organizer_application or object.has_pending_supplier_application %}
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light">
+                  <h6 class="mb-0">
+                    <i class="fas fa-plus-circle me-2 text-primary"></i>Aplicaciones de Roles
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <!-- Pending Applications Alert -->
+                  {% if object.has_pending_organizer_application or object.has_pending_supplier_application %}
+                    <div class="alert alert-info border-0 mb-4" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
+                      <div class="d-flex align-items-center">
+                        <div class="me-3">
+                          <i class="fas fa-clock fa-2x text-info"></i>
+                        </div>
+                        <div>
+                          <h6 class="alert-heading mb-1">Aplicaciones Pendientes</h6>
+                          <p class="mb-0">Tienes aplicaciones en proceso de revisión. Te notificaremos una vez que sean evaluadas.</p>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                  
+                  <!-- Available Applications -->
+                  <div class="row g-3">
+                    {% if object.can_apply_for_organizer %}
+                      <div class="col-md-6">
+                        <div class="application-card h-100 p-3 border rounded-3" style="background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-color: #ffb74d !important;">
+                          <div class="text-center">
+                            <div class="application-icon bg-warning text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                              <i class="fas fa-cogs fa-lg"></i>
+                            </div>
+                            <h6 class="fw-bold">Organizador de Eventos</h6>
+                            <p class="text-muted small mb-3">Crea y gestiona tus propios eventos en la plataforma</p>
+                            <div class="benefits mb-3">
+                              <small class="d-block text-muted mb-1">
+                                <i class="fas fa-check text-success me-1"></i>Panel de administración
+                              </small>
+                              <small class="d-block text-muted mb-1">
+                                <i class="fas fa-check text-success me-1"></i>Gestión de tickets
+                              </small>
+                              <small class="d-block text-muted">
+                                <i class="fas fa-check text-success me-1"></i>Analytics detallados
+                              </small>
+                            </div>
+                            <a href="{% url 'users:apply_for_organizer' %}" class="btn btn-warning btn-sm w-100">
+                              <i class="fas fa-paper-plane me-1"></i>Aplicar Ahora
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                    
+                    {% if object.can_apply_for_supplier %}
+                      <div class="col-md-6">
+                        <div class="application-card h-100 p-3 border rounded-3" style="background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%); border-color: #81c784 !important;">
+                          <div class="text-center">
+                            <div class="application-icon bg-success text-white rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                              <i class="fas fa-handshake fa-lg"></i>
+                            </div>
+                            <h6 class="fw-bold">Proveedor/Patrocinador</h6>
+                            <p class="text-muted small mb-3">Ofrece servicios y patrocina eventos para hacer crecer tu negocio</p>
+                            <div class="benefits mb-3">
+                              <small class="d-block text-muted mb-1">
+                                <i class="fas fa-check text-success me-1"></i>Perfil de empresa
+                              </small>
+                              <small class="d-block text-muted mb-1">
+                                <i class="fas fa-check text-success me-1"></i>Oportunidades de patrocinio
+                              </small>
+                              <small class="d-block text-muted">
+                                <i class="fas fa-check text-success me-1"></i>Red de contactos
+                              </small>
+                            </div>
+                            <a href="{% url 'users:apply_for_supplier' %}" class="btn btn-success btn-sm w-100">
+                              <i class="fas fa-paper-plane me-1"></i>Aplicar Ahora
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                  
+                  {% if not object.can_apply_for_organizer and not object.can_apply_for_supplier and not object.has_pending_organizer_application and not object.has_pending_supplier_application %}
+                    <div class="text-center py-4">
+                      <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                      <h6>¡Ya tienes todos los roles disponibles!</h6>
+                      <p class="text-muted mb-0">Puedes gestionar tus roles activos desde las opciones de arriba.</p>
+                    </div>
+                  {% endif %}
+                </div>
               </div>
             {% endif %}
           </div>
@@ -374,8 +618,164 @@
           </div>
         {% endif %}
         
-        {% if not object == request.user %}
-          <!-- Actions for viewing other profiles -->
+        <!-- Profile Progress Indicator -->
+        <div class="mt-4">
+          <div class="card border-0 shadow-sm profile-progress-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+            <div class="card-body text-center py-3">
+              <h6 class="card-title mb-3">
+                <i class="fas fa-chart-line me-2 text-primary"></i>
+                Progreso del Perfil Personal
+              </h6>
+              <small class="text-muted d-block mb-3">
+                Este progreso refleja la completitud de tu información personal básica
+              </small>
+              
+              <!-- Calculate profile completion percentage -->
+              {% with profile_fields=0 completed_fields=0 %}
+                {% if object.name %}{% with completed_fields=completed_fields|add:1 %}{% endwith %}{% endif %}
+                {% with profile_fields=profile_fields|add:1 %}{% endwith %}
+                
+                {% if object.avatar %}{% with completed_fields=completed_fields|add:1 %}{% endwith %}{% endif %}
+                {% with profile_fields=profile_fields|add:1 %}{% endwith %}
+                
+                {% if object.bio %}{% with completed_fields=completed_fields|add:1 %}{% endwith %}{% endif %}
+                {% with profile_fields=profile_fields|add:1 %}{% endwith %}
+                
+                {% if object.age %}{% with completed_fields=completed_fields|add:1 %}{% endwith %}{% endif %}
+                {% with profile_fields=profile_fields|add:1 %}{% endwith %}
+                
+                {% if object.location %}{% with completed_fields=completed_fields|add:1 %}{% endwith %}{% endif %}
+                {% with profile_fields=profile_fields|add:1 %}{% endwith %}
+                
+                {% if object.occupation %}{% with completed_fields=completed_fields|add:1 %}{% endwith %}{% endif %}
+                {% with profile_fields=profile_fields|add:1 %}{% endwith %}
+                
+                {% if object.phone_number %}{% with completed_fields=completed_fields|add:1 %}{% endwith %}{% endif %}
+                {% with profile_fields=profile_fields|add:1 %}{% endwith %}
+                
+                {% if object.date_of_birth %}{% with completed_fields=completed_fields|add:1 %}{% endwith %}{% endif %}
+                {% with profile_fields=profile_fields|add:1 %}{% endwith %}
+                
+                <!-- Calculate percentage: Use JavaScript for better calculation -->
+                <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    const fields = {
+                      name: {{ object.name|yesno:"true,false" }},
+                      avatar: {{ object.avatar|yesno:"true,false" }},
+                      bio: {{ object.bio|yesno:"true,false" }},
+                      age: {{ object.age|yesno:"true,false" }},
+                      location: "{{ object.location|default:'' }}" !== "",
+                      occupation: "{{ object.occupation|default:'' }}" !== "",
+                      phone: "{{ object.phone_number|default:'' }}" !== "",
+                      birth_date: {{ object.date_of_birth|yesno:"true,false" }}
+                    };
+                    
+                    const fieldLabels = {
+                      name: 'Nombre completo',
+                      avatar: 'Foto de perfil',
+                      bio: 'Biografía',
+                      age: 'Edad',
+                      location: 'Ubicación',
+                      occupation: 'Ocupación',
+                      phone: 'Número de teléfono',
+                      birth_date: 'Fecha de nacimiento'
+                    };
+                    
+                    const totalFields = Object.keys(fields).length;
+                    const completedFields = Object.values(fields).filter(Boolean).length;
+                    const percentage = Math.round((completedFields / totalFields) * 100);
+                    const missingFields = Object.keys(fields).filter(key => !fields[key]);
+                    
+                    // Update progress bar
+                    const progressBar = document.getElementById('profile-progress-bar');
+                    const progressText = document.getElementById('progress-percentage');
+                    const progressLabel = document.getElementById('progress-label');
+                    const tipsContainer = document.getElementById('progress-tips');
+                    
+                    if (progressBar && progressText && progressLabel) {
+                      setTimeout(() => {
+                        progressBar.style.width = percentage + '%';
+                        progressBar.setAttribute('aria-valuenow', percentage);
+                        progressText.textContent = percentage + '%';
+                        
+                        // Update color and label based on completion
+                        if (percentage < 30) {
+                          progressBar.className = 'progress-bar bg-danger';
+                          progressLabel.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Perfil Incompleto';
+                          progressText.className = 'badge bg-danger progress-percentage-badge fs-6 px-3 py-2';
+                        } else if (percentage < 70) {
+                          progressBar.className = 'progress-bar bg-warning';
+                          progressLabel.innerHTML = '<i class="fas fa-clock me-1"></i>En Progreso';
+                          progressText.className = 'badge bg-warning progress-percentage-badge fs-6 px-3 py-2';
+                        } else if (percentage < 100) {
+                          progressBar.className = 'progress-bar bg-info';
+                          progressLabel.innerHTML = '<i class="fas fa-chart-line me-1"></i>Casi Completo';
+                          progressText.className = 'badge bg-info progress-percentage-badge fs-6 px-3 py-2';
+                        } else {
+                          progressBar.className = 'progress-bar bg-success';
+                          progressLabel.innerHTML = '<i class="fas fa-check-circle me-1"></i>¡Perfil Completo!';
+                          progressText.className = 'badge bg-success progress-percentage-badge fs-6 px-3 py-2';
+                        }
+                        
+                        // Show tips for missing fields
+                        if (tipsContainer && missingFields.length > 0 && percentage < 100) {
+                          let tipsHtml = '<div class="progress-tips mt-3"><h6 class="mb-2"><i class="fas fa-lightbulb me-1 text-warning"></i>Completa tu perfil agregando:</h6><ul class="list-unstyled mb-0">';
+                          missingFields.slice(0, 3).forEach(field => {
+                            tipsHtml += `<li class="missing-field"><i class="fas fa-plus-circle me-1"></i>${fieldLabels[field]}</li>`;
+                          });
+                          if (missingFields.length > 3) {
+                            tipsHtml += `<li class="text-muted"><i class="fas fa-ellipsis-h me-1"></i>Y ${missingFields.length - 3} campos más...</li>`;
+                          }
+                          tipsHtml += '</ul></div>';
+                          tipsContainer.innerHTML = tipsHtml;
+                        } else if (tipsContainer && percentage === 100) {
+                          tipsContainer.innerHTML = '<div class="progress-tips mt-3 text-center"><h6 class="text-success mb-0"><i class="fas fa-trophy me-1"></i>¡Excelente! Tu perfil está completo</h6></div>';
+                        }
+                      }, 500);
+                    }
+                  });
+                </script>
+                
+                <div class="progress mb-3" style="height: 12px; border-radius: 10px;">
+                  <div id="profile-progress-bar" 
+                       class="progress-bar bg-primary" 
+                       role="progressbar" 
+                       style="width: 0%; border-radius: 10px; transition: width 0.8s ease;" 
+                       aria-valuenow="0" 
+                       aria-valuemin="0" 
+                       aria-valuemax="100">
+                  </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                  <small id="progress-label" class="text-muted fw-bold">
+                    <i class="fas fa-spinner fa-spin me-1"></i>Calculando...
+                  </small>
+                  <span id="progress-percentage" class="badge bg-primary progress-percentage-badge fs-6 px-3 py-2">0%</span>
+                </div>
+                
+                {% if object == request.user %}
+                  <div class="mt-3">
+                    <div class="d-flex justify-content-center">
+                      <a href="{% url 'users:update' %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit me-1"></i>Editar Perfil Personal
+                      </a>
+                    </div>
+                    <small class="text-muted d-block mt-2">
+                      Completa tu información personal básica (nombre, foto, biografía, etc.)
+                    </small>
+                  </div>
+                  
+                  <!-- Progress Tips Container -->
+                  <div id="progress-tips"></div>
+                {% endif %}
+              {% endwith %}
+            </div>
+          </div>
+        </div>
+        
+        {% if object == request.user %}
+          <!-- Actions for own profile view -->
           <div class="mt-4">
             <a href="{% url 'events:list' %}" class="btn btn-outline-primary">
               <i class="fas fa-arrow-left me-2"></i>Volver a Eventos

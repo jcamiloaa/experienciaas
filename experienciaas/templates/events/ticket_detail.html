@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load qr_code %}
+
+{% block title %}Ticket #{{ ticket.ticket_number }} - {{ ticket.event.title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .ticket-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .ticket-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .ticket-body {
+    padding: 2rem;
+  }
+  
+  .qr-section {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    margin: 2rem 0;
+  }
+  
+  .qr-code-container {
+    margin: 1rem auto;
+    display: inline-block;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  
+  .qr-code-container svg,
+  .qr-code-container img {
+    border-radius: 0.25rem;
+    display: block;
+  }
+  
+  .status-badge {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+  }
+  
+  .event-details {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  .detail-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  
+  .detail-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .print-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+  }
+  
+  .print-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    color: white;
+  }
+  
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    .ticket-container {
+      box-shadow: none;
+      margin: 0;
+      max-width: none;
+    }
+  }
+  
+  .ticket-actions {
+    text-align: center;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    background: #f8f9fa;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="ticket-container">
+    <!-- Ticket Header -->
+    <div class="ticket-header">
+      <h1 class="mb-2">{% trans "Ticket Digital" %}</h1>
+      <h2 class="fw-bold">#{{ ticket.ticket_number }}</h2>
+      
+      <!-- Status Badge -->
+      <div class="mt-3">
+        {% if ticket.status == 'confirmed' %}
+          <span class="badge bg-success status-badge">
+            <i class="fas fa-check-circle me-2"></i>{% trans "Confirmado" %}
+          </span>
+        {% elif ticket.status == 'pending' %}
+          <span class="badge bg-warning status-badge">
+            <i class="fas fa-clock me-2"></i>{% trans "Pendiente" %}
+          </span>
+        {% else %}
+          <span class="badge bg-danger status-badge">
+            <i class="fas fa-times-circle me-2"></i>{% trans "Cancelado" %}
+          </span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Ticket Body -->
+    <div class="ticket-body">
+      <!-- Event Information -->
+      <div class="text-center mb-4">
+        <h3 class="text-primary mb-3">{{ ticket.event.title }}</h3>
+        {% if ticket.event.image %}
+          <img src="{{ ticket.event.image.url }}" alt="{{ ticket.event.title }}" 
+               class="img-fluid rounded shadow" style="max-height: 200px;">
+        {% endif %}
+      </div>
+
+      <!-- Event Details -->
+      <div class="event-details">
+        <div class="detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div>
+            <strong>{% trans "Fecha y Hora" %}:</strong><br>
+            {{ ticket.event.start_date|date:"l, d \d\e F \d\e Y" }} a las {{ ticket.event.start_date|time:"H:i" }}
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div>
+            <strong>{% trans "Ubicación" %}:</strong><br>
+            {% if ticket.event.venue_name %}{{ ticket.event.venue_name }}, {% endif %}
+            {{ ticket.event.city.name }}
+            {% if ticket.event.address %}<br><small class="text-muted">{{ ticket.event.address }}</small>{% endif %}
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-user"></i>
+          </div>
+          <div>
+            <strong>{% trans "Asistente" %}:</strong><br>
+            {{ ticket.attendee_name }}
+            <small class="text-muted d-block">{{ ticket.attendee_email }}</small>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-euro-sign"></i>
+          </div>
+          <div>
+            <strong>{% trans "Precio" %}:</strong><br>
+            {% if ticket.amount_paid == 0 %}
+              <span class="text-success fw-bold">{% trans "GRATIS" %}</span>
+            {% else %}
+              €{{ ticket.amount_paid }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Code Section -->
+      {% if can_download_qr %}
+        <div class="qr-section">
+          <h4 class="text-primary mb-3">
+            <i class="fas fa-qrcode me-2"></i>{% trans "Código QR de Acceso" %}
+          </h4>
+          
+          <!-- QR Code generado con Django qr_code -->
+          <div class="qr-code-container">
+            {% qr_from_text ticket.qr_data size='M' error_correction='M' image_format='svg' %}
+          </div>
+          
+          <p class="text-muted mt-3 mb-0">
+            <i class="fas fa-info-circle me-2"></i>
+            {% trans "Presenta este código QR en el evento para acceder" %}
+          </p>
+          
+          <!-- Download Buttons -->
+          <div class="mt-3">
+            <a href="{% qr_url_from_text ticket.qr_data size='L' error_correction='M' image_format='png' %}" 
+               download="ticket_{{ ticket.ticket_number }}_qr.png"
+               class="btn btn-success me-2">
+              <i class="fas fa-download me-2"></i>{% trans "Descargar PNG" %}
+            </a>
+            <a href="{% qr_url_from_text ticket.qr_data size='L' error_correction='M' image_format='svg' %}" 
+               download="ticket_{{ ticket.ticket_number }}_qr.svg"
+               class="btn btn-outline-success">
+              <i class="fas fa-download me-2"></i>{% trans "Descargar SVG" %}
+            </a>
+          </div>
+        </div>
+      {% else %}
+        <div class="qr-section">
+          <div class="alert alert-warning text-center">
+            <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+            <h5>{% trans "Código QR no disponible" %}</h5>
+            <p class="mb-0">
+              {% if ticket.status == 'pending' %}
+                {% trans "El código QR estará disponible cuando tu ticket sea confirmado." %}
+              {% else %}
+                {% trans "El código QR solo está disponible para tickets confirmados." %}
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Additional Information -->
+      <div class="alert alert-info">
+        <h6><i class="fas fa-info-circle me-2"></i>{% trans "Información Importante" %}</h6>
+        <ul class="mb-0">
+          <li>{% trans "Llega 15 minutos antes del inicio del evento" %}</li>
+          <li>{% trans "Presenta un documento de identidad válido junto con este ticket" %}</li>
+          <li>{% trans "El código QR es personal e intransferible" %}</li>
+          {% if ticket.event.description %}
+            <li>{{ ticket.event.description|truncatewords:30 }}</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="ticket-actions no-print">
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <button onclick="window.print()" class="btn print-button">
+          <i class="fas fa-print me-2"></i>{% trans "Imprimir Ticket" %}
+        </button>
+        
+        <a href="{% url 'events:my_events' %}" class="btn btn-outline-primary">
+          <i class="fas fa-arrow-left me-2"></i>{% trans "Volver a Mis Eventos" %}
+        </a>
+        
+        <a href="{{ ticket.event.get_absolute_url }}" class="btn btn-outline-secondary">
+          <i class="fas fa-eye me-2"></i>{% trans "Ver Evento" %}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

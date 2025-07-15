@@ -83,6 +83,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
+    "qr_code",  # Soporte QR profesional
 ]
 
 LOCAL_APPS = [

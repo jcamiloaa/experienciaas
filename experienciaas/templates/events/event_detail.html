@@ -169,11 +169,17 @@
         <div class="mb-5">
           <h3 class="mb-3">Patrocinadores</h3>
           <div class="row g-4">
-            {% for event_sponsor in event_sponsors %}
+            {% for sponsor_data in event_sponsors %}
+              {% with event_sponsor=sponsor_data.event_sponsor supplier_profile=sponsor_data.supplier_profile has_robust_profile=sponsor_data.has_robust_profile %}
               <div class="col-md-6 col-lg-4">
                 <div class="card h-100 sponsor-card">
                   <div class="card-body text-center">
-                    {% if event_sponsor.sponsor.logo %}
+                    {% if has_robust_profile and supplier_profile.company_logo %}
+                      <img src="{{ supplier_profile.company_logo.url }}" 
+                           alt="{{ supplier_profile.company_name }}" 
+                           class="sponsor-logo mb-3"
+                           style="max-height: 80px; max-width: 100%; object-fit: contain;">
+                    {% elif event_sponsor.sponsor.logo %}
                       <img src="{{ event_sponsor.sponsor.logo.url }}" 
                            alt="{{ event_sponsor.sponsor.name }}" 
                            class="sponsor-logo mb-3"
@@ -184,7 +190,13 @@
                       </div>
                     {% endif %}
                     
-                    <h5 class="card-title">{{ event_sponsor.sponsor.name }}</h5>
+                    <h5 class="card-title">
+                      {% if has_robust_profile %}
+                        {{ supplier_profile.company_name }}
+                      {% else %}
+                        {{ event_sponsor.sponsor.name }}
+                      {% endif %}
+                    </h5>
                     
                     {% if event_sponsor.tier != 'partner' %}
                       <span class="badge bg-{{ event_sponsor.tier|default:'secondary' }} mb-2">
@@ -192,36 +204,58 @@
                       </span>
                     {% endif %}
                     
-                    {% if event_sponsor.description %}
+                    {% if has_robust_profile and supplier_profile.company_description %}
+                      <p class="card-text text-muted small">{{ supplier_profile.company_description|truncatewords:15 }}</p>
+                    {% elif event_sponsor.description %}
                       <p class="card-text text-muted small">{{ event_sponsor.description|truncatewords:15 }}</p>
                     {% endif %}
                     
                     <div class="sponsor-links">
-                      {% if event_sponsor.sponsor.website %}
+                      {% if has_robust_profile and supplier_profile.company_website %}
+                        <a href="{{ supplier_profile.company_website }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-2">
+                          <i class="fas fa-globe me-1"></i>Web
+                        </a>
+                      {% elif event_sponsor.sponsor.website %}
                         <a href="{{ event_sponsor.sponsor.website }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-2">
                           <i class="fas fa-globe me-1"></i>Web
                         </a>
                       {% endif %}
                       
-                      {% if event_sponsor.sponsor.facebook_url %}
+                      {% if has_robust_profile and supplier_profile.facebook_url %}
+                        <a href="{{ supplier_profile.facebook_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fab fa-facebook-f"></i>
+                        </a>
+                      {% elif event_sponsor.sponsor.facebook_url %}
                         <a href="{{ event_sponsor.sponsor.facebook_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
                           <i class="fab fa-facebook-f"></i>
                         </a>
                       {% endif %}
                       
-                      {% if event_sponsor.sponsor.twitter_url %}
+                      {% if has_robust_profile and supplier_profile.twitter_url %}
+                        <a href="{{ supplier_profile.twitter_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fab fa-twitter"></i>
+                        </a>
+                      {% elif event_sponsor.sponsor.twitter_url %}
                         <a href="{{ event_sponsor.sponsor.twitter_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
                           <i class="fab fa-twitter"></i>
                         </a>
                       {% endif %}
                       
-                      {% if event_sponsor.sponsor.instagram_url %}
+                      {% if has_robust_profile and supplier_profile.instagram_url %}
+                        <a href="{{ supplier_profile.instagram_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fab fa-instagram"></i>
+                        </a>
+                      {% elif event_sponsor.sponsor.instagram_url %}
                         <a href="{{ event_sponsor.sponsor.instagram_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
                           <i class="fab fa-instagram"></i>
                         </a>
                       {% endif %}
                       
-                      {% if event_sponsor.sponsor.linkedin_url %}
+                      {% if has_robust_profile and supplier_profile.linkedin_url %}
+                        <a href="{{ supplier_profile.linkedin_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
+                          <i class="fab fa-linkedin-in"></i>
+                        </a>
+                      {% elif event_sponsor.sponsor.linkedin_url %}
                         <a href="{{ event_sponsor.sponsor.linkedin_url }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary me-1">
                           <i class="fab fa-linkedin-in"></i>
                         </a>
@@ -230,13 +264,14 @@
                   </div>
                 </div>
               </div>
+              {% endwith %}
             {% endfor %}
           </div>
         </div>
       {% endif %}
 
       <!-- Sponsorship Application Call to Action -->
-      {% if event.sponsorship_available %}
+      {% if event.sponsorship_available and request.user.is_authenticated and request.user.is_supplier %}
         <div class="mb-5">
           <div class="card bg-light border-0">
             <div class="card-body text-center py-4">
@@ -254,11 +289,131 @@
             </div>
           </div>
         </div>
-      {% elif event.max_sponsors > 0 and not event.sponsorship_available %}
+      {% elif event.max_sponsors > 0 and not event.sponsorship_available and request.user.is_authenticated and request.user.is_supplier %}
         <div class="mb-5">
           <div class="alert alert-info text-center">
             <i class="fas fa-info-circle me-2"></i>
             Las postulaciones para patrocinadores están cerradas o no hay espacios disponibles.
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Event Memories Section (only for past events with content) -->
+      {% if event.is_past_event and event.has_memories %}
+        <div class="mb-5">
+          <h3 class="mb-4">
+            <i class="fas fa-camera-retro me-2 text-primary"></i>Memorias del Evento
+          </h3>
+          
+          <!-- Post Event Summary -->
+          {% if event.post_event_summary %}
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title text-primary">
+                  <i class="fas fa-pen-fancy me-2"></i>Cómo fue el evento
+                </h5>
+                <div class="event-memories-content">
+                  {{ event.post_event_summary|linebreaks }}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          
+          <!-- Event Photos Gallery -->
+          {% with photos=event.event_photos.all %}
+          {% if photos %}
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title text-primary">
+                  <i class="fas fa-images me-2"></i>Galería de Fotos ({{ photos.count }})
+                </h5>
+                
+                {% if photos.count == 1 %}
+                  <!-- Single photo display -->
+                  <div class="text-center">
+                    {% with photo=photos.0 %}
+                      <img src="{{ photo.image.url }}" 
+                           alt="{{ photo.caption|default:'Foto del evento' }}" 
+                           class="img-fluid rounded-lg"
+                           style="max-height: 400px; object-fit: cover; cursor: pointer;"
+                           onclick="openPhotoModal('{{ photo.image.url }}', '{{ photo.caption|escapejs|default:'Foto del evento' }}')">
+                      {% if photo.caption %}
+                        <p class="text-muted mt-2 mb-0"><em>{{ photo.caption }}</em></p>
+                      {% endif %}
+                    {% endwith %}
+                  </div>
+                {% else %}
+                  <!-- Multiple photos grid -->
+                  <div class="photo-gallery">
+                    <div class="row g-3">
+                      {% for photo in photos|slice:":6" %}
+                        <div class="col-6 col-md-4 col-lg-3">
+                          <div class="photo-item position-relative mb-2" style="height:120px;">
+                            <img src="{{ photo.image.url }}" 
+                                 alt="{{ photo.caption|default:'Foto del evento' }}" 
+                                 class="img-fluid rounded gallery-image"
+                                 style="height:100px; width:auto; max-width:100%; object-fit:cover; cursor:pointer;"
+                                 onclick="openPhotoModal('{{ photo.image.url }}', '{{ photo.caption|escapejs|default:'Foto del evento' }}')">
+                            {% if photo.caption %}
+                              <div class="photo-caption">
+                                <small>{{ photo.caption }}</small>
+                              </div>
+                            {% endif %}
+                            {% if forloop.counter == 6 and photos.count > 6 %}
+                              <div class="photo-overlay">
+                                <span class="text-white fs-5">+{{ photos.count|add:"-6" }} más</span>
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    
+                    {% if photos.count > 6 %}
+                      <div class="text-center mt-3">
+                        <button class="btn btn-outline-primary" onclick="showAllPhotos()">
+                          Ver todas las fotos ({{ photos.count }})
+                        </button>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+          {% endwith %}
+          
+          <!-- Event Highlights and Feedback -->
+          <div class="row">
+            {% if event.event_highlights %}
+              <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title text-primary">
+                      <i class="fas fa-star me-2"></i>Momentos Destacados
+                    </h5>
+                    <div class="event-memories-content">
+                      {{ event.event_highlights|linebreaks }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            
+            {% if event.attendee_feedback_summary %}
+              <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title text-primary">
+                      <i class="fas fa-comments me-2"></i>Testimonios de Asistentes
+                    </h5>
+                    <div class="event-memories-content">
+                      {{ event.attendee_feedback_summary|linebreaks }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
           </div>
         </div>
       {% endif %}
@@ -501,6 +656,127 @@
 .bg-silver { background-color: #d1d5db !important; }
 .bg-bronze { background-color: #a78bfa !important; }
 .bg-partner { background-color: #3b82f6 !important; }
+
+/* Event Memories styles */
+.event-memories-content {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.event-memories-content p {
+  margin-bottom: 1rem;
+}
+
+.event-memories-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Memory section cards */
+.event-memories-section .card {
+  border: 1px solid #e3f2fd;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+}
+
+.event-memories-section .card-title {
+  color: #1976d2 !important;
+  font-weight: 600;
+}
+
+.event-memories-section .card-body {
+  padding: 1.5rem;
+}
+
+/* Photo Gallery styles */
+.photo-gallery .gallery-image {
+  height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.photo-gallery .gallery-image:hover {
+  transform: scale(1.05);
+}
+
+.photo-item {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  color: white;
+  padding: 20px 10px 10px;
+  font-size: 0.85rem;
+}
+
+.photo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+/* Photo Modal styles */
+.photo-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.9);
+}
+
+.photo-modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  max-height: 80%;
+  margin-top: 5%;
+}
+
+.photo-modal-caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px;
+}
+
+.photo-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.photo-modal-close:hover,
+.photo-modal-close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
 </style>
 
 {% block inline_javascript %}
@@ -533,5 +809,42 @@
       }, 1000);
     });
   }
+
+  // Modal Bootstrap para galería de fotos
+  function openPhotoModal(src, caption) {
+    var modalImg = document.getElementById('bsPhotoModalImg');
+    var modalCaption = document.getElementById('bsPhotoModalCaption');
+    modalImg.src = src;
+    modalCaption.innerHTML = caption;
+    var bsModal = new bootstrap.Modal(document.getElementById('bsPhotoModal'));
+    bsModal.show();
+  }
+
+  function showAllPhotos() {
+    // Mostrar las fotos ocultas en la galería
+    const hiddenPhotos = document.querySelectorAll('.photo-item:nth-child(n+7)');
+    hiddenPhotos.forEach(photo => photo.style.display = 'block');
+    // Ocultar el botón "ver todas"
+    event.target.style.display = 'none';
+    // Quitar el overlay de la sexta foto
+    const overlay = document.querySelector('.photo-overlay');
+    if (overlay) overlay.style.display = 'none';
+  }
 </script>
+
+<!-- Modal Bootstrap para galería de fotos -->
+<div class="modal fade" id="bsPhotoModal" tabindex="-1" aria-labelledby="bsPhotoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="bsPhotoModalLabel">Vista previa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="bsPhotoModalImg" src="" alt="Foto del evento" class="img-fluid rounded mb-3" style="max-height: 500px; object-fit: contain;">
+        <div id="bsPhotoModalCaption" class="text-muted"></div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock inline_javascript %}

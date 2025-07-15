@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Agregar Foto - {{ event.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.upload-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.event-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    padding: 12px 15px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary {
+    background: #007bff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+.image-preview {
+    margin-top: 15px;
+    display: none;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.file-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.file-input-custom {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.file-input-custom:hover {
+    background: #e9ecef;
+    border-color: #007bff;
+}
+
+.file-input-custom i {
+    font-size: 24px;
+    color: #6c757d;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.file-input-text {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+#id_image {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="upload-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Agregar Foto al Evento</h2>
+            <a href="{% url 'events:admin_event_photos' event.pk %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a Fotos
+            </a>
+        </div>
+
+        <div class="event-info">
+            <h4>{{ event.name }}</h4>
+            <p class="mb-2"><strong>Fecha:</strong> {{ event.start_date|date:"d/m/Y" }}</p>
+            <p class="mb-0"><strong>Ubicación:</strong> {{ event.location }}</p>
+        </div>
+
+        <div class="form-container">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_image">Seleccionar Imagen *</label>
+                    <div class="file-input-wrapper">
+                        <label for="id_image" class="file-input-custom">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div class="file-input-text">
+                                Haz clic aquí para seleccionar una imagen<br>
+                                <small>Formatos soportados: JPG, PNG, GIF (máx. 10MB)</small>
+                            </div>
+                        </label>
+                        {{ form.image }}
+                    </div>
+                    {% if form.image.errors %}
+                        <div class="text-danger mt-2">
+                            {% for error in form.image.errors %}
+                                <small>{{ error }}</small><br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="image-preview" id="imagePreview">
+                        <img id="previewImg" src="" alt="Vista previa">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_caption">Descripción (Opcional)</label>
+                    {{ form.caption }}
+                    {% if form.caption.errors %}
+                        <div class="text-danger mt-2">
+                            {% for error in form.caption.errors %}
+                                <small>{{ error }}</small><br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <small class="form-text text-muted">
+                        Agrega una descripción o contexto para esta foto
+                    </small>
+                </div>
+
+                <div class="form-group mb-0">
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Foto
+                        </button>
+                        <a href="{% url 'events:admin_event_photos' event.pk %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('id_image');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const fileInputText = document.querySelector('.file-input-text');
+
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        
+        if (file) {
+            // Update file input text
+            fileInputText.innerHTML = `
+                <strong>${file.name}</strong><br>
+                <small>Tamaño: ${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+            `;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Reset to default
+            fileInputText.innerHTML = `
+                Haz clic aquí para seleccionar una imagen<br>
+                <small>Formatos soportados: JPG, PNG, GIF (máx. 10MB)</small>
+            `;
+            imagePreview.style.display = 'none';
+        }
+    });
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        if (!imageInput.files.length) {
+            e.preventDefault();
+            alert('Por favor selecciona una imagen antes de continuar.');
+            return false;
+        }
+        
+        const file = imageInput.files[0];
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        
+        if (file.size > maxSize) {
+            e.preventDefault();
+            alert('La imagen es demasiado grande. El tamaño máximo permitido es 10MB.');
+            return false;
+        }
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+    });
+});
+</script>
+{% endblock %}

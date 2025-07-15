@@ -128,6 +128,16 @@ class Event(models.Model):
     # Media
     image = models.ImageField(_("Event image"), upload_to="events/images/", blank=True)
     
+    # Post-Event Memories (can only be edited after event ends)
+    post_event_summary = models.TextField(_("Post-event summary"), blank=True,
+                                        help_text=_("Share how the event went, highlights, and memories"))
+    attendee_feedback_summary = models.TextField(_("Attendee feedback summary"), blank=True,
+                                               help_text=_("Summary of attendee feedback and testimonials"))
+    organizer_notes = models.TextField(_("Organizer notes"), blank=True,
+                                     help_text=_("Private notes for the organizer (not visible to the public)"))
+    event_highlights = models.TextField(_("Event highlights"), blank=True,
+                                      help_text=_("Key moments and highlights from the event"))
+    
     # Status and metadata
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     is_featured = models.BooleanField(_("Is featured"), default=False)
@@ -175,6 +185,27 @@ class Event(models.Model):
         if self.max_attendees:
             return max(0, self.max_attendees - self.attendees_count)
         return None
+
+    @property
+    def is_past_event(self):
+        """Check if the event has already ended."""
+        from django.utils import timezone
+        return self.end_date < timezone.now()
+    
+    @property
+    def can_edit_memories(self):
+        """Check if organizer can edit post-event memories."""
+        return self.is_past_event
+    
+    @property
+    def has_memories(self):
+        """Check if event has any post-event content."""
+        return bool(
+            self.post_event_summary or 
+            self.attendee_feedback_summary or 
+            self.event_highlights or
+            self.event_photos.exists()
+        )
 
     @property
     def available_spots(self):
@@ -429,3 +460,25 @@ class SponsorshipApplication(models.Model):
     
     def __str__(self):
         return f"{self.company_name} - {self.event.title} ({self.get_status_display()})"
+
+
+class EventPhoto(models.Model):
+    """Model for event photos gallery (post-event memories)."""
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="event_photos")
+    image = models.ImageField(_("Photo"), upload_to="events/post_event_photos/",
+                            help_text=_("Upload photos from the event"))
+    caption = models.CharField(_("Caption"), max_length=300, blank=True,
+                             help_text=_("Optional caption for the photo"))
+    display_order = models.PositiveIntegerField(_("Display order"), default=0)
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = _("Event Photo")
+        verbose_name_plural = _("Event Photos")
+        ordering = ["display_order", "created_at"]
+    
+    def __str__(self):
+        return f"Photo {self.id} - {self.event.title}"

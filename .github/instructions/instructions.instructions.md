@@ -1,3 +1,11 @@
+---
+applyTo: '**'
+---
+Provide project context and coding guidelines that AI should follow when generating code, answering questions, or reviewing changes.
+
+La base para ejecutar comando es:
+docker compose -f docker-compose.local.yml run --rm django python manage.py
+
 # Instrucciones para GitHub Copilot
 
 - Todas las explicaciones y respuestas deben ser dadas en español.
@@ -32,6 +40,8 @@ docker compose -f docker-compose.local.yml run --rm django python manage.py make
 ```sh
 docker compose -f docker-compose.local.yml run --rm django python manage.py <comando>
 ```
+
+docker compose -f docker-compose.local.yml run --rm django pip install -r requirements/base.txt
 
 - No ejecutes comandos de Django directamente en el host, siempre usa el contenedor correspondiente.
 - Documenta cualquier comando especial que se agregue en este archivo.

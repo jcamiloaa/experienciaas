@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestionar Perfil de Proveedor - Experienciaas{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1>
+            <i class="fas fa-handshake me-2 text-success"></i>
+            Gestionar Perfil de Proveedor
+          </h1>
+          <p class="text-muted">Administra y actualiza tu perfil de empresa como proveedor/patrocinador</p>
+        </div>
+        
+        <div class="btn-group" role="group">
+          {% if profile.slug %}
+            <a href="{% url 'users:supplier_profile' slug=profile.slug %}" class="btn btn-outline-success" target="_blank">
+              <i class="fas fa-external-link-alt me-1"></i>Ver Perfil Público
+            </a>
+          {% endif %}
+          <a href="{% url 'users:detail' pk=request.user.pk %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Volver al Perfil
+          </a>
+        </div>
+      </div>
+
+      <!-- Profile Management Card -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-gradient-success text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-edit me-2"></i>
+            Editar Información de la Empresa
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <!-- Company Basic Information -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-building me-2 text-success"></i>
+                Información Básica de la Empresa
+              </h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_name.id_for_label }}" class="form-label fw-bold">
+                      {{ form.company_name.label }}
+                    </label>
+                    {{ form.company_name }}
+                    {% if form.company_name.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_name.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_size.id_for_label }}" class="form-label fw-bold">
+                      {{ form.company_size.label }}
+                    </label>
+                    {{ form.company_size }}
+                    {% if form.company_size.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_size.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="{{ form.company_description.id_for_label }}" class="form-label fw-bold">
+                  {{ form.company_description.label }}
+                </label>
+                {{ form.company_description }}
+                {% if form.company_description.errors %}
+                  <div class="invalid-feedback d-block">{{ form.company_description.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">
+                  Describe tu empresa, productos y servicios. Esto aparecerá en tu perfil público.
+                </small>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.industry.id_for_label }}" class="form-label fw-bold">
+                      {{ form.industry.label }}
+                    </label>
+                    {{ form.industry }}
+                    {% if form.industry.errors %}
+                      <div class="invalid-feedback d-block">{{ form.industry.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.founding_year.id_for_label }}" class="form-label fw-bold">
+                      {{ form.founding_year.label }}
+                    </label>
+                    {{ form.founding_year }}
+                    {% if form.founding_year.errors %}
+                      <div class="invalid-feedback d-block">{{ form.founding_year.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-address-card me-2 text-success"></i>
+                Información de Contacto
+              </h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.business_email.id_for_label }}" class="form-label fw-bold">
+                      {{ form.business_email.label }}
+                    </label>
+                    {{ form.business_email }}
+                    {% if form.business_email.errors %}
+                      <div class="invalid-feedback d-block">{{ form.business_email.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.business_phone.id_for_label }}" class="form-label fw-bold">
+                      {{ form.business_phone.label }}
+                    </label>
+                    {{ form.business_phone }}
+                    {% if form.business_phone.errors %}
+                      <div class="invalid-feedback d-block">{{ form.business_phone.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.contact_person.id_for_label }}" class="form-label fw-bold">
+                      {{ form.contact_person.label }}
+                    </label>
+                    {{ form.contact_person }}
+                    {% if form.contact_person.errors %}
+                      <div class="invalid-feedback d-block">{{ form.contact_person.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.contact_position.id_for_label }}" class="form-label fw-bold">
+                      {{ form.contact_position.label }}
+                    </label>
+                    {{ form.contact_position }}
+                    {% if form.contact_position.errors %}
+                      <div class="invalid-feedback d-block">{{ form.contact_position.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="{{ form.company_website.id_for_label }}" class="form-label fw-bold">
+                  {{ form.company_website.label }}
+                </label>
+                {{ form.company_website }}
+                {% if form.company_website.errors %}
+                  <div class="invalid-feedback d-block">{{ form.company_website.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Images Section -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-images me-2 text-success"></i>
+                Imágenes de la Empresa
+              </h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_logo.id_for_label }}" class="form-label fw-bold">
+                      {{ form.company_logo.label }}
+                    </label>
+                    {{ form.company_logo }}
+                    {% if form.company_logo.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_logo.errors }}</div>
+                    {% endif %}
+                    {% if profile.company_logo %}
+                      <div class="mt-2">
+                        <img src="{{ profile.company_logo.url }}" alt="Logo actual" class="img-thumbnail" style="max-width: 100px; border-radius: 8px;">
+                        <small class="text-muted d-block mt-1">Logo actual</small>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.company_banner.id_for_label }}" class="form-label fw-bold">
+                      {{ form.company_banner.label }}
+                    </label>
+                    {{ form.company_banner }}
+                    {% if form.company_banner.errors %}
+                      <div class="invalid-feedback d-block">{{ form.company_banner.errors }}</div>
+                    {% endif %}
+                    {% if profile.company_banner %}
+                      <div class="mt-2">
+                        <img src="{{ profile.company_banner.url }}" alt="Banner actual" class="img-thumbnail" style="max-width: 150px; border-radius: 8px;">
+                        <small class="text-muted d-block mt-1">Banner actual</small>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Media Section -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-share-alt me-2 text-success"></i>
+                Redes Sociales de la Empresa
+              </h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.facebook_url.id_for_label }}" class="form-label fw-bold">
+                      <i class="fab fa-facebook me-1"></i>{{ form.facebook_url.label }}
+                    </label>
+                    {{ form.facebook_url }}
+                    {% if form.facebook_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.facebook_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.twitter_url.id_for_label }}" class="form-label fw-bold">
+                      <i class="fab fa-twitter me-1"></i>{{ form.twitter_url.label }}
+                    </label>
+                    {{ form.twitter_url }}
+                    {% if form.twitter_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.twitter_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.instagram_url.id_for_label }}" class="form-label fw-bold">
+                      <i class="fab fa-instagram me-1"></i>{{ form.instagram_url.label }}
+                    </label>
+                    {{ form.instagram_url }}
+                    {% if form.instagram_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.instagram_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.linkedin_url.id_for_label }}" class="form-label fw-bold">
+                      <i class="fab fa-linkedin me-1"></i>{{ form.linkedin_url.label }}
+                    </label>
+                    {{ form.linkedin_url }}
+                    {% if form.linkedin_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.linkedin_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Privacy Settings Section -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-shield-alt me-2 text-success"></i>
+                Configuración de Privacidad
+              </h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check mb-3">
+                    {{ form.is_public }}
+                    <label for="{{ form.is_public.id_for_label }}" class="form-check-label fw-bold">
+                      {{ form.is_public.label }}
+                    </label>
+                    {% if form.is_public.errors %}
+                      <div class="invalid-feedback d-block">{{ form.is_public.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted d-block">
+                      Si está marcado, tu perfil de empresa será visible públicamente
+                    </small>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-check mb-3">
+                    {{ form.allow_contact }}
+                    <label for="{{ form.allow_contact.id_for_label }}" class="form-check-label fw-bold">
+                      {{ form.allow_contact.label }}
+                    </label>
+                    {% if form.allow_contact.errors %}
+                      <div class="invalid-feedback d-block">{{ form.allow_contact.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted d-block">
+                      Permite que organizadores te contacten para oportunidades
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="submit" class="btn btn-success btn-lg px-5">
+                <i class="fas fa-save me-2"></i>
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Company Preview Card -->
+      {% if profile %}
+        <div class="card mt-4 shadow-sm">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">
+              <i class="fas fa-eye me-2 text-info"></i>
+              Vista Previa del Perfil de Empresa
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="company-preview">
+              <div class="d-flex align-items-center mb-3">
+                {% if profile.company_logo %}
+                  <img src="{{ profile.company_logo.url }}" alt="Logo" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                {% else %}
+                  <div class="bg-success rounded me-3 d-flex align-items-center justify-content-center text-white" style="width: 60px; height: 60px;">
+                    <i class="fas fa-building fa-lg"></i>
+                  </div>
+                {% endif %}
+                <div>
+                  <h6 class="mb-1">{{ profile.company_name|default:"Nombre de tu empresa" }}</h6>
+                  <small class="text-muted">
+                    {% if profile.industry %}
+                      <i class="fas fa-industry me-1"></i>{{ profile.get_industry_display }}
+                    {% endif %}
+                    {% if profile.company_size %}
+                      • {{ profile.get_company_size_display }}
+                    {% endif %}
+                  </small>
+                </div>
+              </div>
+              
+              {% if profile.company_description %}
+                <p class="mt-3 mb-0">{{ profile.company_description|truncatewords:20 }}</p>
+              {% else %}
+                <p class="text-muted fst-italic">Agrega una descripción de tu empresa para que aparezca aquí...</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.bg-gradient-success {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+}
+
+.form-section {
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 1.5rem;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-title {
+  color: #495057;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+.form-group .form-control,
+.form-group .form-select {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-group .form-control:focus,
+.form-group .form-select:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.company-preview {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.card {
+  border-radius: 12px;
+  border: none;
+}
+
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+</style>
+{% endblock %}

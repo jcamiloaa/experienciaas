@@ -122,13 +122,35 @@
                                     <polyline points="22,6 12,13 2,6"/>
                                 </svg>
                             </a>
-                            <button class="btn btn-sm btn-danger" title="Cancel Registration"
-                                    onclick="cancelTicket({{ ticket.id }})">
-                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <line x1="18" y1="6" x2="6" y2="18"/>
-                                    <line x1="6" y1="6" x2="18" y2="18"/>
-                                </svg>
-                            </button>
+                            
+                            {% if ticket.status == 'pending' %}
+                                <!-- Confirm Payment Button (only for pending tickets) -->
+                                <form method="post" action="{% url 'events:admin_confirm_ticket' ticket.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                    <button type="submit" class="btn btn-sm btn-success" title="Confirmar Pago" 
+                                            onclick="return confirm('¿Confirmar el pago de este ticket?')">
+                                        <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <polyline points="20,6 9,17 4,12"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            {% endif %}
+                            
+                            {% if ticket.status != 'cancelled' %}
+                                <!-- Cancel Ticket Button (for confirmed and pending tickets) -->
+                                <form method="post" action="{% url 'events:admin_cancel_ticket' ticket.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Cancelar Ticket"
+                                            onclick="return confirm('¿Estás seguro de que quieres cancelar este ticket? Esta acción eliminará el registro del usuario del evento.')">
+                                        <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <line x1="18" y1="6" x2="6" y2="18"/>
+                                            <line x1="6" y1="6" x2="18" y2="18"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -172,14 +194,56 @@
     {% endif %}
 </div>
 
-<script>
-function cancelTicket(ticketId) {
-    if (confirm('Are you sure you want to cancel this ticket registration?')) {
-        // Implementation for canceling ticket
-        // This would typically involve an AJAX call to a cancel endpoint
-        console.log('Cancel ticket:', ticketId);
-        alert('This feature would typically make an AJAX call to cancel the ticket.');
-    }
+<style>
+/* Ticket Status Badges */
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
+
+.status-pending { background-color: #fbbf24; color: #1f2937; }
+.status-confirmed { background-color: #10b981; color: white; }
+.status-cancelled { background-color: #ef4444; color: white; }
+
+/* Actions styling */
+.actions {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+}
+
+.actions .btn {
+    padding: 0.25rem 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.actions .btn:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+</style>
+
+<script>
+// Script for enhanced ticket management functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any additional JavaScript functionality here if needed
+    console.log('Ticket management loaded');
+});
 </script>
 {% endblock %}

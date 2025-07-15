@@ -318,7 +318,7 @@
                         <td>{{ ticket.user.email }}</td>
                         <td>{{ ticket.created_at|date:"M d, Y g:i A" }}</td>
                         <td>
-                            <span class="status-badge status-confirmed">Confirmed</span>
+                            <span class="status-badge status-{{ ticket.status }}">{{ ticket.get_status_display }}</span>
                         </td>
                         <td>
                             <div class="actions">
@@ -328,13 +328,35 @@
                                         <polyline points="22,6 12,13 2,6"/>
                                     </svg>
                                 </a>
-                                <button class="btn btn-sm btn-danger" title="Cancel Registration"
-                                        onclick="cancelRegistration({{ ticket.id }})">
-                                    <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <line x1="18" y1="6" x2="6" y2="18"/>
-                                        <line x1="6" y1="6" x2="18" y2="18"/>
-                                    </svg>
-                                </button>
+                                
+                                {% if ticket.status == 'pending' %}
+                                    <!-- Confirm Payment Button -->
+                                    <form method="post" action="{% url 'events:admin_confirm_ticket' ticket.pk %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Confirmar Pago"
+                                                onclick="return confirm('¿Confirmar el pago de este ticket?')">
+                                            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <polyline points="20,6 9,17 4,12"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                                
+                                {% if ticket.status != 'cancelled' %}
+                                    <!-- Cancel Registration Button -->
+                                    <form method="post" action="{% url 'events:admin_cancel_ticket' ticket.pk %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Cancelar Ticket"
+                                                onclick="return confirm('¿Estás seguro de que quieres cancelar este ticket?')">
+                                            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                                <line x1="6" y1="6" x2="18" y2="18"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -378,17 +400,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for event_sponsor in event_sponsors %}
+                    {% for sponsor_data in event_sponsors %}
+                    {% with event_sponsor=sponsor_data.event_sponsor supplier_profile=sponsor_data.supplier_profile has_robust_profile=sponsor_data.has_robust_profile %}
                     <tr>
                         <td>
                             <div class="sponsor-info">
-                                {% if event_sponsor.sponsor.logo %}
+                                {% if has_robust_profile and supplier_profile.company_logo %}
+                                    <img src="{{ supplier_profile.company_logo.url }}" alt="{{ supplier_profile.company_name }}" 
+                                         style="width: 40px; height: 40px; object-fit: contain; margin-right: 10px;">
+                                {% elif event_sponsor.sponsor.logo %}
                                     <img src="{{ event_sponsor.sponsor.logo.url }}" alt="{{ event_sponsor.sponsor.name }}" 
                                          style="width: 40px; height: 40px; object-fit: contain; margin-right: 10px;">
                                 {% endif %}
                                 <div>
-                                    <strong>{{ event_sponsor.sponsor.name }}</strong>
-                                    {% if event_sponsor.sponsor.website %}
+                                    <strong>
+                                        {% if has_robust_profile %}
+                                            {{ supplier_profile.company_name }}
+                                        {% else %}
+                                            {{ event_sponsor.sponsor.name }}
+                                        {% endif %}
+                                    </strong>
+                                    {% if has_robust_profile and supplier_profile.company_website %}
+                                        <br><a href="{{ supplier_profile.company_website }}" target="_blank" class="small text-muted">{{ supplier_profile.company_website }}</a>
+                                    {% elif event_sponsor.sponsor.website %}
                                         <br><a href="{{ event_sponsor.sponsor.website }}" target="_blank" class="small text-muted">{{ event_sponsor.sponsor.website }}</a>
                                     {% endif %}
                                 </div>
@@ -402,9 +436,18 @@
                         <td>{{ event_sponsor.display_order }}</td>
                         <td>
                             <div class="contact-info">
-                                <div>{{ event_sponsor.sponsor.contact_email }}</div>
-                                {% if event_sponsor.sponsor.contact_phone %}
-                                    <div class="small text-muted">{{ event_sponsor.sponsor.contact_phone }}</div>
+                                {% if has_robust_profile %}
+                                    <div>{{ supplier_profile.business_email|default:event_sponsor.sponsor.contact_email }}</div>
+                                    {% if supplier_profile.business_phone %}
+                                        <div class="small text-muted">{{ supplier_profile.business_phone }}</div>
+                                    {% elif event_sponsor.sponsor.contact_phone %}
+                                        <div class="small text-muted">{{ event_sponsor.sponsor.contact_phone }}</div>
+                                    {% endif %}
+                                {% else %}
+                                    <div>{{ event_sponsor.sponsor.contact_email }}</div>
+                                    {% if event_sponsor.sponsor.contact_phone %}
+                                        <div class="small text-muted">{{ event_sponsor.sponsor.contact_phone }}</div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </td>
@@ -426,6 +469,7 @@
                             </div>
                         </td>
                     </tr>
+                    {% endwith %}
                     {% endfor %}
                 </tbody>
             </table>
@@ -573,7 +617,10 @@
 .tier-bronze { background-color: #a78bfa; color: #1f2937; }
 .tier-partner { background-color: #3b82f6; color: white; }
 
+/* Ticket Status Badges */
 .status-pending { background-color: #fbbf24; color: #1f2937; }
+.status-confirmed { background-color: #10b981; color: white; }
+.status-cancelled { background-color: #ef4444; color: white; }
 .status-approved { background-color: #10b981; color: white; }
 .status-rejected { background-color: #ef4444; color: white; }
 .status-contacted { background-color: #3b82f6; color: white; }
@@ -756,12 +803,10 @@
 </style>
 
 <script>
-function cancelRegistration(ticketId) {
-    if (confirm('Are you sure you want to cancel this registration?')) {
-        // Implementation for canceling registration
-        // This would typically involve an AJAX call or form submission
-        console.log('Cancel registration for ticket:', ticketId);
-    }
-}
+// Enhanced ticket management functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any additional JavaScript functionality here if needed
+    console.log('Event admin panel loaded with enhanced ticket management');
+});
 </script>
 {% endblock %}

@@ -12,7 +12,8 @@ from .views import (
     admin_edit_supplier_profile_view,
     admin_role_applications_view,
     admin_supplier_profiles_view,
-    admin_active_roles_view,
+    admin_unified_roles_view,
+    admin_active_roles_view,  # backward compatibility
     approve_role_application,
     reject_role_application,
     approve_supplier_profile,
@@ -69,14 +70,19 @@ urlpatterns = [
     path("suppliers/", view=suppliers_list, name="suppliers_list"),
     path("supplier/<slug:slug>/", view=supplier_profile, name="supplier_profile"),
     
-    # Admin URLs
-    path("admin/applications/", view=admin_role_applications_view, name="admin_role_applications"),
+    # Admin URLs - Unified role management
+    path("admin/roles/", view=admin_unified_roles_view, name="admin_active_roles"),  # Main unified view
+    path("admin/unified-roles/", view=admin_unified_roles_view, name="admin_unified_roles"),  # Alternative name
+    
+    # Backward compatibility URLs (redirect to unified view)
+    path("admin/applications/", view=admin_unified_roles_view, name="admin_role_applications"),
+    path("admin/suppliers/", view=admin_unified_roles_view, name="admin_supplier_profiles"),
+    
+    # Action URLs for applications and supplier profiles
     path("admin/applications/<int:application_id>/approve/", view=approve_role_application, name="approve_role_application"),
     path("admin/applications/<int:application_id>/reject/", view=reject_role_application, name="reject_role_application"),
-    path("admin/suppliers/", view=admin_supplier_profiles_view, name="admin_supplier_profiles"),
     path("admin/suppliers/<int:profile_id>/approve/", view=approve_supplier_profile, name="approve_supplier_profile"),
     path("admin/suppliers/<int:profile_id>/reject/", view=reject_supplier_profile, name="reject_supplier_profile"),
-    path("admin/roles/", view=admin_active_roles_view, name="admin_active_roles"),
     
     # Role management URLs
     path("admin/roles/<int:user_id>/suspend-organizer/", view=suspend_organizer_role, name="suspend_organizer_role"),

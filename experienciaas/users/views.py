@@ -369,13 +369,13 @@ def approve_role_application(request, application_id):
     """Approve a role application."""
     if not request.user.is_superuser:
         messages.error(request, _("Access denied. Superuser permission required."))
-        return redirect('users:admin_role_applications')
+        return redirect('users:admin_active_roles')
     
     application = get_object_or_404(RoleApplication, id=application_id)
     
     if application.status != 'pending':
         messages.warning(request, _("This application has already been processed."))
-        return redirect('users:admin_role_applications')
+        return redirect('users:admin_active_roles')
     
     # Check if there's already an approved application for the same user and role
     existing_approved = RoleApplication.objects.filter(
@@ -436,7 +436,7 @@ def approve_role_application(request, application_id):
             
             messages.success(request, _(f"Supplier role restored for {user.get_full_name()}."))
         
-        return redirect('users:admin_role_applications')
+        return redirect('users:admin_active_roles')
     
     # If no existing approved application, proceed normally
     application.status = 'approved'
@@ -488,7 +488,7 @@ def approve_role_application(request, application_id):
         
         messages.success(request, _(f"Supplier application approved for {user.get_full_name()}. Supplier profile created/activated."))
     
-    return redirect('users:admin_role_applications')
+    return redirect('users:admin_active_roles')
 
 
 @require_POST
@@ -497,13 +497,13 @@ def reject_role_application(request, application_id):
     """Reject a role application."""
     if not request.user.is_superuser:
         messages.error(request, _("Access denied. Superuser permission required."))
-        return redirect('users:admin_role_applications')
+        return redirect('users:admin_active_roles')
     
     application = get_object_or_404(RoleApplication, id=application_id)
     
     if application.status != 'pending':
         messages.warning(request, _("This application has already been processed."))
-        return redirect('users:admin_role_applications')
+        return redirect('users:admin_active_roles')
     
     # Reject the application
     application.status = 'rejected'
@@ -512,7 +512,7 @@ def reject_role_application(request, application_id):
     application.save()
     
     messages.success(request, _(f"Role application rejected for {application.user.get_full_name()}."))
-    return redirect('users:admin_role_applications')
+    return redirect('users:admin_active_roles')
 
 
 @require_POST
@@ -521,20 +521,20 @@ def approve_supplier_profile(request, profile_id):
     """Approve a supplier profile."""
     if not request.user.is_superuser:
         messages.error(request, _("Access denied. Superuser permission required."))
-        return redirect('users:admin_supplier_profiles')
+        return redirect('users:admin_active_roles')
     
     profile = get_object_or_404(SupplierProfile, id=profile_id)
     
     if profile.status == 'approved':
         messages.warning(request, _("This supplier profile is already approved."))
-        return redirect('users:admin_supplier_profiles')
+        return redirect('users:admin_active_roles')
     
     profile.status = 'approved'
     profile.approved_at = timezone.now()
     profile.save()
     
     messages.success(request, _(f"Supplier profile approved for {profile.user.get_full_name()}."))
-    return redirect('users:admin_supplier_profiles')
+    return redirect('users:admin_active_roles')
 
 
 @require_POST
@@ -543,7 +543,7 @@ def reject_supplier_profile(request, profile_id):
     """Reject/unapprove a supplier profile."""
     if not request.user.is_superuser:
         messages.error(request, _("Access denied. Superuser permission required."))
-        return redirect('users:admin_supplier_profiles')
+        return redirect('users:admin_active_roles')
     
     profile = get_object_or_404(SupplierProfile, id=profile_id)
     
@@ -552,7 +552,7 @@ def reject_supplier_profile(request, profile_id):
     profile.save()
     
     messages.success(request, _(f"Supplier profile status changed to pending for {profile.user.get_full_name()}."))
-    return redirect('users:admin_supplier_profiles')
+    return redirect('users:admin_active_roles')
 
 
 # View names for easier reference
@@ -560,12 +560,12 @@ admin_role_applications_view = AdminRoleApplicationsView.as_view()
 admin_supplier_profiles_view = AdminSupplierProfilesView.as_view()
 
 
-# Active roles management views
+# Unified admin view for roles, applications and supplier profiles management
 @method_decorator(staff_member_required, name='dispatch')
-class AdminActiveRolesView(ListView):
-    """Admin view to manage active roles."""
+class AdminUnifiedRolesView(ListView):
+    """Unified admin view to manage users, roles, applications and supplier profiles."""
     model = User
-    template_name = "users/admin_active_roles.html"
+    template_name = "users/admin_unified_roles.html"
     context_object_name = "users"
     paginate_by = 20
     
@@ -578,11 +578,29 @@ class AdminActiveRolesView(ListView):
         # Get all users, but exclude superusers from the list
         queryset = User.objects.exclude(
             is_superuser=True
-        ).select_related('organizer_profile', 'supplier_profile').distinct()
+        ).select_related('organizer_profile', 'supplier_profile').prefetch_related(
+            'role_applications'
+        ).distinct()
         
         # Apply filters
         role_filter = self.request.GET.get('role')
         status_filter = self.request.GET.get('status')
+        view_filter = self.request.GET.get('view', 'all')  # New view filter
+        
+        # Filter by view type
+        if view_filter == 'applications':
+            # Show only users with pending role applications
+            queryset = queryset.filter(role_applications__status='pending').distinct()
+        elif view_filter == 'supplier_profiles':
+            # Show only users with supplier profiles
+            queryset = queryset.filter(supplier_profile__isnull=False)
+        elif view_filter == 'roles':
+            # Show only users with active roles
+            queryset = queryset.filter(
+                models.Q(is_staff=True) | 
+                models.Q(supplier_profile__status='approved')
+            )
+        # 'all' shows all users
         
         if role_filter == 'organizer':
             queryset = queryset.filter(is_staff=True)
@@ -619,25 +637,55 @@ class AdminActiveRolesView(ListView):
         elif status_filter == 'inactive':
             # Show inactive accounts
             queryset = queryset.filter(is_active=False)
+        elif status_filter == 'pending_applications':
+            # Show users with pending applications
+            queryset = queryset.filter(role_applications__status='pending').distinct()
+        elif status_filter == 'pending_profiles':
+            # Show users with pending supplier profiles
+            queryset = queryset.filter(supplier_profile__status='pending')
         
         return queryset.order_by('-date_joined')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['role_choices'] = [
-            ('', _('Todos los usuarios')),
-            ('organizer', _('Organizadores')),
-            ('supplier', _('Proveedores')),
-            ('basic', _('Usuarios Básicos')),
-        ]
-        context['status_choices'] = [
-            ('', _('Todos los estados')),
-            ('active', _('Activos')),
-            ('suspended', _('Suspendidos')),
-            ('inactive', _('Cuentas Inactivas')),
-        ]
-        context['current_role'] = self.request.GET.get('role', '')
-        context['current_status'] = self.request.GET.get('status', '')
+        
+        # Get additional data for unified view
+        pending_applications = RoleApplication.objects.filter(status='pending').select_related('user')
+        pending_supplier_profiles = SupplierProfile.objects.filter(status='pending').select_related('user')
+        
+        context.update({
+            'role_choices': [
+                ('', _('Todos los usuarios')),
+                ('organizer', _('Organizadores')),
+                ('supplier', _('Proveedores')),
+                ('basic', _('Usuarios Básicos')),
+            ],
+            'status_choices': [
+                ('', _('Todos los estados')),
+                ('active', _('Activos')),
+                ('suspended', _('Suspendidos')),
+                ('inactive', _('Cuentas Inactivas')),
+                ('pending_applications', _('Aplicaciones Pendientes')),
+                ('pending_profiles', _('Perfiles Pendientes')),
+            ],
+            'view_choices': [
+                ('all', _('Todos los usuarios')),
+                ('applications', _('Solo Aplicaciones')),
+                ('supplier_profiles', _('Solo Perfiles de Proveedor')),
+                ('roles', _('Solo Usuarios con Roles')),
+            ],
+            'current_role': self.request.GET.get('role', ''),
+            'current_status': self.request.GET.get('status', ''),
+            'current_view': self.request.GET.get('view', 'all'),
+            'pending_applications': pending_applications,
+            'pending_supplier_profiles': pending_supplier_profiles,
+            'pending_applications_count': pending_applications.count(),
+            'pending_profiles_count': pending_supplier_profiles.count(),
+            # Application status and role choices for reference
+            'application_status_choices': RoleApplication.STATUS_CHOICES,
+            'application_role_choices': RoleApplication.ROLE_CHOICES,
+        })
+        
         return context
 
 
@@ -835,8 +883,8 @@ def revoke_supplier_role(request, user_id):
         messages.error(request, _("User is not a supplier."))
         return redirect('users:admin_active_roles')
     
-    # Unapprove supplier profile and clear suspension fields
-    user.supplier_profile.status = 'pending'
+    # Reject supplier profile and clear suspension fields
+    user.supplier_profile.status = 'rejected'
     user.supplier_profile.approved_at = None
     user.supplier_profile.save()
     
@@ -851,7 +899,9 @@ def revoke_supplier_role(request, user_id):
 
 
 # View name for easier reference
-admin_active_roles_view = AdminActiveRolesView.as_view()
+admin_unified_roles_view = AdminUnifiedRolesView.as_view()
+# Backward compatibility
+admin_active_roles_view = AdminUnifiedRolesView.as_view()
 
 
 @require_POST

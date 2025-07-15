@@ -1,0 +1,433 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestionar Fotos - {{ event.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.css">
+<style>
+/* Estilos para gestión profesional de fotos */
+.photo-management-card {
+    border: 1px solid #e3e6f0;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    cursor: move;
+}
+
+.photo-management-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    border-color: #007bff;
+}
+
+.photo-container {
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+}
+
+.photo-thumbnail {
+    transition: transform 0.2s ease;
+}
+
+.photo-management-card:hover .photo-thumbnail {
+    transform: scale(1.05);
+}
+
+.photo-overlay {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    background: linear-gradient(45deg, rgba(0,0,0,0.3), transparent);
+    border-radius: 0 12px 0 8px;
+}
+
+.photo-management-card:hover .photo-overlay {
+    opacity: 1;
+}
+
+.photo-overlay .btn {
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.photo-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    cursor: move;
+}
+
+.photo-card:hover {
+    transform: translateY(-4px);
+}
+
+.photo-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border: 1px solid #e3e6f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.photo-card img:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    filter: brightness(0.95);
+}
+
+.photo-info {
+    padding: 15px;
+}
+
+.photo-caption {
+    font-size: 13px;
+    color: #444;
+    margin-bottom: 8px;
+    word-break: break-word;
+    background: #f8f9fa;
+    padding: 6px 10px;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.photo-order {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.photo-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
+.no-photos {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.add-photo-btn {
+    background: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.add-photo-btn:hover {
+    background: #218838;
+    color: white;
+    text-decoration: none;
+}
+
+.event-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.drag-hint {
+    background: #e9ecef;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Animaciones para drag and drop */
+.sortable-ghost {
+    opacity: 0.5;
+    transform: rotate(5deg);
+}
+
+.sortable-chosen {
+    cursor: grabbing;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Gestionar Fotos del Evento :)</h2>
+                <a href="{% url 'events:admin_events' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a Eventos
+                </a>
+            </div>
+
+            <div class="event-info">
+                <h4>{{ event.name }}</h4>
+                <p class="mb-2"><strong>Fecha:</strong> {{ event.start_date|date:"d/m/Y" }}</p>
+                <p class="mb-0"><strong>Estado:</strong> 
+                    {% if event.is_past_event %}
+                        <span class="badge badge-secondary">Evento Pasado</span>
+                    {% else %}
+                        <span class="badge badge-warning">Evento Futuro</span>
+                    {% endif %}
+                </p>
+            </div>
+
+            {% if event.is_past_event %}
+                <a href="{% url 'events:admin_add_event_photo' event.pk %}" class="add-photo-btn">
+                    <i class="fas fa-plus"></i> Agregar Foto
+                </a>
+
+                {% if photos %}
+                    <!-- Barra superior con estadísticas y botón principal -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="badge bg-primary fs-6 px-3 py-2">
+                                    <i class="fas fa-images"></i> {{ photos|length }} foto{{ photos|length|pluralize:"s" }} cargada{{ photos|length|pluralize:"s" }}
+                                </span>
+                                <small class="text-muted">
+                                    <i class="fas fa-hand-rock"></i> Arrastra para reordenar
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{% url 'events:admin_add_event_photo' event.pk %}" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Agregar Nueva Foto
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Grid de fotos mejorado -->
+                    <div class="row" id="photo-grid">
+                        {% for photo in photos %}
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4" data-id="{{ photo.id }}">
+                                <div class="card h-100 photo-management-card">
+                                    <!-- Imagen con overlay de acciones -->
+                                    <div class="position-relative photo-container">
+                                        <img src="{{ photo.image.url }}" 
+                                             class="card-img-top photo-thumbnail" 
+                                             alt="{{ photo.caption|default:'Foto del evento' }}"
+                                             style="height: 200px; object-fit: cover; cursor: grab;">
+                                        
+                                        <!-- Overlay con botones de acción -->
+                                        <div class="photo-overlay position-absolute top-0 end-0 p-2">
+                                            <div class="btn-group-vertical">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-outline-light mb-1 view-photo-btn" 
+                                                        data-image-url="{{ photo.image.url }}"
+                                                        data-caption="{{ photo.caption|escapejs }}"
+                                                        title="Ver imagen">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <form method="post" action="/events/admin/event-photos/{{ photo.id }}/delete/" style="display: inline;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" 
+                                                            class="btn btn-sm btn-outline-danger" 
+                                                            title="Eliminar foto"
+                                                            onclick="return confirm('¿Estás seguro de que quieres eliminar esta foto? Esta acción no se puede deshacer.')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Indicador de posición -->
+                                        <div class="position-absolute bottom-0 start-0">
+                                            <span class="badge bg-dark bg-opacity-75 m-2">
+                                                #{{ photo.display_order }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Información de la foto -->
+                                    <div class="card-body p-3">
+                                        {% if photo.caption %}
+                                            <p class="card-text small text-muted mb-2">
+                                                <i class="fas fa-quote-left"></i> {{ photo.caption }}
+                                            </p>
+                                        {% else %}
+                                            <p class="card-text small text-muted mb-2 fst-italic">
+                                                Sin descripción
+                                            </p>
+                                        {% endif %}
+                                        
+                                        <!-- Botones de acción grandes -->
+                                        <div class="d-grid gap-2">
+                                            <form method="post" action="/events/admin/event-photos/{{ photo.id }}/delete/">
+                                                {% csrf_token %}
+                                                <button type="submit" 
+                                                        class="btn btn-outline-danger btn-sm w-100" 
+                                                        onclick="return confirm('¿Estás seguro de que quieres eliminar esta foto? Esta acción no se puede deshacer.')">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-photos">
+                        <i class="fas fa-images fa-3x mb-3" style="color: #ddd;"></i>
+                        <h4>No hay fotos agregadas</h4>
+                        <p>Este evento aún no tiene fotos de recuerdos. Agrega algunas fotos para crear una galería memorable.</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Solo puedes agregar fotos a eventos que ya han finalizado.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+// Asegurar que el token CSRF esté disponible globalmente
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+
+// Función para mostrar notificaciones
+function showNotification(message, type = 'info') {
+    // Crear notificación temporal
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remover después de 3 segundos
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 3000);
+}
+
+// Modal Bootstrap para vista previa de foto
+function openPhotoModal(imageUrl, caption) {
+    const modalHtml = `
+    <div class="modal fade" id="photoPreviewModal" tabindex="-1" aria-labelledby="photoPreviewLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="photoPreviewLabel">Vista previa de foto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body text-center">
+            <img src="${imageUrl}" alt="Foto" style="max-width:100%; max-height:70vh; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.15);">
+            ${caption ? `<div class='mt-3 text-muted'><strong>Descripción:</strong> ${caption}</div>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+    
+    // Eliminar modal anterior si existe
+    const oldModal = document.getElementById('photoPreviewModal');
+    if (oldModal) oldModal.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('photoPreviewModal'));
+    modal.show();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Agregar event listeners para los botones de vista previa
+    document.querySelectorAll('.view-photo-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const imageUrl = this.dataset.imageUrl;
+            const caption = this.dataset.caption;
+            openPhotoModal(imageUrl, caption);
+        });
+    });
+
+    const photoGrid = document.getElementById('photo-grid');
+    
+    if (photoGrid) {
+        // Initialize sortable para el nuevo grid de Bootstrap
+        new Sortable(photoGrid, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            handle: '.photo-container', // Solo permitir arrastrar desde la imagen
+            onEnd: function(evt) {
+                // Get new order
+                const photoCards = Array.from(photoGrid.querySelectorAll('[data-id]'));
+                const photoIds = photoCards.map(card => parseInt(card.dataset.id));
+                
+                // Send AJAX request to update order
+                fetch('{% url "events:admin_reorder_event_photos" event.pk %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        photo_ids: photoIds
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update position numbers
+                        photoCards.forEach((card, index) => {
+                            const badge = card.querySelector('.badge');
+                            if (badge) {
+                                badge.textContent = `#${index + 1}`;
+                            }
+                        });
+                        
+                        // Show success message
+                        showNotification('Orden actualizado correctamente', 'success');
+                    } else {
+                        alert('Error al reordenar las fotos');
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al reordenar las fotos');
+                    location.reload();
+                });
+            }
+        });
+    }
+});
+</script>
+
+{% csrf_token %}
+{% endblock %}

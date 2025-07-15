@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Category, City, Event, SponsorshipApplication, Sponsor, EventSponsor, SponsorshipApplication, Sponsor, EventSponsor
+from .models import Category, City, Event, SponsorshipApplication, Sponsor, EventSponsor, SponsorshipApplication, Sponsor, EventSponsor, EventPhoto, EventPhoto
 
 
 class EventForm(forms.ModelForm):
@@ -14,7 +14,10 @@ class EventForm(forms.ModelForm):
             'venue_name', 'address', 'latitude', 'longitude',
             'start_date', 'end_date', 'price_type', 'price', 'currency',
             'max_attendees', 'max_sponsors', 'sponsorship_open', 
-            'image', 'status', 'is_featured'
+            'image', 'status', 'is_featured',
+            # Post-event memory fields
+            'post_event_summary', 'attendee_feedback_summary',
+            'event_highlights', 'organizer_notes'
         ]
         widgets = {
             'title': forms.TextInput(attrs={
@@ -95,6 +98,27 @@ class EventForm(forms.ModelForm):
             }),
             'is_featured': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
+            }),
+            # Post-event memory fields
+            'post_event_summary': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Comparte cómo fue el evento, aspectos destacados y memorias...'
+            }),
+            'attendee_feedback_summary': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Resumen de comentarios y testimonios de los asistentes...'
+            }),
+            'event_highlights': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Momentos clave y aspectos destacados del evento...'
+            }),
+            'organizer_notes': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Notas privadas del organizador (no visible al público)...'
             })
         }
 
@@ -471,3 +495,68 @@ class SponsorshipApplicationUpdateForm(forms.ModelForm):
             'status': _('Estado'),
             'admin_notes': _('Notas Administrativas')
         }
+
+
+class EventMemoriesForm(forms.ModelForm):
+    """Form for editing post-event memories and content."""
+    
+    class Meta:
+        model = Event
+        fields = [
+            'post_event_summary', 'attendee_feedback_summary',
+            'event_highlights', 'organizer_notes'
+        ]
+        widgets = {
+            'post_event_summary': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 5,
+                'placeholder': 'Comparte cómo fue el evento, aspectos destacados y memorias...'
+            }),
+            'attendee_feedback_summary': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Resumen de comentarios y testimonios de los asistentes...'
+            }),
+            'event_highlights': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Momentos clave y aspectos destacados del evento...'
+            }),
+            'organizer_notes': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Notas privadas del organizador (no visible al público)...'
+            })
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Add help text for fields
+        self.fields['post_event_summary'].help_text = _("Comparte una reseña general de cómo fue el evento")
+        self.fields['attendee_feedback_summary'].help_text = _("Resume los comentarios positivos de los asistentes")
+        self.fields['event_highlights'].help_text = _("Menciona los momentos más importantes")
+        self.fields['organizer_notes'].help_text = _("Notas personales (solo visible para ti)")
+
+
+class EventPhotoForm(forms.ModelForm):
+    """Form for adding photos to event gallery."""
+    
+    class Meta:
+        model = EventPhoto
+        fields = ['image', 'caption']
+        widgets = {
+            'image': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+            'caption': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Descripción opcional de la foto...'
+            })
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].help_text = _("Selecciona una o más fotos del evento")
+        self.fields['caption'].help_text = _("Descripción opcional para la foto")

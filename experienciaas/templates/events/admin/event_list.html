@@ -198,6 +198,15 @@
                                     <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
                                 </svg>
                             </a>
+                            {% if event.is_past_event %}
+                            <a href="{% url 'events:admin_event_photos' event.pk %}" class="btn btn-sm btn-info" title="Manage Photos">
+                                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <path d="M21 15l-5-5L5 21"/>
+                                </svg>
+                            </a>
+                            {% endif %}
                             <a href="{% url 'events:admin_delete_event' event.pk %}" class="btn btn-sm btn-danger" title="Delete"
                                onclick="return confirm('Are you sure you want to delete this event?')">
                                 <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">

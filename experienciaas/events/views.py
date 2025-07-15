@@ -195,11 +195,40 @@ class EventDetailView(DetailView):
                 user=self.request.user
             ).first()
         
-        # Get event sponsors
+        # Get event sponsors with enriched information
         from .models import EventSponsor
-        context['event_sponsors'] = EventSponsor.objects.filter(
+        from experienciaas.users.models import SupplierProfile, User
+        
+        event_sponsors = EventSponsor.objects.filter(
             event=event
         ).select_related('sponsor').order_by('display_order', 'tier')
+        
+        # Enrich sponsor data with SupplierProfile information when available
+        enriched_sponsors = []
+        for event_sponsor in event_sponsors:
+            sponsor_data = {
+                'event_sponsor': event_sponsor,
+                'sponsor': event_sponsor.sponsor,
+                'supplier_profile': None,
+                'has_robust_profile': False
+            }
+            
+            try:
+                # Find user by email that matches sponsor's contact_email
+                user = User.objects.get(email=event_sponsor.sponsor.contact_email)
+                # Get the supplier profile for that user if it exists and is approved
+                supplier_profile = SupplierProfile.objects.get(
+                    user=user,
+                    status='approved'
+                )
+                sponsor_data['supplier_profile'] = supplier_profile
+                sponsor_data['has_robust_profile'] = True
+            except (User.DoesNotExist, SupplierProfile.DoesNotExist):
+                pass
+            
+            enriched_sponsors.append(sponsor_data)
+        
+        context['event_sponsors'] = enriched_sponsors
         
         # Related events (same category or city)
         context['related_events'] = Event.objects.filter(
@@ -513,4 +542,36 @@ class SponsorshipApplicationCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['event'] = get_object_or_404(Event, slug=self.kwargs['event_slug'])
         context['supplier_profile'] = self.request.user.supplier_profile
+        return context
+
+
+class TicketDetailView(LoginRequiredMixin, DetailView):
+    """Vista para mostrar el detalle de un ticket con código QR."""
+    model = Ticket
+    template_name = "events/ticket_detail.html"
+    context_object_name = "ticket"
+    slug_field = "ticket_number"
+    slug_url_kwarg = "ticket_number"
+    
+    def get_queryset(self):
+        # Solo permitir ver tickets del usuario actual
+        return Ticket.objects.filter(user=self.request.user).select_related('event', 'user')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        ticket = self.get_object()
+        
+        # Datos para el QR
+        import json
+        qr_data = {
+            'ticket_number': ticket.ticket_number,
+            'event_name': ticket.event.title,
+            'attendee_name': ticket.attendee_name,
+            'event_date': ticket.event.start_date.isoformat(),
+            'status': ticket.status
+        }
+        
+        context['qr_data'] = json.dumps(qr_data)
+        context['can_download_qr'] = ticket.status == 'confirmed'
+        
         return context

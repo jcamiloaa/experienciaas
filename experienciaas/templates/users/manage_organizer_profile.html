@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gestionar Perfil de Organizador - Experienciaas{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1>
+            <i class="fas fa-cogs me-2 text-primary"></i>
+            Gestionar Perfil de Organizador
+          </h1>
+          <p class="text-muted">Administra y actualiza tu perfil público como organizador de eventos</p>
+        </div>
+        
+        <div class="btn-group" role="group">
+          {% if profile.slug %}
+            <a href="{% url 'users:organizer_profile' slug=profile.slug %}" class="btn btn-outline-primary" target="_blank">
+              <i class="fas fa-external-link-alt me-1"></i>Ver Perfil Público
+            </a>
+          {% endif %}
+          <a href="{% url 'users:detail' pk=request.user.pk %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Volver al Perfil
+          </a>
+        </div>
+      </div>
+
+      <!-- Profile Management Card -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-gradient-primary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-edit me-2"></i>
+            Editar Información del Perfil
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ form.non_field_errors }}
+              </div>
+            {% endif %}
+
+            <!-- Profile Images Section -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-images me-2 text-primary"></i>
+                Imágenes del Perfil
+              </h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.avatar.id_for_label }}" class="form-label fw-bold">
+                      {{ form.avatar.label }}
+                    </label>
+                    {{ form.avatar }}
+                    {% if form.avatar.errors %}
+                      <div class="invalid-feedback d-block">{{ form.avatar.errors }}</div>
+                    {% endif %}
+                    {% if profile.avatar %}
+                      <div class="mt-2">
+                        <img src="{{ profile.avatar.url }}" alt="Avatar actual" class="img-thumbnail" style="max-width: 100px; border-radius: 8px;">
+                        <small class="text-muted d-block mt-1">Imagen actual</small>
+                      </div>
+                    {% endif %}
+                    <small class="form-text text-muted">Imagen que aparecerá en tu perfil público</small>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.cover_image.id_for_label }}" class="form-label fw-bold">
+                      {{ form.cover_image.label }}
+                    </label>
+                    {{ form.cover_image }}
+                    {% if form.cover_image.errors %}
+                      <div class="invalid-feedback d-block">{{ form.cover_image.errors }}</div>
+                    {% endif %}
+                    {% if profile.cover_image %}
+                      <div class="mt-2">
+                        <img src="{{ profile.cover_image.url }}" alt="Portada actual" class="img-thumbnail" style="max-width: 150px; border-radius: 8px;">
+                        <small class="text-muted d-block mt-1">Imagen actual</small>
+                      </div>
+                    {% endif %}
+                    <small class="form-text text-muted">Imagen de portada para tu perfil</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Basic Information Section -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-user me-2 text-primary"></i>
+                Información Básica
+              </h5>
+              
+              <div class="form-group mb-3">
+                <label for="{{ form.bio.id_for_label }}" class="form-label fw-bold">
+                  {{ form.bio.label }}
+                </label>
+                {{ form.bio }}
+                {% if form.bio.errors %}
+                  <div class="invalid-feedback d-block">{{ form.bio.errors }}</div>
+                {% endif %}
+                <small class="form-text text-muted">
+                  Describe brevemente quién eres y qué tipo de eventos organizas. Esto aparecerá en tu perfil público.
+                </small>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.location.id_for_label }}" class="form-label fw-bold">
+                      {{ form.location.label }}
+                    </label>
+                    {{ form.location }}
+                    {% if form.location.errors %}
+                      <div class="invalid-feedback d-block">{{ form.location.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.phone.id_for_label }}" class="form-label fw-bold">
+                      {{ form.phone.label }}
+                    </label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                      <div class="invalid-feedback d-block">{{ form.phone.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="{{ form.website.id_for_label }}" class="form-label fw-bold">
+                  {{ form.website.label }}
+                </label>
+                {{ form.website }}
+                {% if form.website.errors %}
+                  <div class="invalid-feedback d-block">{{ form.website.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Social Media Section -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-share-alt me-2 text-primary"></i>
+                Redes Sociales
+              </h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.facebook_url.id_for_label }}" class="form-label fw-bold">
+                      <i class="fab fa-facebook me-1"></i>{{ form.facebook_url.label }}
+                    </label>
+                    {{ form.facebook_url }}
+                    {% if form.facebook_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.facebook_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.twitter_url.id_for_label }}" class="form-label fw-bold">
+                      <i class="fab fa-twitter me-1"></i>{{ form.twitter_url.label }}
+                    </label>
+                    {{ form.twitter_url }}
+                    {% if form.twitter_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.twitter_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.instagram_url.id_for_label }}" class="form-label fw-bold">
+                      <i class="fab fa-instagram me-1"></i>{{ form.instagram_url.label }}
+                    </label>
+                    {{ form.instagram_url }}
+                    {% if form.instagram_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.instagram_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-3">
+                    <label for="{{ form.linkedin_url.id_for_label }}" class="form-label fw-bold">
+                      <i class="fab fa-linkedin me-1"></i>{{ form.linkedin_url.label }}
+                    </label>
+                    {{ form.linkedin_url }}
+                    {% if form.linkedin_url.errors %}
+                      <div class="invalid-feedback d-block">{{ form.linkedin_url.errors }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Privacy Settings Section -->
+            <div class="form-section mb-4">
+              <h5 class="section-title mb-3">
+                <i class="fas fa-shield-alt me-2 text-primary"></i>
+                Configuración de Privacidad
+              </h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check mb-3">
+                    {{ form.is_public }}
+                    <label for="{{ form.is_public.id_for_label }}" class="form-check-label fw-bold">
+                      {{ form.is_public.label }}
+                    </label>
+                    {% if form.is_public.errors %}
+                      <div class="invalid-feedback d-block">{{ form.is_public.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted d-block">
+                      Si está marcado, tu perfil será visible públicamente
+                    </small>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-check mb-3">
+                    {{ form.allow_contact }}
+                    <label for="{{ form.allow_contact.id_for_label }}" class="form-check-label fw-bold">
+                      {{ form.allow_contact.label }}
+                    </label>
+                    {% if form.allow_contact.errors %}
+                      <div class="invalid-feedback d-block">{{ form.allow_contact.errors }}</div>
+                    {% endif %}
+                    <small class="form-text text-muted d-block">
+                      Permite que otros usuarios te contacten
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="submit" class="btn btn-primary btn-lg px-5">
+                <i class="fas fa-save me-2"></i>
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Profile Preview Card -->
+      {% if profile %}
+        <div class="card mt-4 shadow-sm">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">
+              <i class="fas fa-eye me-2 text-info"></i>
+              Vista Previa del Perfil
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="organizer-preview">
+              <div class="d-flex align-items-center mb-3">
+                {% if profile.avatar %}
+                  <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                {% else %}
+                  <div class="bg-primary rounded-circle me-3 d-flex align-items-center justify-content-center text-white" style="width: 60px; height: 60px;">
+                    <i class="fas fa-user fa-lg"></i>
+                  </div>
+                {% endif %}
+                <div>
+                  <h6 class="mb-1">{{ request.user.name|default:request.user.email }}</h6>
+                  <small class="text-muted">
+                    {% if profile.location %}
+                      <i class="fas fa-map-marker-alt me-1"></i>{{ profile.location }}
+                    {% endif %}
+                  </small>
+                </div>
+              </div>
+              
+              {% if profile.bio %}
+                <p class="mt-3 mb-0">{{ profile.bio|truncatewords:20 }}</p>
+              {% else %}
+                <p class="text-muted fst-italic">Agrega una biografía para que aparezca aquí...</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+}
+
+.form-section {
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 1.5rem;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-title {
+  color: #495057;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+}
+
+.form-group .form-control,
+.form-group .form-select {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-group .form-control:focus,
+.form-group .form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.organizer-preview {
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.card {
+  border-radius: 12px;
+  border: none;
+}
+
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+</style>
+{% endblock %}

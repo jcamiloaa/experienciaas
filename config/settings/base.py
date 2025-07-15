@@ -26,14 +26,15 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = "UTC"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "es"
 # https://docs.djangoproject.com/en/dev/ref/settings/#languages
-# from django.utils.translation import gettext_lazy as _
-# LANGUAGES = [
-#     ('en', _('English')),
-#     ('fr-fr', _('French')),
-#     ('pt-br', _('Portuguese')),
-# ]
+from django.utils.translation import gettext_lazy as _
+LANGUAGES = [
+    ('es', _('Español')),
+    ('en', _('English')),
+    ('fr-fr', _('French')),
+    ('pt-br', _('Portuguese')),
+]
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
@@ -127,11 +128,20 @@ PASSWORD_HASHERS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "experienciaas.users.validators.SpanishUserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {
+        "NAME": "experienciaas.users.validators.SpanishMinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 8,
+        },
+    },
+    {
+        "NAME": "experienciaas.users.validators.SpanishCommonPasswordValidator",
+    },
+    {
+        "NAME": "experienciaas.users.validators.SpanishNumericPasswordValidator",
+    },
 ]
 
 # MIDDLEWARE
@@ -323,7 +333,12 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://docs.allauth.org/en/latest/account/configuration.html
 ACCOUNT_ADAPTER = "experienciaas.users.adapters.AccountAdapter"
 # https://docs.allauth.org/en/latest/account/forms.html
-ACCOUNT_FORMS = {"signup": "experienciaas.users.forms.UserSignupForm"}
+ACCOUNT_FORMS = {
+    "signup": "experienciaas.users.forms.UserSignupForm",
+    "login": "experienciaas.users.forms.CustomLoginForm",
+    "reset_password": "experienciaas.users.forms.CustomResetPasswordForm",
+    "reset_password_from_key": "experienciaas.users.forms.CustomResetPasswordKeyForm",
+}
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_ADAPTER = "experienciaas.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html

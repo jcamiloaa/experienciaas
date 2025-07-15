@@ -1,0 +1,22 @@
+{% extends "account/email/base_message.html" %}
+{% load account %}
+
+{% block content %}
+<h2>¡Bienvenido a {{ current_site.name }}!</h2>
+
+<p>{% user_display user as user_display %}Estás recibiendo este correo porque el usuario <strong>{{ user_display }}</strong> ha utilizado esta dirección de correo electrónico para registrarse en {{ current_site.domain }}.</p>
+
+<p>Para completar tu registro y activar tu cuenta, necesitas confirmar que esta dirección de correo te pertenece.</p>
+
+<p style="text-align: center;">
+    <a href="{{ activate_url }}" class="button">Confirmar mi dirección de correo</a>
+</p>
+
+<p><strong>Importante:</strong></p>
+<ul>
+    <li>Si no has creado una cuenta en {{ current_site.name }}, puedes ignorar este correo de forma segura.</li>
+    <li>Si tienes problemas para hacer clic en el botón, copia y pega la siguiente URL en tu navegador: <br>
+        <code>{{ activate_url }}</code></li>
+    <li>Este enlace de confirmación es válido por tiempo limitado.</li>
+</ul>
+{% endblock content %}

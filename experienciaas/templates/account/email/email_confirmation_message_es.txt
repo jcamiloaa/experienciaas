@@ -1,0 +1,18 @@
+{% extends "account/email/base_message_es.txt" %}
+{% load account %}
+
+{% block content %}{% autoescape off %}{% user_display user as user_display %}¡Bienvenido a {{ site_name }}!
+
+Estás recibiendo este correo porque el usuario {{ user_display }} ha utilizado esta dirección de correo electrónico para registrarse en {{ site_domain }}.
+
+Para completar tu registro y activar tu cuenta, necesitas confirmar que esta dirección de correo te pertenece.
+
+Haz clic en el siguiente enlace para confirmar tu dirección de correo:
+
+{{ activate_url }}
+
+Si no has creado una cuenta en {{ site_name }}, puedes ignorar este correo de forma segura.
+
+Si tienes problemas para hacer clic en el enlace, copia y pega la URL completa en tu navegador.
+
+Este enlace de confirmación es válido por {{ confirmation_days }} días.{% endautoescape %}{% endblock content %}

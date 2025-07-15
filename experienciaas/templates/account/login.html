@@ -30,6 +30,13 @@
             {% endelement %}
         {% endslot %}
     {% endelement %}
+    
+    <div class="text-center mt-3">
+        <a href="{% url 'account_reset_password' %}" class="text-decoration-none">
+            ¿Olvidaste tu contraseña?
+        </a>
+    </div>
+    
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
     {% endif %}

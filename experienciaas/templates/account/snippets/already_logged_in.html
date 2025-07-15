@@ -4,6 +4,6 @@
 {% user_display user as user_display %}
 {% element alert %}
     {% slot message %}
-        <strong>{% blocktranslate %}Note{% endblocktranslate %}:</strong> {% blocktranslate %}You are already logged in as {{ user_display }}.{% endblocktranslate %}
+        <strong>Nota:</strong> Ya has iniciado sesión como {{ user_display }}.
     {% endslot %}
 {% endelement %}

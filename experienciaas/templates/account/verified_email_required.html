@@ -2,24 +2,20 @@
 {% load i18n %}
 {% load allauth %}
 {% block head_title %}
-    {% trans "Verify Your Email Address" %}
+    Verificar Tu Dirección de Correo
 {% endblock head_title %}
 {% block content %}
     {% element h1 %}
-        {% trans "Verify Your Email Address" %}
+        Verificar Tu Dirección de Correo
     {% endelement %}
     {% url 'account_email' as email_url %}
     <p>
-        {% blocktrans %}This part of the site requires us to verify that
-you are who you claim to be. For this purpose, we require that you
-verify ownership of your email address. {% endblocktrans %}
+        Esta parte del sitio requiere que verifiquemos que eres quien dices ser. Para este propósito, necesitamos que verifiques la propiedad de tu dirección de correo electrónico.
     </p>
     <p>
-        {% blocktrans %}We have sent an email to you for
-verification. Please click on the link inside that email. If you do not see the verification email in your main inbox, check your spam folder. Otherwise
-contact us if you do not receive it within a few minutes.{% endblocktrans %}
+        Te hemos enviado un correo electrónico para verificación. Por favor haz clic en el enlace dentro de ese correo. Si no ves el correo de verificación en tu bandeja principal, revisa tu carpeta de spam. Si no lo recibes en unos minutos, contáctanos.
     </p>
     <p>
-        {% blocktrans %}<strong>Note:</strong> you can still <a href="{{ email_url }}">change your email address</a>.{% endblocktrans %}
+        <strong>Nota:</strong> aún puedes <a href="{{ email_url }}">cambiar tu dirección de correo</a>.
     </p>
 {% endblock content %}

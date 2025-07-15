@@ -1,0 +1,4 @@
+{% load i18n %}
+{% autoescape off %}
+Confirma tu dirección de correo electrónico - {{ current_site.name }}
+{% endautoescape %}

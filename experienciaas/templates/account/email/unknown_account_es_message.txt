@@ -1,7 +1,7 @@
 {% extends "account/email/base_message.txt" %}
 {% load i18n %}
 
-{% block content %}{% autoescape off %}{% blocktrans %}Estás recibiendo este correo porque tú u otra persona ha solicitado una contraseña para tu cuenta de usuario. 
+{% block content %}{% autoescape off %}Estás recibiendo este correo porque tú u otra persona ha solicitado una contraseña para tu cuenta de usuario. 
 
 Sin embargo, no tenemos ningún registro de un usuario con el correo electrónico {{ email }} en nuestra base de datos.
 
@@ -9,4 +9,4 @@ Este correo puede ser ignorado de forma segura si no has solicitado un restablec
 
 Si fuiste tú quien lo solicitó, puedes crear una cuenta nueva usando el siguiente enlace:
 
-{{ signup_url }}{% endblocktrans %}{% endautoescape %}{% endblock content %}
+{{ signup_url }}{% endautoescape %}{% endblock content %}

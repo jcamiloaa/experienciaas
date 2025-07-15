@@ -1,0 +1,3493 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-15 14:41+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: config/settings/base.py:33
+msgid "Español"
+msgstr ""
+
+#: config/settings/base.py:34
+msgid "English"
+msgstr ""
+
+#: config/settings/base.py:35
+msgid "French"
+msgstr ""
+
+#: config/settings/base.py:36
+msgid "Portuguese"
+msgstr ""
+
+#: experienciaas/analytics/apps.py:8
+msgid "Analytics"
+msgstr ""
+
+#: experienciaas/analytics/models.py:19
+msgid "Event View"
+msgstr ""
+
+#: experienciaas/analytics/models.py:20
+msgid "Event Views"
+msgstr ""
+
+#: experienciaas/analytics/models.py:38
+msgid "Organizer View"
+msgstr ""
+
+#: experienciaas/analytics/models.py:39
+msgid "Organizer Views"
+msgstr ""
+
+#: experienciaas/analytics/models.py:48
+msgid "Search query"
+msgstr ""
+
+#: experienciaas/analytics/models.py:51
+msgid "Results count"
+msgstr ""
+
+#: experienciaas/analytics/models.py:57
+msgid "Search Query"
+msgstr ""
+
+#: experienciaas/analytics/models.py:58
+msgid "Search Queries"
+msgstr ""
+
+#: experienciaas/analytics/models.py:68
+msgid "Registration Started"
+msgstr ""
+
+#: experienciaas/analytics/models.py:69
+msgid "Form Filled"
+msgstr ""
+
+#: experienciaas/analytics/models.py:70
+msgid "Payment Attempted"
+msgstr ""
+
+#: experienciaas/analytics/models.py:71
+msgid "Registration Completed"
+msgstr ""
+
+#: experienciaas/analytics/models.py:72
+msgid "Registration Abandoned"
+msgstr ""
+
+#: experienciaas/analytics/models.py:77
+msgid "Session ID"
+msgstr ""
+
+#: experienciaas/analytics/models.py:78
+msgid "Registration step"
+msgstr ""
+
+#: experienciaas/analytics/models.py:83 experienciaas/analytics/models.py:84
+msgid "Ticket Registration Analytics"
+msgstr ""
+
+#: experienciaas/analytics/models.py:93
+msgid "Date"
+msgstr ""
+
+#: experienciaas/analytics/models.py:96
+msgid "Total events"
+msgstr ""
+
+#: experienciaas/analytics/models.py:97
+msgid "New events"
+msgstr ""
+
+#: experienciaas/analytics/models.py:98
+msgid "Published events"
+msgstr ""
+
+#: experienciaas/analytics/models.py:101
+msgid "Total users"
+msgstr ""
+
+#: experienciaas/analytics/models.py:102
+msgid "New users"
+msgstr ""
+
+#: experienciaas/analytics/models.py:103
+msgid "Active users"
+msgstr ""
+
+#: experienciaas/analytics/models.py:106
+msgid "Total tickets"
+msgstr ""
+
+#: experienciaas/analytics/models.py:107
+msgid "New tickets"
+msgstr ""
+
+#: experienciaas/analytics/models.py:108
+msgid "Confirmed tickets"
+msgstr ""
+
+#: experienciaas/analytics/models.py:111 experienciaas/analytics/models.py:145
+msgid "Total revenue"
+msgstr ""
+
+#: experienciaas/analytics/models.py:112
+msgid "New revenue"
+msgstr ""
+
+#: experienciaas/analytics/models.py:115
+msgid "Total views"
+msgstr ""
+
+#: experienciaas/analytics/models.py:116
+msgid "Unique visitors"
+msgstr ""
+
+#: experienciaas/analytics/models.py:122 experienciaas/analytics/models.py:123
+msgid "Daily Statistics"
+msgstr ""
+
+#: experienciaas/analytics/models.py:131
+msgid "Year"
+msgstr ""
+
+#: experienciaas/analytics/models.py:132
+msgid "Month"
+msgstr ""
+
+#: experienciaas/analytics/models.py:135
+msgid "Events created"
+msgstr ""
+
+#: experienciaas/analytics/models.py:136
+msgid "Events published"
+msgstr ""
+
+#: experienciaas/analytics/models.py:137
+msgid "Total attendees"
+msgstr ""
+
+#: experienciaas/analytics/models.py:140
+msgid "Profile views"
+msgstr ""
+
+#: experienciaas/analytics/models.py:141
+msgid "Event views"
+msgstr ""
+
+#: experienciaas/analytics/models.py:142
+msgid "New followers"
+msgstr ""
+
+#: experienciaas/analytics/models.py:146
+msgid "Average ticket price"
+msgstr ""
+
+#: experienciaas/analytics/models.py:152 experienciaas/analytics/models.py:153
+msgid "Organizer Statistics"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:34
+#: experienciaas/events/admin_views.py:88
+msgid "You don't have permission to access this area."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:45
+msgid "Only administrators can access this area."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:191
+msgid "Please select an action and at least one event."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:206
+msgid "You can only perform actions on events you have created."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:210
+msgid "No valid events selected for this action."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:234
+msgid "Invalid action selected."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:247
+msgid "Event created successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:285
+msgid "Event and memories updated successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:287
+msgid "Event updated successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:371
+msgid "Event deleted successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:391
+msgid "Category created successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:403
+msgid "Category updated successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:414
+msgid "Category deleted successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:434
+msgid "City created successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:446
+msgid "City updated successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:457
+msgid "City deleted successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:575
+msgid "Sponsor created successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:610
+msgid ""
+"Este patrocinador no tiene un perfil de proveedor asociado. Usando el "
+"formulario básico. Para funcionalidad completa, el patrocinador debe crear "
+"un perfil de proveedor."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:617
+msgid "Sponsor updated successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:628
+msgid "Sponsor deleted successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:646
+msgid "You don't have permission to manage sponsors for this event."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:658
+#: experienciaas/events/admin_views.py:808
+#: experienciaas/events/admin_views.py:832
+msgid "No sponsor slots available for this event."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:661
+msgid "Sponsor added to event successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:693
+msgid "Event sponsor updated successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:722
+msgid "Sponsor removed from event successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:811
+msgid "Application updated successfully!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:827
+msgid "You don't have permission to approve this application."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:865
+msgid "Application approved and sponsor added to event!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:867
+msgid "Application approved. Sponsor was already added to event."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:881
+msgid "You don't have permission to reject this application."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:889
+msgid "Application rejected."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:902
+#: experienciaas/events/admin_views.py:941
+msgid "No tienes permisos para modificar este ticket."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:907
+msgid "Solo se pueden confirmar tickets en estado pendiente."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:914
+#, python-brace-format
+msgid "Ticket #{ticket_number} confirmado exitosamente."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:946
+msgid "Este ticket ya está cancelado."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:965
+#, python-brace-format
+msgid ""
+"Ticket #{ticket_number} de {user_name} para {event_title} ha sido cancelado."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:1012
+msgid "Solo puedes agregar fotos a eventos que ya han terminado."
+msgstr ""
+
+#: experienciaas/events/admin_views.py:1018
+msgid "Foto agregada exitosamente!"
+msgstr ""
+
+#: experienciaas/events/admin_views.py:1045
+msgid "Foto eliminada exitosamente!"
+msgstr ""
+
+#: experienciaas/events/apps.py:8 experienciaas/events/models.py:152
+msgid "Events"
+msgstr ""
+
+#: experienciaas/events/forms.py:150
+msgid "Price is required for paid events."
+msgstr ""
+
+#: experienciaas/events/forms.py:152
+msgid "Currency is required for paid events."
+msgstr ""
+
+#: experienciaas/events/forms.py:156
+msgid "End date must be after start date."
+msgstr ""
+
+#: experienciaas/events/forms.py:160
+msgid ""
+"You must set a maximum number of sponsors greater than 0 if sponsorship "
+"applications are open."
+msgstr ""
+
+#: experienciaas/events/forms.py:328
+msgid "Propuesta de Patrocinio"
+msgstr ""
+
+#: experienciaas/events/forms.py:329
+msgid "Nivel de Patrocinio Propuesto"
+msgstr ""
+
+#: experienciaas/events/forms.py:339
+msgid ""
+"Nivel más alto: Logo prominente, menciones especiales, stand preferencial"
+msgstr ""
+
+#: experienciaas/events/forms.py:340
+msgid ""
+"Nivel alto: Logo destacado, menciones en redes sociales, buen espacio de "
+"stand"
+msgstr ""
+
+#: experienciaas/events/forms.py:341
+msgid ""
+"Nivel medio: Logo visible, menciones ocasionales, espacio de stand estándar"
+msgstr ""
+
+#: experienciaas/events/forms.py:342
+msgid ""
+"Nivel básico: Logo en materiales, menciones básicas, espacio de stand pequeño"
+msgstr ""
+
+#: experienciaas/events/forms.py:343
+msgid ""
+"Nivel colaborador: Logo en materiales básicos, reconocimiento como "
+"colaborador"
+msgstr ""
+
+#: experienciaas/events/forms.py:356
+msgid ""
+"Selecciona el nivel de patrocinio que mejor se adapte a tu presupuesto y "
+"objetivos."
+msgstr ""
+
+#: experienciaas/events/forms.py:384
+#: experienciaas/templates/users/admin_supplier_profiles.html:87
+#: experienciaas/templates/users/admin_supplier_profiles.html:254
+msgid "Sitio Web"
+msgstr ""
+
+#: experienciaas/events/forms.py:391
+msgid "Ingresa la URL del sitio web (opcional)"
+msgstr ""
+
+#: experienciaas/events/forms.py:495
+#: experienciaas/templates/users/admin_active_roles.html:55
+#: experienciaas/templates/users/admin_role_applications.html:57
+#: experienciaas/templates/users/admin_supplier_profiles.html:51
+#: experienciaas/users/models.py:725 experienciaas/users/models.py:824
+msgid "Estado"
+msgstr ""
+
+#: experienciaas/events/forms.py:496
+msgid "Notas Administrativas"
+msgstr ""
+
+#: experienciaas/events/forms.py:536
+msgid "Comparte una reseña general de cómo fue el evento"
+msgstr ""
+
+#: experienciaas/events/forms.py:537
+msgid "Resume los comentarios positivos de los asistentes"
+msgstr ""
+
+#: experienciaas/events/forms.py:538
+msgid "Menciona los momentos más importantes"
+msgstr ""
+
+#: experienciaas/events/forms.py:539
+msgid "Notas personales (solo visible para ti)"
+msgstr ""
+
+#: experienciaas/events/forms.py:561
+msgid "Selecciona una o más fotos del evento"
+msgstr ""
+
+#: experienciaas/events/forms.py:562
+msgid "Descripción opcional para la foto"
+msgstr ""
+
+#: experienciaas/events/models.py:12
+msgid "City name"
+msgstr ""
+
+#: experienciaas/events/models.py:14
+msgid "Country"
+msgstr ""
+
+#: experienciaas/events/models.py:15 experienciaas/events/models.py:41
+msgid "Is active"
+msgstr ""
+
+#: experienciaas/events/models.py:19
+msgid "City"
+msgstr ""
+
+#: experienciaas/events/models.py:20
+msgid "Cities"
+msgstr ""
+
+#: experienciaas/events/models.py:34
+msgid "Category name"
+msgstr ""
+
+#: experienciaas/events/models.py:36 experienciaas/events/models.py:96
+#: experienciaas/events/models.py:359
+msgid "Description"
+msgstr ""
+
+#: experienciaas/events/models.py:37
+msgid "Icon class"
+msgstr ""
+
+#: experienciaas/events/models.py:38
+msgid "CSS icon class (e.g., fas fa-music)"
+msgstr ""
+
+#: experienciaas/events/models.py:39
+msgid "Color"
+msgstr ""
+
+#: experienciaas/events/models.py:40
+msgid "Hex color code"
+msgstr ""
+
+#: experienciaas/events/models.py:45
+msgid "Category"
+msgstr ""
+
+#: experienciaas/events/models.py:46
+msgid "Categories"
+msgstr ""
+
+#: experienciaas/events/models.py:61 experienciaas/events/models.py:298
+#: experienciaas/events/models.py:304
+msgid "Free"
+msgstr ""
+
+#: experienciaas/events/models.py:62
+msgid "Paid"
+msgstr ""
+
+#: experienciaas/events/models.py:63 experienciaas/events/models.py:300
+msgid "Donation"
+msgstr ""
+
+#: experienciaas/events/models.py:67
+msgid "Draft"
+msgstr ""
+
+#: experienciaas/events/models.py:68
+msgid "Published"
+msgstr ""
+
+#: experienciaas/events/models.py:69 experienciaas/events/models.py:317
+msgid "Cancelled"
+msgstr ""
+
+#: experienciaas/events/models.py:70
+msgid "Sold Out"
+msgstr ""
+
+#: experienciaas/events/models.py:74
+msgid "US Dollar (USD)"
+msgstr ""
+
+#: experienciaas/events/models.py:75
+msgid "Euro (EUR)"
+msgstr ""
+
+#: experienciaas/events/models.py:76
+msgid "Colombian Peso (COP)"
+msgstr ""
+
+#: experienciaas/events/models.py:77
+msgid "British Pound (GBP)"
+msgstr ""
+
+#: experienciaas/events/models.py:78
+msgid "Canadian Dollar (CAD)"
+msgstr ""
+
+#: experienciaas/events/models.py:79
+msgid "Australian Dollar (AUD)"
+msgstr ""
+
+#: experienciaas/events/models.py:80
+msgid "Mexican Peso (MXN)"
+msgstr ""
+
+#: experienciaas/events/models.py:81
+msgid "Brazilian Real (BRL)"
+msgstr ""
+
+#: experienciaas/events/models.py:82
+msgid "Argentine Peso (ARS)"
+msgstr ""
+
+#: experienciaas/events/models.py:83
+msgid "Chilean Peso (CLP)"
+msgstr ""
+
+#: experienciaas/events/models.py:84
+msgid "Peruvian Sol (PEN)"
+msgstr ""
+
+#: experienciaas/events/models.py:85
+msgid "Uruguayan Peso (UYU)"
+msgstr ""
+
+#: experienciaas/events/models.py:86
+msgid "Japanese Yen (JPY)"
+msgstr ""
+
+#: experienciaas/events/models.py:87
+msgid "Chinese Yuan (CNY)"
+msgstr ""
+
+#: experienciaas/events/models.py:88
+msgid "Swiss Franc (CHF)"
+msgstr ""
+
+#: experienciaas/events/models.py:89
+msgid "Swedish Krona (SEK)"
+msgstr ""
+
+#: experienciaas/events/models.py:90
+msgid "Norwegian Krone (NOK)"
+msgstr ""
+
+#: experienciaas/events/models.py:91
+msgid "Danish Krone (DKK)"
+msgstr ""
+
+#: experienciaas/events/models.py:94
+msgid "Event title"
+msgstr ""
+
+#: experienciaas/events/models.py:97
+msgid "Short description"
+msgstr ""
+
+#: experienciaas/events/models.py:105
+msgid "Start date"
+msgstr ""
+
+#: experienciaas/events/models.py:106
+msgid "End date"
+msgstr ""
+
+#: experienciaas/events/models.py:109
+msgid "Venue name"
+msgstr ""
+
+#: experienciaas/events/models.py:110
+msgid "Address"
+msgstr ""
+
+#: experienciaas/events/models.py:116
+msgid "Price"
+msgstr ""
+
+#: experienciaas/events/models.py:117
+msgid "Currency"
+msgstr ""
+
+#: experienciaas/events/models.py:120
+msgid "Max attendees"
+msgstr ""
+
+#: experienciaas/events/models.py:123
+msgid "Max sponsors"
+msgstr ""
+
+#: experienciaas/events/models.py:124
+msgid ""
+"Maximum number of sponsors for this event. Set to 0 to disable sponsorships."
+msgstr ""
+
+#: experienciaas/events/models.py:125
+msgid "Sponsorship applications open"
+msgstr ""
+
+#: experienciaas/events/models.py:126
+msgid "Allow new sponsorship applications"
+msgstr ""
+
+#: experienciaas/events/models.py:129
+msgid "Event image"
+msgstr ""
+
+#: experienciaas/events/models.py:132
+msgid "Post-event summary"
+msgstr ""
+
+#: experienciaas/events/models.py:133
+msgid "Share how the event went, highlights, and memories"
+msgstr ""
+
+#: experienciaas/events/models.py:134
+msgid "Attendee feedback summary"
+msgstr ""
+
+#: experienciaas/events/models.py:135
+msgid "Summary of attendee feedback and testimonials"
+msgstr ""
+
+#: experienciaas/events/models.py:136
+msgid "Organizer notes"
+msgstr ""
+
+#: experienciaas/events/models.py:137
+msgid "Private notes for the organizer (not visible to the public)"
+msgstr ""
+
+#: experienciaas/events/models.py:138
+msgid "Event highlights"
+msgstr ""
+
+#: experienciaas/events/models.py:139
+msgid "Key moments and highlights from the event"
+msgstr ""
+
+#: experienciaas/events/models.py:143 experienciaas/events/models.py:399
+msgid "Is featured"
+msgstr ""
+
+#: experienciaas/events/models.py:144
+msgid "Views"
+msgstr ""
+
+#: experienciaas/events/models.py:151
+msgid "Event"
+msgstr ""
+
+#: experienciaas/events/models.py:315
+msgid "Pending"
+msgstr ""
+
+#: experienciaas/events/models.py:316
+msgid "Confirmed"
+msgstr ""
+
+#: experienciaas/events/models.py:324
+msgid "Ticket number"
+msgstr ""
+
+#: experienciaas/events/models.py:325
+msgid "Attendee name"
+msgstr ""
+
+#: experienciaas/events/models.py:326
+msgid "Attendee email"
+msgstr ""
+
+#: experienciaas/events/models.py:329
+msgid "Amount paid"
+msgstr ""
+
+#: experienciaas/events/models.py:330
+msgid "Payment method"
+msgstr ""
+
+#: experienciaas/events/models.py:340
+msgid "Ticket"
+msgstr ""
+
+#: experienciaas/events/models.py:341
+msgid "Tickets"
+msgstr ""
+
+#: experienciaas/events/models.py:357 experienciaas/events/models.py:431
+msgid "Company name"
+msgstr ""
+
+#: experienciaas/events/models.py:358
+msgid "Logo"
+msgstr ""
+
+#: experienciaas/events/models.py:360 experienciaas/users/models.py:470
+msgid "Website"
+msgstr ""
+
+#: experienciaas/events/models.py:361 experienciaas/events/models.py:433
+msgid "Contact email"
+msgstr ""
+
+#: experienciaas/events/models.py:362 experienciaas/events/models.py:434
+msgid "Contact phone"
+msgstr ""
+
+#: experienciaas/events/models.py:365
+msgid "Facebook URL"
+msgstr ""
+
+#: experienciaas/events/models.py:366
+msgid "Twitter URL"
+msgstr ""
+
+#: experienciaas/events/models.py:367
+msgid "Instagram URL"
+msgstr ""
+
+#: experienciaas/events/models.py:368
+msgid "LinkedIn URL"
+msgstr ""
+
+#: experienciaas/events/models.py:371
+msgid "Is approved"
+msgstr ""
+
+#: experienciaas/events/models.py:376
+msgid "Sponsor"
+msgstr ""
+
+#: experienciaas/events/models.py:377
+msgid "Sponsors"
+msgstr ""
+
+#: experienciaas/events/models.py:387 experienciaas/users/models.py:794
+msgid "Platinum"
+msgstr ""
+
+#: experienciaas/events/models.py:388 experienciaas/users/models.py:795
+msgid "Gold"
+msgstr ""
+
+#: experienciaas/events/models.py:389 experienciaas/users/models.py:796
+msgid "Silver"
+msgstr ""
+
+#: experienciaas/events/models.py:390 experienciaas/users/models.py:797
+msgid "Bronze"
+msgstr ""
+
+#: experienciaas/events/models.py:391 experienciaas/users/models.py:798
+msgid "Partner"
+msgstr ""
+
+#: experienciaas/events/models.py:396
+msgid "Sponsorship tier"
+msgstr ""
+
+#: experienciaas/events/models.py:397
+msgid "Custom description"
+msgstr ""
+
+#: experienciaas/events/models.py:398
+msgid "Override sponsor's default description for this event"
+msgstr ""
+
+#: experienciaas/events/models.py:400 experienciaas/events/models.py:472
+msgid "Display order"
+msgstr ""
+
+#: experienciaas/events/models.py:405
+msgid "Event Sponsor"
+msgstr ""
+
+#: experienciaas/events/models.py:406
+msgid "Event Sponsors"
+msgstr ""
+
+#: experienciaas/events/models.py:422
+msgid "Pending Review"
+msgstr ""
+
+#: experienciaas/events/models.py:423 experienciaas/users/models.py:545
+msgid "Approved"
+msgstr ""
+
+#: experienciaas/events/models.py:424 experienciaas/users/models.py:546
+msgid "Rejected"
+msgstr ""
+
+#: experienciaas/events/models.py:425
+msgid "Contacted"
+msgstr ""
+
+#: experienciaas/events/models.py:432
+msgid "Contact person name"
+msgstr ""
+
+#: experienciaas/events/models.py:435
+msgid "Company website"
+msgstr ""
+
+#: experienciaas/events/models.py:438
+msgid "Message"
+msgstr ""
+
+#: experienciaas/events/models.py:439
+msgid "Tell us about your company and why you want to sponsor this event"
+msgstr ""
+
+#: experienciaas/events/models.py:440
+msgid "Proposed sponsorship tier"
+msgstr ""
+
+#: experienciaas/events/models.py:444 experienciaas/users/models.py:585
+msgid "Status"
+msgstr ""
+
+#: experienciaas/events/models.py:445
+msgid "Admin notes"
+msgstr ""
+
+#: experienciaas/events/models.py:446
+msgid "Internal notes for organizers"
+msgstr ""
+
+#: experienciaas/events/models.py:451
+msgid "Reviewed at"
+msgstr ""
+
+#: experienciaas/events/models.py:456 experienciaas/users/models.py:846
+msgid "Sponsorship Application"
+msgstr ""
+
+#: experienciaas/events/models.py:457 experienciaas/users/models.py:847
+msgid "Sponsorship Applications"
+msgstr ""
+
+#: experienciaas/events/models.py:468
+msgid "Photo"
+msgstr ""
+
+#: experienciaas/events/models.py:469
+msgid "Upload photos from the event"
+msgstr ""
+
+#: experienciaas/events/models.py:470
+msgid "Caption"
+msgstr ""
+
+#: experienciaas/events/models.py:471
+msgid "Optional caption for the photo"
+msgstr ""
+
+#: experienciaas/events/models.py:479
+msgid "Event Photo"
+msgstr ""
+
+#: experienciaas/events/models.py:480
+msgid "Event Photos"
+msgstr ""
+
+#: experienciaas/events/views.py:302
+msgid "This event is not available for registration."
+msgstr ""
+
+#: experienciaas/events/views.py:306
+msgid "Registration for this event has closed."
+msgstr ""
+
+#: experienciaas/events/views.py:312
+msgid "You are already registered for this event."
+msgstr ""
+
+#: experienciaas/events/views.py:317
+msgid "This event is sold out."
+msgstr ""
+
+#: experienciaas/events/views.py:331
+msgid "You have successfully registered for this event!"
+msgstr ""
+
+#: experienciaas/events/views.py:333
+msgid "Registration pending payment confirmation."
+msgstr ""
+
+#: experienciaas/events/views.py:480
+msgid ""
+"Necesitas tener un perfil de proveedor para aplicar a patrocinios. Primero "
+"solicita ser proveedor."
+msgstr ""
+
+#: experienciaas/events/views.py:484
+#, python-brace-format
+msgid ""
+"Tu perfil de proveedor debe estar aprobado para aplicar a patrocinios. "
+"Estado actual: {status}"
+msgstr ""
+
+#: experienciaas/events/views.py:485
+msgid "Pendiente de aprobación"
+msgstr ""
+
+#: experienciaas/events/views.py:485
+#: experienciaas/templates/users/admin_supplier_profiles.html:101
+#: experienciaas/users/models.py:718 experienciaas/users/models.py:787
+msgid "Aprobado"
+msgstr ""
+
+#: experienciaas/events/views.py:493 experienciaas/users/views.py:735
+#: experienciaas/users/views.py:786
+msgid " hasta el {}"
+msgstr ""
+
+#: experienciaas/events/views.py:495
+msgid " de forma permanente"
+msgstr ""
+
+#: experienciaas/events/views.py:497
+#, python-brace-format
+msgid ""
+"Tu rol de proveedor está suspendido{suspension}. No puedes aplicar a "
+"patrocinios."
+msgstr ""
+
+#: experienciaas/events/views.py:516
+msgid "Las aplicaciones de patrocinio no están disponibles para este evento."
+msgstr ""
+
+#: experienciaas/events/views.py:524
+msgid "Ya has aplicado para patrocinar este evento."
+msgstr ""
+
+#: experienciaas/events/views.py:535
+msgid ""
+"Tu solicitud de patrocinio ha sido enviada exitosamente! El organizador del "
+"evento te contactará pronto."
+msgstr ""
+
+#: experienciaas/templates/account/account_inactive.html:5
+#: experienciaas/templates/account/account_inactive.html:9
+msgid "Account Inactive"
+msgstr ""
+
+#: experienciaas/templates/account/account_inactive.html:11
+msgid "This account is inactive."
+msgstr ""
+
+#: experienciaas/templates/account/base_reauthenticate.html:5
+#: experienciaas/templates/account/base_reauthenticate.html:9
+msgid "Confirm Access"
+msgstr ""
+
+#: experienciaas/templates/account/base_reauthenticate.html:11
+msgid "Please reauthenticate to safeguard your account."
+msgstr ""
+
+#: experienciaas/templates/account/base_reauthenticate.html:17
+msgid "Alternative options"
+msgstr ""
+
+#: experienciaas/templates/account/email/account_already_exists_message.txt:4
+#, python-format
+msgid ""
+"Estás recibiendo este correo porque tú u otra persona ha intentado "
+"registrarse usando la dirección de correo electrónico:\n"
+"\n"
+"%(email)s\n"
+"\n"
+"Sin embargo, ya existe una cuenta registrada con esta dirección de correo.\n"
+"\n"
+"Si has olvidado que tenías una cuenta con nosotros, puedes usar el "
+"procedimiento de recuperación de contraseña para acceder a tu cuenta:\n"
+"\n"
+"%(password_reset_url)s\n"
+"\n"
+"Si no has intentado crear una cuenta, puedes ignorar este correo de forma "
+"segura."
+msgstr ""
+
+#: experienciaas/templates/account/email/account_already_exists_subject.txt:3
+#, python-format
+msgid "Cuenta ya existente - %(site_name)s"
+msgstr ""
+
+#: experienciaas/templates/account/email/base_message.txt:1
+#, fuzzy, python-format
+#| msgid "Hello from %(site_name)s!"
+msgid "¡Hola desde %(site_name)s!"
+msgstr "¡Hola desde %(site_name)s!"
+
+#: experienciaas/templates/account/email/base_message.txt:5
+#, fuzzy, python-format
+#| msgid ""
+#| "Thank you for using %(site_name)s!\n"
+#| "%(site_domain)s"
+msgid ""
+"¡Gracias por usar %(site_name)s!\n"
+"%(site_domain)s"
+msgstr ""
+"¡Gracias por usar %(site_name)s!\n"
+"%(site_domain)s"
+
+#: experienciaas/templates/account/email/email_confirmation_message.txt:5
+#, python-format
+msgid ""
+"¡Bienvenido a %(site_name)s!\n"
+"\n"
+"Estás recibiendo este correo porque el usuario %(user_display)s ha utilizado "
+"esta dirección de correo electrónico para registrarse en %(site_domain)s.\n"
+"\n"
+"Para completar tu registro y activar tu cuenta, necesitas confirmar que esta "
+"dirección de correo te pertenece.\n"
+"\n"
+"Haz clic en el siguiente enlace para confirmar tu dirección de correo:"
+msgstr ""
+
+#: experienciaas/templates/account/email/email_confirmation_message.txt:15
+#, python-format
+msgid ""
+"Si no has creado una cuenta en %(site_name)s, puedes ignorar este correo de "
+"forma segura.\n"
+"\n"
+"Si tienes problemas para hacer clic en el enlace, copia y pega la URL "
+"completa en tu navegador.\n"
+"\n"
+"Este enlace de confirmación es válido por tiempo limitado."
+msgstr ""
+
+#: experienciaas/templates/account/email/email_confirmation_subject.txt:3
+#, python-format
+msgid "Confirma tu dirección de correo electrónico - %(site_name)s"
+msgstr ""
+
+#: experienciaas/templates/account/email/password_reset_key_message.txt:4
+msgid ""
+"Estás recibiendo este correo porque tú u otra persona ha solicitado "
+"restablecer la contraseña de tu cuenta de usuario.\n"
+"\n"
+"Si no has solicitado un restablecimiento de contraseña, puedes ignorar este "
+"correo de forma segura.\n"
+"\n"
+"Para restablecer tu contraseña, haz clic en el siguiente enlace:"
+msgstr ""
+"Estás recibiendo este correo porque tú u otra persona ha solicitado "
+"restablecer la contraseña de tu cuenta de usuario.\n"
+"\n"
+"Si no has solicitado un restablecimiento de contraseña, puedes ignorar este "
+"correo de forma segura.\n"
+"\n"
+"Para restablecer tu contraseña, haz clic en el siguiente enlace:"
+
+#: experienciaas/templates/account/email/password_reset_key_message.txt:12
+#, python-format
+msgid "Por si lo has olvidado, tu nombre de usuario es %(username)s."
+msgstr "Por si lo has olvidado, tu nombre de usuario es %(username)s."
+
+#: experienciaas/templates/account/email/password_reset_key_message.txt:14
+msgid ""
+"Si tienes problemas para hacer clic en el enlace, copia y pega la URL "
+"completa en tu navegador.\n"
+"\n"
+"Este enlace es válido por tiempo limitado por razones de seguridad."
+msgstr ""
+"Si tienes problemas para hacer clic en el enlace, copia y pega la URL "
+"completa en tu navegador.\n"
+"\n"
+"Este enlace es válido por tiempo limitado por razones de seguridad."
+
+#: experienciaas/templates/account/email/password_reset_key_subject.txt:3
+#, python-format
+msgid "Restablecimiento de Contraseña - %(site_name)s"
+msgstr "Restablecimiento de Contraseña - %(site_name)s"
+
+#: experienciaas/templates/account/email/unknown_account_message.txt:4
+#, python-format
+msgid ""
+"Estás recibiendo este correo porque tú u otra persona ha solicitado una "
+"contraseña para tu cuenta de usuario. \n"
+"\n"
+"Sin embargo, no tenemos ningún registro de un usuario con el correo "
+"electrónico %(email)s en nuestra base de datos.\n"
+"\n"
+"Este correo puede ser ignorado de forma segura si no has solicitado un "
+"restablecimiento de contraseña.\n"
+"\n"
+"Si fuiste tú quien lo solicitó, puedes crear una cuenta nueva usando el "
+"siguiente enlace:\n"
+"\n"
+"%(signup_url)s"
+msgstr ""
+
+#: experienciaas/templates/account/email/unknown_account_subject.txt:3
+#, python-format
+msgid "Solicitud de restablecimiento de contraseña - %(site_name)s"
+msgstr ""
+
+#: experienciaas/templates/account/email_change.html:5
+#: experienciaas/templates/account/email_change.html:9
+msgid "Email Address"
+msgstr ""
+
+#: experienciaas/templates/account/email_change.html:21
+#: experienciaas/templates/account/email_change.html:29
+msgid "Current email"
+msgstr ""
+
+#: experienciaas/templates/account/email_change.html:31
+msgid "Changing to"
+msgstr ""
+
+#: experienciaas/templates/account/email_change.html:35
+msgid "Your email address is still pending verification."
+msgstr ""
+
+#: experienciaas/templates/account/email_change.html:37
+msgid "Re-send Verification"
+msgstr ""
+
+#: experienciaas/templates/account/email_change.html:41
+msgid "Cancel Change"
+msgstr ""
+
+#: experienciaas/templates/account/email_change.html:49
+msgid "Change to"
+msgstr ""
+
+#: experienciaas/templates/account/email_change.html:55
+msgid "Change Email"
+msgstr ""
+
+#: experienciaas/templates/account/messages/cannot_delete_primary_email.txt:2
+#, python-format
+msgid "You cannot remove your primary email address (%(email)s)."
+msgstr ""
+
+#: experienciaas/templates/account/messages/email_confirmation_failed.txt:2
+#, python-format
+msgid ""
+"Unable to confirm %(email)s because it is already confirmed by a different "
+"account."
+msgstr ""
+
+#: experienciaas/templates/account/messages/email_confirmation_sent.txt:2
+#, python-format
+msgid "Confirmation email sent to %(email)s."
+msgstr ""
+
+#: experienciaas/templates/account/messages/email_confirmed.txt:2
+#, python-format
+msgid "You have confirmed %(email)s."
+msgstr ""
+
+#: experienciaas/templates/account/messages/email_deleted.txt:2
+#, python-format
+msgid "Removed email address %(email)s."
+msgstr ""
+
+#: experienciaas/templates/account/messages/logged_in.txt:4
+#, python-format
+msgid "Successfully signed in as %(name)s."
+msgstr ""
+
+#: experienciaas/templates/account/messages/logged_out.txt:2
+msgid "You have signed out."
+msgstr ""
+
+#: experienciaas/templates/account/messages/password_changed.txt:2
+msgid "Password successfully changed."
+msgstr "Contraseña cambiada exitosamente."
+
+#: experienciaas/templates/account/messages/password_set.txt:2
+msgid "Password successfully set."
+msgstr "Contraseña establecida exitosamente."
+
+#: experienciaas/templates/account/messages/primary_email_set.txt:2
+msgid "Primary email address set."
+msgstr ""
+
+#: experienciaas/templates/account/messages/unverified_primary_email.txt:2
+msgid "Your primary email address must be verified."
+msgstr ""
+
+#: experienciaas/templates/account/password_set.html:5
+#: experienciaas/templates/account/password_set.html:9
+#: experienciaas/templates/account/password_set.html:20
+msgid "Set Password"
+msgstr "Establecer Contraseña"
+
+#: experienciaas/templates/account/reauthenticate.html:5
+msgid "Enter your password:"
+msgstr "Ingresa tu contraseña:"
+
+#: experienciaas/templates/account/reauthenticate.html:20
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: experienciaas/templates/account/signup_closed.html:5
+#: experienciaas/templates/account/signup_closed.html:9
+msgid "Sign Up Closed"
+msgstr ""
+
+#: experienciaas/templates/account/signup_closed.html:11
+msgid "We are sorry, but the sign up is currently closed."
+msgstr ""
+
+#: experienciaas/templates/account/snippets/warn_no_email.html:3
+msgid "Warning:"
+msgstr ""
+
+#: experienciaas/templates/account/snippets/warn_no_email.html:3
+msgid ""
+"You currently do not have any email address set up. You should really add an "
+"email address so you can receive notifications, reset your password, etc."
+msgstr ""
+
+#: experienciaas/templates/allauth/layouts/entrance.html:8
+msgid "Sign In"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:130
+msgid "Ticket Digital"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:137
+msgid "Confirmado"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:141
+#: experienciaas/templates/users/admin_role_applications.html:121
+#: experienciaas/templates/users/admin_supplier_profiles.html:105
+#: experienciaas/templates/users/admin_supplier_profiles.html:132
+#: experienciaas/users/models.py:717 experienciaas/users/models.py:786
+msgid "Pendiente"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:145
+msgid "Cancelado"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:169
+msgid "Fecha y Hora"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:179
+#: experienciaas/templates/users/admin_supplier_profiles.html:264
+#: experienciaas/users/admin.py:87
+msgid "Ubicación"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:191
+msgid "Asistente"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:202
+msgid "Precio"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:204
+msgid "GRATIS"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:216
+msgid "Código QR de Acceso"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:226
+msgid "Presenta este código QR en el evento para acceder"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:234
+msgid "Descargar PNG"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:239
+msgid "Descargar SVG"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:247
+msgid "Código QR no disponible"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:250
+msgid "El código QR estará disponible cuando tu ticket sea confirmado."
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:252
+msgid "El código QR solo está disponible para tickets confirmados."
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:261
+msgid "Información Importante"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:263
+msgid "Llega 15 minutos antes del inicio del evento"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:264
+msgid "Presenta un documento de identidad válido junto con este ticket"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:265
+msgid "El código QR es personal e intransferible"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:277
+msgid "Imprimir Ticket"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:281
+msgid "Volver a Mis Eventos"
+msgstr ""
+
+#: experienciaas/templates/events/ticket_detail.html:285
+msgid "Ver Evento"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:5
+#: experienciaas/templates/users/admin_active_roles.html:16
+msgid "Gestión de Usuarios y Roles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:41
+#: experienciaas/templates/users/admin_role_applications.html:43
+#: experienciaas/templates/users/admin_supplier_profiles.html:36
+#: experienciaas/templates/users/admin_unified_roles.html:88
+msgid "Filtrar"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:53
+#: experienciaas/templates/users/admin_active_roles.html:392
+#: experienciaas/templates/users/admin_active_roles.html:457
+#: experienciaas/templates/users/admin_active_roles.html:524
+#: experienciaas/templates/users/admin_role_applications.html:55
+#: experienciaas/templates/users/admin_supplier_profiles.html:48
+#: experienciaas/templates/users/admin_unified_roles.html:103
+#: experienciaas/users/models.py:300 experienciaas/users/models.py:458
+msgid "Usuario"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:54
+msgid "Roles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:56
+#: experienciaas/templates/users/admin_unified_roles.html:106
+msgid "Suspensión"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:57
+#: experienciaas/templates/users/admin_active_roles.html:186
+#: experienciaas/templates/users/admin_role_applications.html:61
+#: experienciaas/templates/users/admin_supplier_profiles.html:55
+#: experienciaas/templates/users/admin_unified_roles.html:107
+#: experienciaas/templates/users/admin_unified_roles.html:267
+msgid "Acciones"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:86
+#: experienciaas/templates/users/admin_unified_roles.html:147
+#: experienciaas/users/models.py:453 experienciaas/users/models.py:712
+#: experienciaas/users/role_forms.py:52
+msgid "Organizador"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:91
+#: experienciaas/templates/users/admin_unified_roles.html:155
+#: experienciaas/users/models.py:455
+msgid "Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:96
+#: experienciaas/templates/users/admin_unified_roles.html:140
+msgid "Admin"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:100
+#: experienciaas/templates/users/admin_unified_roles.html:162
+msgid "Usuario Básico"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:104
+msgid "Aplicación Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:114
+#: experienciaas/templates/users/admin_unified_roles.html:131
+msgid "Cuenta Inactiva"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:118
+msgid "Cuenta Activa"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:126
+#: experienciaas/templates/users/admin_unified_roles.html:234
+msgid "Org. Suspendido"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:130
+msgid "Org. Activo"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:137
+#: experienciaas/templates/users/admin_unified_roles.html:247
+msgid "Prov. Suspendido"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:141
+msgid "Prov. Activo"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:152
+#: experienciaas/templates/users/admin_active_roles.html:166
+#: experienciaas/templates/users/admin_unified_roles.html:236
+#: experienciaas/templates/users/admin_unified_roles.html:249
+msgid "Hasta"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:154
+#: experienciaas/templates/users/admin_active_roles.html:168
+#: experienciaas/templates/users/admin_unified_roles.html:238
+#: experienciaas/templates/users/admin_unified_roles.html:251
+msgid "Permanente"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:178
+#: experienciaas/templates/users/admin_unified_roles.html:259
+msgid "Sin suspensiones"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:197
+#: experienciaas/templates/users/admin_unified_roles.html:278
+msgid "¿Activar cuenta de usuario?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:198
+#: experienciaas/templates/users/admin_unified_roles.html:279
+msgid "Activar Cuenta"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:207
+#: experienciaas/templates/users/admin_active_roles.html:548
+#: experienciaas/templates/users/admin_unified_roles.html:288
+#: experienciaas/templates/users/admin_unified_roles.html:590
+msgid "Desactivar Cuenta"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:221
+#: experienciaas/templates/users/admin_unified_roles.html:302
+msgid "¿Promover a organizador?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:222
+#: experienciaas/templates/users/admin_unified_roles.html:303
+msgid "Promover a Organizador"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:233
+#: experienciaas/templates/users/admin_unified_roles.html:313
+msgid "¿Aprobar como proveedor?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:234
+#: experienciaas/templates/users/admin_unified_roles.html:314
+msgid "Aprobar como Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:251
+#: experienciaas/templates/users/admin_unified_roles.html:330
+msgid "¿Reactivar rol de organizador?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:252
+#: experienciaas/templates/users/admin_unified_roles.html:331
+msgid "Reactivar Organizador"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:261
+#: experienciaas/templates/users/admin_unified_roles.html:340
+msgid "Suspender Organizador"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:271
+#: experienciaas/templates/users/admin_unified_roles.html:350
+msgid ""
+"¿REVOCAR COMPLETAMENTE el rol de organizador? Esta acción no se puede "
+"deshacer."
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:272
+#: experienciaas/templates/users/admin_unified_roles.html:351
+msgid "Revocar Organizador"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:288
+#: experienciaas/templates/users/admin_unified_roles.html:373
+msgid "¿Reactivar rol de proveedor?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:289
+#: experienciaas/templates/users/admin_unified_roles.html:374
+msgid "Reactivar Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:298
+#: experienciaas/templates/users/admin_unified_roles.html:383
+msgid "Suspender Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:308
+#: experienciaas/templates/users/admin_unified_roles.html:393
+msgid ""
+"¿REVOCAR COMPLETAMENTE el rol de proveedor? Esta acción no se puede deshacer."
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:309
+#: experienciaas/templates/users/admin_unified_roles.html:394
+msgid "Revocar Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:330
+#: experienciaas/templates/users/admin_role_applications.html:163
+#: experienciaas/templates/users/admin_supplier_profiles.html:180
+#: experienciaas/templates/users/admin_unified_roles.html:415
+msgid "Primera"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:335
+#: experienciaas/templates/users/admin_role_applications.html:168
+#: experienciaas/templates/users/admin_supplier_profiles.html:185
+#: experienciaas/templates/users/admin_unified_roles.html:420
+msgid "Anterior"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:342
+#: experienciaas/templates/users/admin_role_applications.html:175
+#: experienciaas/templates/users/admin_supplier_profiles.html:192
+#: experienciaas/templates/users/admin_unified_roles.html:427
+msgid "Página"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:342
+#: experienciaas/templates/users/admin_role_applications.html:175
+#: experienciaas/templates/users/admin_supplier_profiles.html:192
+#: experienciaas/templates/users/admin_unified_roles.html:427
+msgid "de"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:349
+#: experienciaas/templates/users/admin_role_applications.html:182
+#: experienciaas/templates/users/admin_supplier_profiles.html:199
+#: experienciaas/templates/users/admin_unified_roles.html:434
+msgid "Siguiente"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:354
+#: experienciaas/templates/users/admin_role_applications.html:187
+#: experienciaas/templates/users/admin_supplier_profiles.html:204
+#: experienciaas/templates/users/admin_unified_roles.html:439
+msgid "Última"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:364
+msgid "No hay usuarios con roles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:365
+msgid "No se encontraron usuarios con roles activos."
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:384
+#: experienciaas/templates/users/admin_unified_roles.html:469
+msgid "Suspender Rol de Organizador"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:400
+#: experienciaas/templates/users/admin_active_roles.html:465
+#: experienciaas/templates/users/admin_unified_roles.html:479
+#: experienciaas/templates/users/admin_unified_roles.html:528
+msgid "Razón de la suspensión"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:411
+#: experienciaas/templates/users/admin_active_roles.html:476
+#: experienciaas/templates/users/admin_unified_roles.html:488
+#: experienciaas/templates/users/admin_unified_roles.html:537
+msgid "Suspensión permanente"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:418
+#: experienciaas/templates/users/admin_active_roles.html:483
+#: experienciaas/templates/users/admin_unified_roles.html:493
+#: experienciaas/templates/users/admin_unified_roles.html:542
+msgid "Duración en días"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:421
+#: experienciaas/templates/users/admin_active_roles.html:486
+msgid "Ej: 30"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:423
+#: experienciaas/templates/users/admin_active_roles.html:488
+msgid "Deja vacío para suspensión indefinida"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:429
+#: experienciaas/templates/users/admin_active_roles.html:494
+#: experienciaas/templates/users/admin_active_roles.html:545
+#: experienciaas/templates/users/admin_unified_roles.html:501
+#: experienciaas/templates/users/admin_unified_roles.html:550
+#: experienciaas/templates/users/admin_unified_roles.html:589
+msgid "Cancelar"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:432
+#: experienciaas/templates/users/admin_active_roles.html:497
+#: experienciaas/templates/users/admin_unified_roles.html:502
+#: experienciaas/templates/users/admin_unified_roles.html:551
+msgid "Suspender"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:449
+#: experienciaas/templates/users/admin_unified_roles.html:518
+msgid "Suspender Rol de Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:516
+#: experienciaas/templates/users/admin_unified_roles.html:569
+msgid "Desactivar Cuenta de Usuario"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:532
+msgid ""
+"Al desactivar la cuenta, el usuario no podrá iniciar sesión. Si tiene roles "
+"asignados, también serán suspendidos automáticamente."
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:537
+#: experienciaas/templates/users/admin_unified_roles.html:583
+msgid "Razón de la desactivación"
+msgstr ""
+
+#: experienciaas/templates/users/admin_active_roles.html:540
+msgid "Motivo opcional..."
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:5
+#: experienciaas/templates/users/admin_role_applications.html:16
+msgid "Gestión de Aplicaciones de Roles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:27
+#: experienciaas/templates/users/admin_supplier_profiles.html:27
+#: experienciaas/users/views.py:664
+msgid "Todos los estados"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:35
+msgid "Todos los roles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:56
+msgid "Rol Solicitado"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:58
+msgid "Fecha de Solicitud"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:59
+msgid "Justificación"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:60
+msgid "Procesado por"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:111
+msgid "Sin justificación"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:132
+msgid "¿Aprobar esta aplicación de rol?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:141
+msgid "¿Rechazar esta aplicación de rol?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:147
+msgid "Procesada"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:197
+msgid "No hay aplicaciones de roles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_role_applications.html:198
+msgid "No se encontraron aplicaciones con los filtros seleccionados."
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:5
+#: experienciaas/templates/users/admin_supplier_profiles.html:16
+msgid "Gestión de Perfiles de Proveedores"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:29
+msgid "Aprobados"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:32
+msgid "Pendientes"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:49
+#: experienciaas/users/models.py:168
+msgid "Empresa"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:50
+msgid "Tipo de Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:52
+msgid "Presupuesto"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:53
+msgid "Creado"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:54
+msgid "Aprobado por"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:119
+#: experienciaas/templates/users/admin_supplier_profiles.html:259
+#: experienciaas/templates/users/admin_supplier_profiles.html:278
+#: experienciaas/templates/users/admin_supplier_profiles.html:288
+msgid "No especificado"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:143
+#: experienciaas/templates/users/admin_supplier_profiles.html:318
+msgid "¿Cambiar estado a pendiente?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:153
+#: experienciaas/templates/users/admin_supplier_profiles.html:326
+msgid "¿Aprobar este perfil de proveedor?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:214
+msgid "No hay perfiles de proveedores"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:215
+msgid "No se encontraron perfiles con los filtros seleccionados."
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:232
+msgid "Detalles del Perfil de Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:239
+msgid "Información de la Empresa"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:242
+msgid "Nombre"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:246
+msgid "Tipo"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:250
+msgid "Teléfono"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:270
+msgid "Información Comercial"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:273
+msgid "Presupuesto Mín"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:283
+msgid "Presupuesto Máx"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:293
+msgid "Experiencia"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:301
+msgid "Descripción"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:307
+msgid "Servicios Ofrecidos"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:313
+msgid "Cerrar"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:319
+msgid "Cambiar a Pendiente"
+msgstr ""
+
+#: experienciaas/templates/users/admin_supplier_profiles.html:327
+#: experienciaas/templates/users/admin_unified_roles.html:181
+#: experienciaas/templates/users/admin_unified_roles.html:208
+msgid "Aprobar"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:5
+#: experienciaas/templates/users/admin_unified_roles.html:16
+msgid "Gestión Unificada de Usuarios y Roles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:22
+msgid "aplicaciones pendientes"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:28
+msgid "perfiles pendientes"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:41
+msgid "Todos"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:44
+msgid "Aplicaciones"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:50
+msgid "Perfiles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:56
+msgid "Con Roles"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:91
+msgid "Limpiar"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:104
+msgid "Roles y Estado"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:105
+#: experienciaas/users/views.py:668
+msgid "Aplicaciones Pendientes"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:148
+#: experienciaas/templates/users/admin_unified_roles.html:156
+msgid "Suspendido"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:180
+msgid "¿Aprobar aplicación?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:188
+msgid "¿Rechazar aplicación?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:189
+msgid "Rechazar"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:201
+msgid "Perfil Proveedor Pendiente"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:207
+msgid "¿Aprobar perfil de proveedor?"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:213
+msgid "Editar"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:223
+msgid "Perfil Revocado"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:225
+msgid "Usuario puede volver a aplicar"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:363
+msgid "Editar Perfil Proveedor"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:449
+msgid "No hay usuarios"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:450
+msgid "No se encontraron usuarios con los filtros seleccionados."
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:476
+msgid "¿Está seguro de que desea suspender el rol de organizador para"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:481
+#: experienciaas/templates/users/admin_unified_roles.html:530
+msgid "Describe la razón de la suspensión..."
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:496
+#: experienciaas/templates/users/admin_unified_roles.html:545
+msgid "Días de suspensión"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:497
+#: experienciaas/templates/users/admin_unified_roles.html:546
+msgid "Deje vacío para suspensión permanente"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:525
+msgid "¿Está seguro de que desea suspender el rol de proveedor para"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:576
+msgid "¿Está seguro de que desea desactivar la cuenta de"
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:579
+msgid ""
+"Esta acción suspenderá automáticamente todos los roles activos del usuario."
+msgstr ""
+
+#: experienciaas/templates/users/admin_unified_roles.html:585
+msgid "Describe la razón de la desactivación..."
+msgstr ""
+
+#: experienciaas/users/admin.py:25
+msgid "Personal info"
+msgstr ""
+
+#: experienciaas/users/admin.py:28
+msgid "Contact Information"
+msgstr ""
+
+#: experienciaas/users/admin.py:31
+msgid "Professional"
+msgstr ""
+
+#: experienciaas/users/admin.py:34
+msgid "Social Media"
+msgstr ""
+
+#: experienciaas/users/admin.py:37
+msgid "Interests"
+msgstr ""
+
+#: experienciaas/users/admin.py:40
+msgid "Privacy Settings"
+msgstr ""
+
+#: experienciaas/users/admin.py:43
+msgid "Notifications"
+msgstr ""
+
+#: experienciaas/users/admin.py:47
+msgid "Permissions"
+msgstr ""
+
+#: experienciaas/users/admin.py:58
+msgid "Important dates"
+msgstr ""
+
+#: experienciaas/users/admin.py:83
+msgid "Edad"
+msgstr ""
+
+#: experienciaas/users/apps.py:9
+msgid "Users"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:14
+msgid "Nuevo email"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:17 experienciaas/users/email_forms.py:26
+msgid "nuevo@email.com"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:19
+msgid "Introduce tu nueva dirección de email"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:23
+msgid "Confirmar nuevo email"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:28
+msgid "Confirma tu nueva dirección de email"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:32
+msgid "Contraseña actual"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:35
+msgid "Tu contraseña actual"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:37
+msgid "Confirma tu contraseña actual para verificar tu identidad"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:49
+msgid "El nuevo email debe ser diferente al actual"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:53
+msgid "Este email ya está en uso por otro usuario"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:63
+msgid "Los emails no coinciden"
+msgstr ""
+
+#: experienciaas/users/email_forms.py:71
+msgid "La contraseña actual es incorrecta"
+msgstr ""
+
+#: experienciaas/users/forms.py:68 experienciaas/users/tests/test_forms.py:35
+msgid "This email has already been taken."
+msgstr ""
+
+#: experienciaas/users/forms.py:82 experienciaas/users/models.py:187
+msgid "Intereses"
+msgstr ""
+
+#: experienciaas/users/forms.py:83
+msgid "Selecciona tus áreas de interés (puedes seleccionar varias)"
+msgstr ""
+
+#: experienciaas/users/forms.py:100 experienciaas/users/forms.py:227
+#: experienciaas/users/forms.py:250
+msgid "Tu nombre completo"
+msgstr ""
+
+#: experienciaas/users/forms.py:112
+msgid "Cuéntanos un poco sobre ti..."
+msgstr ""
+
+#: experienciaas/users/forms.py:119
+msgid "3001234567"
+msgstr ""
+
+#: experienciaas/users/forms.py:123
+msgid "Colombia"
+msgstr ""
+
+#: experienciaas/users/forms.py:127
+msgid "Bogotá"
+msgstr ""
+
+#: experienciaas/users/forms.py:131
+msgid "Calle 123 #45-67"
+msgstr ""
+
+#: experienciaas/users/forms.py:135
+msgid "110111"
+msgstr ""
+
+#: experienciaas/users/forms.py:139
+msgid "Desarrollador de Software"
+msgstr ""
+
+#: experienciaas/users/forms.py:143
+msgid "Mi Empresa"
+msgstr ""
+
+#: experienciaas/users/forms.py:147
+msgid "https://misitio.com"
+msgstr ""
+
+#: experienciaas/users/forms.py:151
+msgid "https://linkedin.com/in/tuusuario"
+msgstr ""
+
+#: experienciaas/users/forms.py:155
+msgid "https://twitter.com/tuusuario"
+msgstr ""
+
+#: experienciaas/users/forms.py:159
+msgid "https://instagram.com/tuusuario"
+msgstr ""
+
+#: experienciaas/users/forms.py:163
+msgid "https://facebook.com/tuusuario"
+msgstr ""
+
+#: experienciaas/users/forms.py:168
+msgid "Lectura, deportes, música..."
+msgstr ""
+
+#: experienciaas/users/forms.py:230 experienciaas/users/forms.py:253
+#: experienciaas/users/models.py:87
+msgid "Nombre completo"
+msgstr ""
+
+#: experienciaas/users/forms.py:274 experienciaas/users/models.py:625
+msgid "Tipos de eventos preferidos"
+msgstr ""
+
+#: experienciaas/users/forms.py:275
+msgid "Tipos de eventos que te interesan patrocinar (separados por comas)"
+msgstr ""
+
+#: experienciaas/users/forms.py:285 experienciaas/users/models.py:626
+msgid "Ubicaciones preferidas"
+msgstr ""
+
+#: experienciaas/users/forms.py:286
+msgid ""
+"Ciudades o regiones donde prefieres patrocinar eventos (separadas por comas)"
+msgstr ""
+
+#: experienciaas/users/models.py:20
+msgid "Estados Unidos (+1)"
+msgstr ""
+
+#: experienciaas/users/models.py:21
+msgid "Canadá (+1)"
+msgstr ""
+
+#: experienciaas/users/models.py:22
+msgid "México (+52)"
+msgstr ""
+
+#: experienciaas/users/models.py:23
+msgid "España (+34)"
+msgstr ""
+
+#: experienciaas/users/models.py:24
+msgid "Francia (+33)"
+msgstr ""
+
+#: experienciaas/users/models.py:25
+msgid "Alemania (+49)"
+msgstr ""
+
+#: experienciaas/users/models.py:26
+msgid "Italia (+39)"
+msgstr ""
+
+#: experienciaas/users/models.py:27
+msgid "Reino Unido (+44)"
+msgstr ""
+
+#: experienciaas/users/models.py:28
+msgid "Argentina (+54)"
+msgstr ""
+
+#: experienciaas/users/models.py:29
+msgid "Brasil (+55)"
+msgstr ""
+
+#: experienciaas/users/models.py:30
+msgid "Chile (+56)"
+msgstr ""
+
+#: experienciaas/users/models.py:31
+msgid "Colombia (+57)"
+msgstr ""
+
+#: experienciaas/users/models.py:32
+msgid "Venezuela (+58)"
+msgstr ""
+
+#: experienciaas/users/models.py:33
+msgid "Perú (+51)"
+msgstr ""
+
+#: experienciaas/users/models.py:34
+msgid "Ecuador (+593)"
+msgstr ""
+
+#: experienciaas/users/models.py:35
+msgid "Uruguay (+598)"
+msgstr ""
+
+#: experienciaas/users/models.py:36
+msgid "Paraguay (+595)"
+msgstr ""
+
+#: experienciaas/users/models.py:37
+msgid "Bolivia (+591)"
+msgstr ""
+
+#: experienciaas/users/models.py:41
+msgid "Masculino"
+msgstr ""
+
+#: experienciaas/users/models.py:42
+msgid "Femenino"
+msgstr ""
+
+#: experienciaas/users/models.py:43 experienciaas/users/models.py:578
+msgid "Otro"
+msgstr ""
+
+#: experienciaas/users/models.py:44
+msgid "Prefiero no decir"
+msgstr ""
+
+#: experienciaas/users/models.py:48
+msgid "Música"
+msgstr ""
+
+#: experienciaas/users/models.py:49 experienciaas/users/models.py:559
+msgid "Tecnología"
+msgstr ""
+
+#: experienciaas/users/models.py:50 experienciaas/users/models.py:567
+msgid "Deportes"
+msgstr ""
+
+#: experienciaas/users/models.py:51
+msgid "Arte"
+msgstr ""
+
+#: experienciaas/users/models.py:52
+msgid "Gastronomía"
+msgstr ""
+
+#: experienciaas/users/models.py:53
+msgid "Viajes"
+msgstr ""
+
+#: experienciaas/users/models.py:54
+msgid "Negocios"
+msgstr ""
+
+#: experienciaas/users/models.py:55 experienciaas/users/models.py:565
+msgid "Educación"
+msgstr ""
+
+#: experienciaas/users/models.py:56 experienciaas/users/models.py:564
+msgid "Salud y Bienestar"
+msgstr ""
+
+#: experienciaas/users/models.py:57
+msgid "Videojuegos"
+msgstr ""
+
+#: experienciaas/users/models.py:58
+msgid "Fotografía"
+msgstr ""
+
+#: experienciaas/users/models.py:59
+msgid "Moda"
+msgstr ""
+
+#: experienciaas/users/models.py:60
+msgid "Libros y Literatura"
+msgstr ""
+
+#: experienciaas/users/models.py:61
+msgid "Cine"
+msgstr ""
+
+#: experienciaas/users/models.py:62
+msgid "Actividades al Aire Libre"
+msgstr ""
+
+#: experienciaas/users/models.py:63
+msgid "Ciencia"
+msgstr ""
+
+#: experienciaas/users/models.py:64
+msgid "Cultura"
+msgstr ""
+
+#: experienciaas/users/models.py:65
+msgid "Networking"
+msgstr ""
+
+#: experienciaas/users/models.py:75
+msgid "Debes tener al menos 13 años para registrarte."
+msgstr ""
+
+#: experienciaas/users/models.py:77
+msgid "Por favor, introduce una fecha de nacimiento válida."
+msgstr ""
+
+#: experienciaas/users/models.py:90
+msgid "email address"
+msgstr ""
+
+#: experienciaas/users/models.py:95
+msgid "Fecha de nacimiento"
+msgstr ""
+
+#: experienciaas/users/models.py:99
+msgid "Formato: AAAA-MM-DD"
+msgstr ""
+
+#: experienciaas/users/models.py:102
+msgid "Género"
+msgstr ""
+
+#: experienciaas/users/models.py:106
+msgid "Esta información es opcional y privada"
+msgstr ""
+
+#: experienciaas/users/models.py:109
+msgid "Biografía"
+msgstr ""
+
+#: experienciaas/users/models.py:112
+msgid "Cuéntanos un poco sobre ti (máximo 500 caracteres)"
+msgstr ""
+
+#: experienciaas/users/models.py:117
+msgid "Código de país"
+msgstr ""
+
+#: experienciaas/users/models.py:121
+msgid "Selecciona el código de tu país"
+msgstr ""
+
+#: experienciaas/users/models.py:125
+msgid "El número de teléfono debe contener entre 7 y 15 dígitos."
+msgstr ""
+
+#: experienciaas/users/models.py:128
+msgid "Número de teléfono"
+msgstr ""
+
+#: experienciaas/users/models.py:132
+msgid "Solo números, sin espacios ni guiones"
+msgstr ""
+
+#: experienciaas/users/models.py:137
+msgid "País"
+msgstr ""
+
+#: experienciaas/users/models.py:140
+msgid "País de residencia"
+msgstr ""
+
+#: experienciaas/users/models.py:143
+msgid "Ciudad"
+msgstr ""
+
+#: experienciaas/users/models.py:146
+msgid "Ciudad de residencia"
+msgstr ""
+
+#: experienciaas/users/models.py:149
+msgid "Dirección"
+msgstr ""
+
+#: experienciaas/users/models.py:152
+msgid "Dirección completa (opcional)"
+msgstr ""
+
+#: experienciaas/users/models.py:155
+msgid "Código postal"
+msgstr ""
+
+#: experienciaas/users/models.py:162
+msgid "Ocupación"
+msgstr ""
+
+#: experienciaas/users/models.py:165
+msgid "Tu profesión o trabajo actual"
+msgstr ""
+
+#: experienciaas/users/models.py:171
+msgid "Empresa donde trabajas (opcional)"
+msgstr ""
+
+#: experienciaas/users/models.py:174
+msgid "Sitio web"
+msgstr ""
+
+#: experienciaas/users/models.py:176
+msgid "Tu sitio web personal o profesional"
+msgstr ""
+
+#: experienciaas/users/models.py:180 experienciaas/users/models.py:478
+#: experienciaas/users/models.py:614
+msgid "LinkedIn"
+msgstr ""
+
+#: experienciaas/users/models.py:181 experienciaas/users/models.py:612
+msgid "Twitter/X"
+msgstr ""
+
+#: experienciaas/users/models.py:182 experienciaas/users/models.py:477
+#: experienciaas/users/models.py:613
+msgid "Instagram"
+msgstr ""
+
+#: experienciaas/users/models.py:183 experienciaas/users/models.py:475
+#: experienciaas/users/models.py:611
+msgid "Facebook"
+msgstr ""
+
+#: experienciaas/users/models.py:190
+msgid "Selecciona tus áreas de interés para eventos"
+msgstr ""
+
+#: experienciaas/users/models.py:193
+msgid "Hobbies"
+msgstr ""
+
+#: experienciaas/users/models.py:196
+msgid "Describe tus hobbies e intereses personales"
+msgstr ""
+
+#: experienciaas/users/models.py:201
+msgid "Foto de perfil"
+msgstr ""
+
+#: experienciaas/users/models.py:204
+msgid "Imagen de perfil (recomendado: 400x400px)"
+msgstr ""
+
+#: experienciaas/users/models.py:209 experienciaas/users/models.py:643
+msgid "Perfil público"
+msgstr ""
+
+#: experienciaas/users/models.py:211
+msgid "Si tu perfil es visible para otros usuarios"
+msgstr ""
+
+#: experienciaas/users/models.py:214
+msgid "Mostrar email"
+msgstr ""
+
+#: experienciaas/users/models.py:216
+msgid "Si otros usuarios pueden ver tu email"
+msgstr ""
+
+#: experienciaas/users/models.py:219
+msgid "Mostrar teléfono"
+msgstr ""
+
+#: experienciaas/users/models.py:221
+msgid "Si otros usuarios pueden ver tu teléfono"
+msgstr ""
+
+#: experienciaas/users/models.py:226 experienciaas/users/models.py:645
+msgid "Notificaciones por email"
+msgstr ""
+
+#: experienciaas/users/models.py:228
+msgid "Recibir notificaciones de eventos por email"
+msgstr ""
+
+#: experienciaas/users/models.py:231
+msgid "Notificaciones por SMS"
+msgstr ""
+
+#: experienciaas/users/models.py:233
+msgid "Recibir notificaciones importantes por SMS"
+msgstr ""
+
+#: experienciaas/users/models.py:236
+msgid "Emails promocionales"
+msgstr ""
+
+#: experienciaas/users/models.py:238
+msgid "Recibir información sobre eventos y promociones"
+msgstr ""
+
+#: experienciaas/users/models.py:243
+msgid "Rol de organizador suspendido"
+msgstr ""
+
+#: experienciaas/users/models.py:245
+msgid "Si el rol de organizador está temporalmente suspendido"
+msgstr ""
+
+#: experienciaas/users/models.py:248 experienciaas/users/models.py:274
+msgid "Suspendido hasta"
+msgstr ""
+
+#: experienciaas/users/models.py:251
+msgid "Fecha hasta la cual está suspendido el rol de organizador"
+msgstr ""
+
+#: experienciaas/users/models.py:259 experienciaas/users/models.py:285
+msgid "Suspendido por"
+msgstr ""
+
+#: experienciaas/users/models.py:260
+msgid "Administrador que suspendió el rol de organizador"
+msgstr ""
+
+#: experienciaas/users/models.py:263
+msgid "Razón de suspensión de organizador"
+msgstr ""
+
+#: experienciaas/users/models.py:265
+msgid "Motivo de la suspensión del rol de organizador"
+msgstr ""
+
+#: experienciaas/users/models.py:269
+msgid "Rol de proveedor suspendido"
+msgstr ""
+
+#: experienciaas/users/models.py:271
+msgid "Si el rol de proveedor está temporalmente suspendido"
+msgstr ""
+
+#: experienciaas/users/models.py:277
+msgid "Fecha hasta la cual está suspendido el rol de proveedor"
+msgstr ""
+
+#: experienciaas/users/models.py:286
+msgid "Administrador que suspendió el rol de proveedor"
+msgstr ""
+
+#: experienciaas/users/models.py:289
+msgid "Razón de suspensión de proveedor"
+msgstr ""
+
+#: experienciaas/users/models.py:291
+msgid "Motivo de la suspensión del rol de proveedor"
+msgstr ""
+
+#: experienciaas/users/models.py:301
+msgid "Usuarios"
+msgstr ""
+
+#: experienciaas/users/models.py:451
+msgid "Administrador"
+msgstr ""
+
+#: experienciaas/users/models.py:469
+msgid "Bio"
+msgstr ""
+
+#: experienciaas/users/models.py:471
+msgid "Phone"
+msgstr ""
+
+#: experienciaas/users/models.py:472
+msgid "Location"
+msgstr ""
+
+#: experienciaas/users/models.py:476
+msgid "Twitter"
+msgstr ""
+
+#: experienciaas/users/models.py:481
+msgid "Profile Image"
+msgstr ""
+
+#: experienciaas/users/models.py:482
+msgid "Cover Image"
+msgstr ""
+
+#: experienciaas/users/models.py:485
+msgid "Public Profile"
+msgstr ""
+
+#: experienciaas/users/models.py:486
+msgid "Allow Contact"
+msgstr ""
+
+#: experienciaas/users/models.py:493
+msgid "Organizer Profile"
+msgstr ""
+
+#: experienciaas/users/models.py:494
+msgid "Organizer Profiles"
+msgstr ""
+
+#: experienciaas/users/models.py:544
+msgid "Pending Approval"
+msgstr ""
+
+#: experienciaas/users/models.py:547
+msgid "Suspended"
+msgstr ""
+
+#: experienciaas/users/models.py:551
+msgid "Startup (1-10 empleados)"
+msgstr ""
+
+#: experienciaas/users/models.py:552
+msgid "Pequeña (11-50 empleados)"
+msgstr ""
+
+#: experienciaas/users/models.py:553
+msgid "Mediana (51-200 empleados)"
+msgstr ""
+
+#: experienciaas/users/models.py:554
+msgid "Grande (201-1000 empleados)"
+msgstr ""
+
+#: experienciaas/users/models.py:555
+msgid "Empresa (1000+ empleados)"
+msgstr ""
+
+#: experienciaas/users/models.py:560
+msgid "Marketing y Publicidad"
+msgstr ""
+
+#: experienciaas/users/models.py:561
+msgid "Alimentos y Bebidas"
+msgstr ""
+
+#: experienciaas/users/models.py:562
+msgid "Moda y Retail"
+msgstr ""
+
+#: experienciaas/users/models.py:563
+msgid "Servicios Financieros"
+msgstr ""
+
+#: experienciaas/users/models.py:566
+msgid "Entretenimiento"
+msgstr ""
+
+#: experienciaas/users/models.py:568
+msgid "Automotriz"
+msgstr ""
+
+#: experienciaas/users/models.py:569
+msgid "Bienes Raíces"
+msgstr ""
+
+#: experienciaas/users/models.py:570
+msgid "Consultoría"
+msgstr ""
+
+#: experienciaas/users/models.py:571
+msgid "Manufactura"
+msgstr ""
+
+#: experienciaas/users/models.py:572
+msgid "Logística y Transporte"
+msgstr ""
+
+#: experienciaas/users/models.py:573
+msgid "Energía"
+msgstr ""
+
+#: experienciaas/users/models.py:574
+msgid "Telecomunicaciones"
+msgstr ""
+
+#: experienciaas/users/models.py:575
+msgid "Medios de Comunicación"
+msgstr ""
+
+#: experienciaas/users/models.py:576
+msgid "Organización Sin Fines de Lucro"
+msgstr ""
+
+#: experienciaas/users/models.py:577
+msgid "Gobierno"
+msgstr ""
+
+#: experienciaas/users/models.py:587
+msgid "Razón de la aplicación"
+msgstr ""
+
+#: experienciaas/users/models.py:589
+msgid ""
+"Explica por qué quieres ser un proveedor/patrocinador en nuestra plataforma"
+msgstr ""
+
+#: experienciaas/users/models.py:593
+msgid "Nombre de la empresa"
+msgstr ""
+
+#: experienciaas/users/models.py:594
+msgid "Descripción de la empresa"
+msgstr ""
+
+#: experienciaas/users/models.py:595
+msgid "Tamaño de la empresa"
+msgstr ""
+
+#: experienciaas/users/models.py:596
+msgid "Industria"
+msgstr ""
+
+#: experienciaas/users/models.py:597
+msgid "Año de fundación"
+msgstr ""
+
+#: experienciaas/users/models.py:600
+msgid "NIT/RUT"
+msgstr ""
+
+#: experienciaas/users/models.py:601
+msgid "Dirección legal"
+msgstr ""
+
+#: experienciaas/users/models.py:604
+msgid "Teléfono empresarial"
+msgstr ""
+
+#: experienciaas/users/models.py:605
+msgid "Email empresarial"
+msgstr ""
+
+#: experienciaas/users/models.py:606
+msgid "Persona de contacto"
+msgstr ""
+
+#: experienciaas/users/models.py:607
+msgid "Cargo del contacto"
+msgstr ""
+
+#: experienciaas/users/models.py:610
+msgid "Sitio web de la empresa"
+msgstr ""
+
+#: experienciaas/users/models.py:615
+msgid "YouTube"
+msgstr ""
+
+#: experienciaas/users/models.py:618
+msgid "Logo de la empresa"
+msgstr ""
+
+#: experienciaas/users/models.py:619
+msgid "Banner de la empresa"
+msgstr ""
+
+#: experienciaas/users/models.py:620
+msgid "Brochure/Catálogo"
+msgstr ""
+
+#: experienciaas/users/models.py:623
+msgid "Presupuesto mínimo de patrocinio"
+msgstr ""
+
+#: experienciaas/users/models.py:624
+msgid "Presupuesto máximo de patrocinio"
+msgstr ""
+
+#: experienciaas/users/models.py:627
+msgid "Audiencia objetivo"
+msgstr ""
+
+#: experienciaas/users/models.py:636
+msgid "Administrador que revisó la aplicación"
+msgstr ""
+
+#: experienciaas/users/models.py:638 experienciaas/users/models.py:749
+#: experienciaas/users/models.py:832
+msgid "Fecha de revisión"
+msgstr ""
+
+#: experienciaas/users/models.py:639 experienciaas/users/models.py:750
+#: experienciaas/users/models.py:834
+msgid "Notas del administrador"
+msgstr ""
+
+#: experienciaas/users/models.py:640 experienciaas/users/models.py:751
+msgid "Razón de rechazo"
+msgstr ""
+
+#: experienciaas/users/models.py:644
+msgid "Permitir contacto directo"
+msgstr ""
+
+#: experienciaas/users/models.py:650
+msgid "Fecha de aprobación"
+msgstr ""
+
+#: experienciaas/users/models.py:653
+msgid "Supplier Profile"
+msgstr ""
+
+#: experienciaas/users/models.py:654
+msgid "Supplier Profiles"
+msgstr ""
+
+#: experienciaas/users/models.py:713 experienciaas/users/role_forms.py:54
+msgid "Proveedor/Patrocinador"
+msgstr ""
+
+#: experienciaas/users/models.py:719 experienciaas/users/models.py:788
+msgid "Rechazado"
+msgstr ""
+
+#: experienciaas/users/models.py:720 experienciaas/users/models.py:789
+msgid "En revisión"
+msgstr ""
+
+#: experienciaas/users/models.py:724 experienciaas/users/role_forms.py:37
+msgid "Rol solicitado"
+msgstr ""
+
+#: experienciaas/users/models.py:729 experienciaas/users/role_forms.py:38
+msgid "Motivación"
+msgstr ""
+
+#: experienciaas/users/models.py:731
+msgid "Explica por qué quieres este rol y cómo planeas usarlo"
+msgstr ""
+
+#: experienciaas/users/models.py:734 experienciaas/users/role_forms.py:39
+msgid "Experiencia relevante"
+msgstr ""
+
+#: experienciaas/users/models.py:737
+msgid "Describe tu experiencia previa relacionada con este rol"
+msgstr ""
+
+#: experienciaas/users/models.py:739 experienciaas/users/role_forms.py:40
+msgid "Información adicional"
+msgstr ""
+
+#: experienciaas/users/models.py:758
+msgid "Role Application"
+msgstr ""
+
+#: experienciaas/users/models.py:759
+msgid "Role Applications"
+msgstr ""
+
+#: experienciaas/users/models.py:775
+msgid "Follow"
+msgstr ""
+
+#: experienciaas/users/models.py:776
+msgid "Follows"
+msgstr ""
+
+#: experienciaas/users/models.py:790
+msgid "Contratado"
+msgstr ""
+
+#: experienciaas/users/models.py:814
+msgid "Nivel de patrocinio propuesto"
+msgstr ""
+
+#: experienciaas/users/models.py:815
+msgid "Presupuesto ofrecido"
+msgstr ""
+
+#: experienciaas/users/models.py:817
+msgid "Mensaje"
+msgstr ""
+
+#: experienciaas/users/models.py:819
+msgid "Explica por qué quieres patrocinar este evento y qué puedes ofrecer"
+msgstr ""
+
+#: experienciaas/users/models.py:821
+msgid "Requerimientos especiales"
+msgstr ""
+
+#: experienciaas/users/models.py:833
+msgid "Notas del organizador"
+msgstr ""
+
+#: experienciaas/users/models.py:837
+msgid "Nivel final"
+msgstr ""
+
+#: experienciaas/users/models.py:838
+msgid "Monto del contrato"
+msgstr ""
+
+#: experienciaas/users/models.py:839
+msgid "Notas del contrato"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:22
+msgid "Explica por qué quieres este rol y cómo planeas usarlo..."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:28
+msgid "Describe tu experiencia previa relacionada con este rol..."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:33
+msgid "Información adicional que consideres relevante..."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:67
+msgid "Usuario requerido"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:71
+msgid "No puedes aplicar para el rol de organizador en este momento"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:74
+msgid "No puedes aplicar para el rol de proveedor en este momento"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:84
+msgid "Ya tienes una aplicación pendiente para este rol"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:99
+msgid ""
+"Explica por qué quieres organizar eventos en nuestra plataforma y qué tipo "
+"de eventos planeas crear."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:102
+msgid ""
+"Describe tu experiencia previa organizando eventos, gestionando proyectos, o "
+"trabajando en áreas relacionadas."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:116
+msgid ""
+"Explica por qué quieres ser un proveedor/patrocinador en nuestra plataforma "
+"y qué puedes ofrecer."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:119
+msgid ""
+"Describe tu experiencia en marketing, patrocinios, o colaboraciones con "
+"eventos."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:140
+msgid "Nombre de tu empresa"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:145
+msgid "Describe tu empresa, productos y servicios..."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:156
+msgid "NIT o RUT de la empresa"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:160
+msgid "Dirección legal de la empresa"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:164
+msgid "Teléfono principal de la empresa"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:168
+msgid "Email principal de la empresa"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:172
+msgid "Nombre de la persona de contacto"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:176
+msgid "Cargo de la persona de contacto"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:217
+msgid "Presupuesto mínimo en COP"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:222
+msgid "Presupuesto máximo en COP"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:227
+msgid "Describe tu audiencia objetivo..."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:238
+msgid "Logo de la empresa (recomendado: 300x300px, PNG o JPG)"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:239
+msgid "Banner para eventos (recomendado: 1200x400px, PNG o JPG)"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:240
+msgid "Catálogo o brochure de productos/servicios (PDF, DOC, PPT)"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:241
+msgid "Presupuesto mínimo que puedes destinar a patrocinios"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:242
+msgid "Presupuesto máximo que puedes destinar a patrocinios"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:250
+msgid "El presupuesto mínimo no puede ser mayor que el máximo"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:269
+msgid "Cuéntanos sobre ti como organizador de eventos..."
+msgstr ""
+
+#: experienciaas/users/role_forms.py:277
+msgid "Teléfono de contacto"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:281
+msgid "Ciudad, País"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:315
+msgid "Foto de perfil (recomendado: 400x400px)"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:316
+msgid "Imagen de portada (recomendado: 1200x400px)"
+msgstr ""
+
+#: experienciaas/users/role_forms.py:317
+msgid "Máximo 1000 caracteres"
+msgstr ""
+
+#: experienciaas/users/role_views.py:30
+msgid "No tienes roles disponibles para aplicar en este momento."
+msgstr ""
+
+#: experienciaas/users/role_views.py:42
+msgid ""
+"Tu aplicación para el rol de {} ha sido enviada. Te notificaremos cuando sea "
+"revisada."
+msgstr ""
+
+#: experienciaas/users/role_views.py:62
+msgid "No puedes aplicar para el rol de organizador en este momento."
+msgstr ""
+
+#: experienciaas/users/role_views.py:74
+msgid ""
+"Tu aplicación para organizador ha sido enviada. Te notificaremos cuando sea "
+"revisada."
+msgstr ""
+
+#: experienciaas/users/role_views.py:88
+msgid "No puedes aplicar para el rol de proveedor en este momento."
+msgstr ""
+
+#: experienciaas/users/role_views.py:100
+msgid ""
+"Tu aplicación para proveedor ha sido enviada. Te notificaremos cuando sea "
+"revisada."
+msgstr ""
+
+#: experienciaas/users/role_views.py:115
+msgid "No tienes permisos de organizador."
+msgstr ""
+
+#: experienciaas/users/role_views.py:124
+msgid "Perfil de organizador actualizado correctamente."
+msgstr ""
+
+#: experienciaas/users/role_views.py:139
+msgid "No tienes permisos de proveedor."
+msgstr ""
+
+#: experienciaas/users/role_views.py:148
+msgid "Perfil de proveedor actualizado correctamente."
+msgstr ""
+
+#: experienciaas/users/role_views.py:274
+msgid "Aplicación aprobada. {} ahora es organizador."
+msgstr ""
+
+#: experienciaas/users/role_views.py:289
+msgid "Aplicación aprobada. {} ahora es proveedor."
+msgstr ""
+
+#: experienciaas/users/role_views.py:300
+msgid "Aplicación rechazada."
+msgstr ""
+
+#: experienciaas/users/role_views.py:307
+msgid "Aplicación marcada como en revisión."
+msgstr ""
+
+#: experienciaas/users/role_views.py:364
+msgid "Perfil de proveedor aprobado."
+msgstr ""
+
+#: experienciaas/users/role_views.py:374
+msgid "Perfil de proveedor rechazado."
+msgstr ""
+
+#: experienciaas/users/role_views.py:381
+msgid "Perfil de proveedor suspendido."
+msgstr ""
+
+#: experienciaas/users/tests/test_views.py:72
+msgid "Information successfully updated"
+msgstr ""
+
+#: experienciaas/users/validators.py:17 experienciaas/users/validators.py:22
+msgid "Tu contraseña no puede ser muy similar a tu otra información personal."
+msgstr ""
+
+#: experienciaas/users/validators.py:29 experienciaas/users/validators.py:37
+#, python-format
+msgid "Tu contraseña debe contener al menos %(min_length)d caracteres."
+msgstr ""
+
+#: experienciaas/users/validators.py:48 experienciaas/users/validators.py:53
+msgid "Tu contraseña no puede ser una contraseña comúnmente usada."
+msgstr ""
+
+#: experienciaas/users/validators.py:62 experienciaas/users/validators.py:67
+msgid "Tu contraseña no puede ser completamente numérica."
+msgstr ""
+
+#: experienciaas/users/views.py:39
+msgid "Información actualizada exitosamente"
+msgstr ""
+
+#: experienciaas/users/views.py:178
+msgid "You cannot follow yourself."
+msgstr ""
+
+#: experienciaas/users/views.py:188
+msgid "You are now following {}."
+msgstr ""
+
+#: experienciaas/users/views.py:194
+msgid "You unfollowed {}."
+msgstr ""
+
+#: experienciaas/users/views.py:221
+msgid "Profile successfully updated"
+msgstr ""
+
+#: experienciaas/users/views.py:226
+msgid "Only staff members can have organizer profiles."
+msgstr ""
+
+#: experienciaas/users/views.py:246 experienciaas/users/views.py:277
+msgid "Perfil de proveedor actualizado exitosamente"
+msgstr ""
+
+#: experienciaas/users/views.py:251
+msgid "Solo los proveedores aprobados pueden acceder a esta página."
+msgstr ""
+
+#: experienciaas/users/views.py:258
+msgid "Tu perfil de proveedor debe estar aprobado para editarlo."
+msgstr ""
+
+#: experienciaas/users/views.py:262
+msgid "No tienes un perfil de proveedor."
+msgstr ""
+
+#: experienciaas/users/views.py:283
+msgid "Solo los administradores principales pueden acceder a esta página."
+msgstr ""
+
+#: experienciaas/users/views.py:312 experienciaas/users/views.py:346
+#: experienciaas/users/views.py:371 experienciaas/users/views.py:499
+#: experienciaas/users/views.py:523 experienciaas/users/views.py:545
+#: experienciaas/users/views.py:575 experienciaas/users/views.py:697
+#: experienciaas/users/views.py:748 experienciaas/users/views.py:799
+#: experienciaas/users/views.py:823 experienciaas/users/views.py:847
+#: experienciaas/users/views.py:877 experienciaas/users/views.py:912
+#: experienciaas/users/views.py:933 experienciaas/users/views.py:976
+#: experienciaas/users/views.py:1014
+msgid "Access denied. Superuser permission required."
+msgstr ""
+
+#: experienciaas/users/views.py:377 experienciaas/users/views.py:505
+msgid "This application has already been processed."
+msgstr ""
+
+#: experienciaas/users/views.py:409
+msgid "Role restored. {user.get_full_name()} is now an active organizer again."
+msgstr ""
+
+#: experienciaas/users/views.py:437
+msgid "Supplier role restored for {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:461
+msgid "Role application approved. {user.get_full_name()} is now an organizer."
+msgstr ""
+
+#: experienciaas/users/views.py:489
+msgid ""
+"Supplier application approved for {user.get_full_name()}. Supplier profile "
+"created/activated."
+msgstr ""
+
+#: experienciaas/users/views.py:514
+msgid "Role application rejected for {application.user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:529
+msgid "This supplier profile is already approved."
+msgstr ""
+
+#: experienciaas/users/views.py:536
+msgid "Supplier profile approved for {profile.user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:554
+msgid ""
+"Supplier profile status changed to pending for {profile.user."
+"get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:658 experienciaas/users/views.py:672
+msgid "Todos los usuarios"
+msgstr ""
+
+#: experienciaas/users/views.py:659
+msgid "Organizadores"
+msgstr ""
+
+#: experienciaas/users/views.py:660
+msgid "Proveedores"
+msgstr ""
+
+#: experienciaas/users/views.py:661
+msgid "Usuarios Básicos"
+msgstr ""
+
+#: experienciaas/users/views.py:665
+msgid "Activos"
+msgstr ""
+
+#: experienciaas/users/views.py:666
+msgid "Suspendidos"
+msgstr ""
+
+#: experienciaas/users/views.py:667
+msgid "Cuentas Inactivas"
+msgstr ""
+
+#: experienciaas/users/views.py:669
+msgid "Perfiles Pendientes"
+msgstr ""
+
+#: experienciaas/users/views.py:673
+msgid "Solo Aplicaciones"
+msgstr ""
+
+#: experienciaas/users/views.py:674
+msgid "Solo Perfiles de Proveedor"
+msgstr ""
+
+#: experienciaas/users/views.py:675
+msgid "Solo Usuarios con Roles"
+msgstr ""
+
+#: experienciaas/users/views.py:703 experienciaas/users/views.py:853
+msgid "User is not an organizer."
+msgstr ""
+
+#: experienciaas/users/views.py:707
+msgid "Organizer role is already suspended."
+msgstr ""
+
+#: experienciaas/users/views.py:733 experienciaas/users/views.py:784
+msgid " permanentemente"
+msgstr ""
+
+#: experienciaas/users/views.py:739
+msgid ""
+"Rol de organizador suspendido{duration_text} para {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:754
+msgid "User is not an approved supplier."
+msgstr ""
+
+#: experienciaas/users/views.py:758
+msgid "Supplier role is already suspended."
+msgstr ""
+
+#: experienciaas/users/views.py:790
+msgid "Rol de proveedor suspendido{duration_text} para {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:805
+msgid "Organizer role is not suspended."
+msgstr ""
+
+#: experienciaas/users/views.py:814
+msgid "Rol de organizador reactivado para {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:829
+msgid "Supplier role is not suspended."
+msgstr ""
+
+#: experienciaas/users/views.py:838
+msgid "Rol de proveedor reactivado para {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:868
+msgid "Rol de organizador revocado completamente para {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:883
+msgid "User is not a supplier."
+msgstr ""
+
+#: experienciaas/users/views.py:897
+msgid "Rol de proveedor revocado completamente para {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:918
+msgid "User account is already active."
+msgstr ""
+
+#: experienciaas/users/views.py:924
+msgid "Cuenta activada para {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:939
+msgid "User account is already inactive."
+msgstr ""
+
+#: experienciaas/users/views.py:944
+msgid "Cannot deactivate superuser accounts."
+msgstr ""
+
+#: experienciaas/users/views.py:967
+msgid "Cuenta desactivada para {user.get_full_name()}."
+msgstr ""
+
+#: experienciaas/users/views.py:982
+msgid "User is already an organizer."
+msgstr ""
+
+#: experienciaas/users/views.py:986 experienciaas/users/views.py:1020
+msgid "Cannot modify superuser accounts."
+msgstr ""
+
+#: experienciaas/users/views.py:1005
+msgid "{user.get_full_name()} ha sido promovido a Organizador."
+msgstr ""
+
+#: experienciaas/users/views.py:1034
+msgid "User is already an approved supplier."
+msgstr ""
+
+#: experienciaas/users/views.py:1049
+msgid "{user.get_full_name()} ha sido aprobado como Proveedor."
+msgstr ""
+
+#~ msgid "Note"
+#~ msgstr "Nota"
+
+#, python-format
+#~ msgid "You are already logged in as %(user_display)s."
+#~ msgstr "Ya has iniciado sesión como %(user_display)s."
+
+#~ msgid "Account Already Exists"
+#~ msgstr "La cuenta ya existe"
+
+#, python-format
+#~ msgid ""
+#~ "You're receiving this email because user %(user_display)s has given your "
+#~ "email address to register an account on %(site_domain)s.\n"
+#~ "\n"
+#~ "To confirm this is correct, go to %(activate_url)s"
+#~ msgstr ""
+#~ "Estás recibiendo este correo porque el usuario %(user_display)s ha usado "
+#~ "tu dirección de correo para registrarse en %(site_domain)s.\n"
+#~ "\n"
+#~ "Para confirmar que esto es correcto, ve a %(activate_url)s"
+
+#~ msgid "Please Confirm Your Email Address"
+#~ msgstr "Por favor confirma tu dirección de correo electrónico"
+
+#~ msgid ""
+#~ "You're receiving this email because you or someone else has requested a "
+#~ "password reset for your user account.\n"
+#~ "It can be safely ignored if you did not request a password reset. Click "
+#~ "the link below to reset your password."
+#~ msgstr ""
+#~ "Estás recibiendo este correo porque tú u otra persona ha solicitado "
+#~ "restablecer la contraseña de tu cuenta.\n"
+#~ "Puedes ignorar este correo de forma segura si no has solicitado un "
+#~ "restablecimiento. Haz clic en el enlace de abajo para restablecer tu "
+#~ "contraseña."
+
+#, python-format
+#~ msgid "In case you forgot, your username is %(username)s."
+#~ msgstr "Por si lo has olvidado, tu nombre de usuario es %(username)s."
+
+#~ msgid "Password Reset Email"
+#~ msgstr "Correo de restablecimiento de contraseña"

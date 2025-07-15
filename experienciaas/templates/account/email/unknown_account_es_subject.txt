@@ -1,0 +1,4 @@
+{% load i18n %}
+{% autoescape off %}
+Solicitud de restablecimiento de contraseña - {{ current_site.name }}
+{% endautoescape %}

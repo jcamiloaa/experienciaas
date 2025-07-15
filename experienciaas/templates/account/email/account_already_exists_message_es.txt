@@ -1,0 +1,13 @@
+{% extends "account/email/base_message_es.txt" %}
+
+{% block content %}{% autoescape off %}Estás recibiendo este correo porque tú u otra persona ha intentado registrarse usando la dirección de correo electrónico:
+
+{{ email }}
+
+Sin embargo, ya existe una cuenta registrada con esta dirección de correo.
+
+Si has olvidado que tenías una cuenta con nosotros, puedes usar el procedimiento de recuperación de contraseña para acceder a tu cuenta:
+
+{{ password_reset_url }}
+
+Si no has intentado crear una cuenta, puedes ignorar este correo de forma segura.{% endautoescape %}{% endblock content %}

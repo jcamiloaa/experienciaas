@@ -44,9 +44,20 @@ class AccountAdapter(DefaultAccountAdapter):
 
     def send_mail(self, template_prefix, email, context):
         """
-        Override to customize email sending behavior.
+        Override to use Spanish email templates.
         """
-        return super().send_mail(template_prefix, email, context)
+        # Map template prefixes to Spanish versions
+        spanish_templates = {
+            "account/email/password_reset_key": "account/email/password_reset_key_es",
+            "account/email/email_confirmation": "account/email/email_confirmation_es", 
+            "account/email/email_confirmation_signup": "account/email/email_confirmation_es",
+            "account/email/account_already_exists": "account/email/account_already_exists_es",
+            "account/email/unknown_account": "account/email/unknown_account_es",
+        }
+        
+        # Use Spanish template if available
+        spanish_template = spanish_templates.get(template_prefix, template_prefix)
+        return super().send_mail(spanish_template, email, context)
 
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):

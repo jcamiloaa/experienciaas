@@ -1,4 +1,4 @@
-from allauth.account.forms import SignupForm
+from allauth.account.forms import SignupForm, LoginForm, ResetPasswordForm, ResetPasswordKeyForm
 from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django.contrib.auth import forms as admin_forms
 from django.forms import EmailField
@@ -6,6 +6,46 @@ from django.utils.translation import gettext_lazy as _
 from django import forms
 
 from .models import User, INTEREST_CHOICES
+
+
+class CustomLoginForm(LoginForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['login'].widget.attrs.update({
+            'placeholder': 'Email',
+            'class': 'form-control'
+        })
+        self.fields['password'].widget.attrs.update({
+            'placeholder': 'Contraseña',
+            'class': 'form-control'
+        })
+        self.fields['password'].label = 'Contraseña'
+        self.fields['remember'].label = 'Recordarme'
+
+
+class CustomResetPasswordForm(ResetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({
+            'placeholder': 'Tu dirección de email',
+            'class': 'form-control'
+        })
+        self.fields['email'].label = 'Dirección de email'
+
+
+class CustomResetPasswordKeyForm(ResetPasswordKeyForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].widget.attrs.update({
+            'placeholder': 'Nueva contraseña',
+            'class': 'form-control'
+        })
+        self.fields['password2'].widget.attrs.update({
+            'placeholder': 'Confirmar nueva contraseña',
+            'class': 'form-control'
+        })
+        self.fields['password1'].label = 'Nueva Contraseña'
+        self.fields['password2'].label = 'Confirmar Nueva Contraseña'
 
 
 class UserAdminChangeForm(admin_forms.UserChangeForm):

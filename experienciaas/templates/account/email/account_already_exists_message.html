@@ -1,0 +1,21 @@
+{% extends "account/email/base_message.html" %}
+
+{% block content %}
+<h2>Cuenta ya existente</h2>
+
+<p>Estás recibiendo este correo porque tú u otra persona ha intentado registrarse usando la dirección de correo electrónico:</p>
+
+<p style="text-align: center; background: #e9ecef; padding: 15px; border-radius: 5px;">
+    <strong>{{ email }}</strong>
+</p>
+
+<p><strong>Sin embargo, ya existe una cuenta registrada con esta dirección de correo.</strong></p>
+
+<p>Si has olvidado que tenías una cuenta con nosotros, puedes usar el procedimiento de recuperación de contraseña para acceder a tu cuenta:</p>
+
+<p style="text-align: center;">
+    <a href="{{ password_reset_url }}" class="button">Recuperar mi contraseña</a>
+</p>
+
+<p>Si no has intentado crear una cuenta, puedes ignorar este correo de forma segura.</p>
+{% endblock content %}

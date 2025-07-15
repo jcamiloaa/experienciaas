@@ -2,13 +2,16 @@
 {% load i18n %}
 {% load allauth %}
 {% block head_title %}
-    {% trans "Verify Your Email Address" %}
+    Verificar Tu Dirección de Correo
 {% endblock head_title %}
 {% block content %}
     {% element h1 %}
-        {% trans "Verify Your Email Address" %}
+        Correo de Verificación Enviado
     {% endelement %}
     <p>
-        {% blocktrans %}We have sent an email to you for verification. Follow the link provided to finalize the signup process. If you do not see the verification email in your main inbox, check your spam folder. Please contact us if you do not receive the verification email within a few minutes.{% endblocktrans %}
+        Te hemos enviado un correo electrónico para verificación. Sigue el enlace proporcionado para finalizar el proceso de registro. Si no ves el correo de verificación en tu bandeja principal, revisa tu carpeta de spam. Por favor contáctanos si no recibes el correo de verificación en unos minutos.
+    </p>
+    <p>
+        <a href="{% url 'account_login' %}" class="btn btn-primary">Ir al inicio de sesión</a>
     </p>
 {% endblock content %}

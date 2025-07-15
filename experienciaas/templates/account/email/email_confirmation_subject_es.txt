@@ -1,0 +1,3 @@
+{% autoescape off %}
+Confirma tu dirección de correo electrónico - {{ site_name }}
+{% endautoescape %}

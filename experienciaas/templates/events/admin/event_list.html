@@ -125,7 +125,7 @@
                     <td>
                         <input type="checkbox" name="selected_events" value="{{ event.id }}" class="event-checkbox">
                     </td>
-                    <td>
+                    <td data-label="Evento">
                         <div class="event-info">
                             <div class="event-image-small">
                                 {% if event.image %}
@@ -158,25 +158,25 @@
                             </div>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Categoría">
                         <span class="category-badge">{{ event.category.name }}</span>
                     </td>
-                    <td>{{ event.city.name }}</td>
-                    <td>
+                    <td data-label="Ciudad">{{ event.city.name }}</td>
+                    <td data-label="Fecha">
                         <div class="date-info">
                             <strong>{{ event.start_date|date:"M d, Y" }}</strong>
                             <small>{{ event.start_date|date:"g:i A" }}</small>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Estado">
                         <span class="status-badge status-{{ event.status }}">
                             {{ event.get_status_display }}
                         </span>
                     </td>
-                    <td>
+                    <td data-label="Tickets">
                         <span class="ticket-count">{{ event.tickets.count }}</span>
                     </td>
-                    <td>
+                    <td data-label="Acciones">
                         <div class="actions">
                             <a href="{% url 'events:detail' event.slug %}" class="btn btn-sm" target="_blank" title="View Public">
                                 <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
